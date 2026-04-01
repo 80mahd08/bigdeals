@@ -1,0 +1,16 @@
+@if(showTopbar){
+<div id="layout-wrapper" class="vertical-layout">
+    <app-topbar-user></app-topbar-user>
+    
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+        <app-footer></app-footer>
+    </div>
+</div>
+}@else {
+    <router-outlet></router-outlet>
+}
