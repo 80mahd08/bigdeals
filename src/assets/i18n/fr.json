@@ -1,114 +1,113 @@
 {
   "HEADER": {
     "MORE": {
-      "TEXT": "Suite"
+      "TEXT": "Plus"
     }
   },
   "MENUITEMS": {
     "MENU": {
       "TEXT": "MENU",
-      "Reclamation":  " mes Reclamations ",
+      "Reclamations": " mes Réclamations ",
       "Add": " Ajouter ",
-      "Edit": " Edite ",
-      "View": " Affichage"
-     
+      "Edit": " Modifier ",
+      "View": " Voir "
     },
     "USERS": {
-      "Users" : "utilisateurs",
-      "User" : "utilisateur",
-      "FirstName": "prenom",
-      "LastName":  "Nom",
-      "Email": "Email",
-      "Roles": "Roles",
-      "Active": "Active",
-      "Gender": "genre",
-      "Male": "Male",
-      "Femal": "Fumelle"
+      "Users": "utilisateurs",
+      "User": "Utilisateur",
+      "FirstName": "Prénom",
+      "LastName": "Nom",
+      "Email": "E-mail",
+      "Roles": "Rôles",
+      "Active": "Actif",
+      "Gender": "Genre",
+      "Male": "Homme",
+      "Femal": "Femme"
     },
     "DASHBOARD": {
-      "TEXT": "Tableaux de bord",
-      "BADGE": "Nouvelle",
+      "TEXT": "Tableaux de Bord",
+      "BADGE": "Nouveau",
       "LIST": {
-        "ANALYTICS": "Analytique",
-        "CRM": "GRC",
-        "ECOMMERCE": "Commerce électronique",
+        "ANALYTICS": "Analyses",
+        "CRM": "CRM",
+        "ECOMMERCE": "Ecommerce",
         "CRYPTO": "Crypto",
         "PROJECTS": "Projets",
         "NFT": "NFT",
-        "JOB": "TRAVAIL"
+        "JOB": "Emploi"
       }
     },
     "APPS": {
-      "TEXT": "applications",
-      "Submit": "Submit",
-      "Reset": "Reset",
+      "TEXT": "Applications",
+      "Submit": "Envoyer",
+      "Reset": "Réinitialiser",
       "LIST": {
         "CALENDAR": "Calendrier",
-        "MAINCALENDAR": "Calendrier principal",
-        "MONTHGRID": "Grille mensuelle",
-        "CHAT": "Discuter",
+        "MAINCALENDAR": "Calendrier Principal",
+        "MONTHGRID": "Grille Mensuelle",
+        "CHAT": "Chat",
         "EMAIL": "E-mail",
-        "MAILBOX": "Boites aux lettres",
-        "MAILTEMPLATES": "Modèles d'e-mails",
+        "MAILBOX": "Boîte aux lettres",
+        "MAILTEMPLATES": "Modèles d'E-mail",
         "BASICACTION": "Action de base",
-        "ECOMMERCEACTION": "Action de commerce électronique",
-        "ECOMMERCE": "Commerce électronique",
-        "PRODUCTS": "Des produits",
-        "PRODUCTDETAILS": "détails du produit",
-        "CREATEPRODUCT": "Créer un produit",
-        "ORDERS": "Ordres",
-        "ORDERDETAILS": "détails de la commande",
-        "CUSTOMERS": "Les clients",
+        "ECOMMERCEACTION": "Action Ecommerce",
+        "ECOMMERCE": "Ecommerce",
+        "PRODUCTS": "Produits",
+        "PRODUCTDETAILS": "Détails du Produit",
+        "CREATEPRODUCT": "Créer un Produit",
+        "ORDERS": "Commandes",
+        "ORDERDETAILS": "Détails de la Commande",
+        "CUSTOMERS": "Clients",
         "SHOPPINGCART": "Panier",
-        "CHECKOUT": "Vérifier",
-        "SELLERS": "Les vendeurs",
-        "SELLERDETAILS": "Détails du vendeur",
+        "CHECKOUT": "Caisse",
+        "SELLERS": "Vendeurs",
+        "SELLERDETAILS": "Détails du Vendeur",
         "PROJECTS": "Projets",
-        "LIST": "Lister",
+        "LIST": "Liste",
         "OVERVIEW": "Aperçu",
-        "CREATEPROJECT": "Créer un projet",
+        "CREATEPROJECT": "Créer un Projet",
         "TASK": "Tâches",
         "KANBANBOARD": "Tableau Kanban",
-        "LISTVIEW": "Affichage de liste",
-        "TASKDETAILS": "Détails de la tâche",
-        "CRM": "GRC",
+        "LISTVIEW": "Vue en Liste",
+        "TASKDETAILS": "Détails de la Tâche",
+        "CRM": "CRM",
         "CONTACTS": "Contacts",
         "COMPANIES": "Entreprises",
-        "DEALS": "Offres",
+        "DEALS": "Affaires",
         "LEADS": "Pistes",
         "CRYPTO": "Crypto",
         "TRANSACTIONS": "Transactions",
-        "BUY&SELL": "Acheter vendre",
-        "MYWALLET": "Mon portefeuille",
-        "ICOLIST": "Liste des OIC",
-        "KYCAPPLICATION": "Demande de connaissance du client",
+        "BUY&SELL": "Acheter & Vendre",
+        "MYWALLET": "Mon Portefeuille",
+        "ICOLIST": "Liste ICO",
+        "KYCAPPLICATION": "Application KYC",
         "INVOICES": "Factures",
-        "DETAILS": "Des détails",
-        "CREATEINVOICE": "Créer une facture",
-        "SUPPORTTICKETS": "Billets d'assistance",
-        "TICKETDETAILS": "Détails du billet",
+        "DETAILS": "Détails",
+        "CREATEINVOICE": "Créer une Facture",
+        "SUPPORTTICKETS": "Tickets de Support",
+        "TICKETDETAILS": "Détails du Ticket",
         "NFTMARKETPLACE": "Marché NFT",
         "MARKETPLACE": "Marché",
-        "EXPLORENOW": "Explorez maintenant",
-        "LIVEAUCTION": "Enchère en direct",
-        "ITEMDETAILS": "Détails de l'article",
+        "EXPLORENOW": "Explorer Maintenant",
+        "LIVEAUCTION": "Enchères en Direct",
+        "ITEMDETAILS": "Détails de l'Article",
         "COLLECTIONS": "Collections",
-        "CREATORS": "Créatrices",
+        "CREATORS": "Créateurs",
         "RANKING": "Classement",
-        "WALLETCONNECT": "Portefeuille Connect",
-        "CREATENFT": "Créer NFT",
-        "FILEMANAGER": "Gestionnaire de fichiers",
-        "TODO": "Faire",
-        "JOBS": "Travaux",
+        "WALLETCONNECT": "Connexion Portefeuille",
+        "CREATENFT": "Créer un NFT",
+        "FILEMANAGER": "Gestionnaire de Fichiers",
+        "TODO": "À Faire",
+        "JOBS": "Emplois",
         "STATISTICS": "Statistiques",
-        "JOBLISTS": "Listes de tâches",
+        "JOBLISTS": "Listes d'Emplois",
         "GRID": "Grille",
-        "CANDIDATELISTS": "Liste des candidats",
-        "GRIDVIEW": "Vue Grille",
+        "CANDIDATELISTS": "Listes de Candidats",
+        "GRIDVIEW": "Vue en Grille",
         "APPLICATION": "Application",
-        "NEWJOB": "Nouveau travail",
-        "COMPANIESLIST": "Liste des entreprises",
-        "JOBCATEGORIES": "Catégories d'emploi",
+        "NEWJOB": "Nouvel Emploi",
+        "COMPANIESLIST": "Liste des Entreprises",
+        "JOBCATEGORIES": "Catégories d'Emplois",
         "APIKEY": "Clé API"
       }
     },
@@ -117,90 +116,90 @@
       "LIST": {
         "HORIZONTAL": "Horizontal",
         "DETACHED": "Détaché",
-        "TWOCOLUMN": "Deux colonnes",
+        "TWOCOLUMN": "Deux Colonnes",
         "HOVERED": "Survolé"
       }
     },
     "PAGES": {
-      "TEXT": "pages"
+      "TEXT": "Pages"
     },
     "AUTHENTICATION": {
       "TEXT": "Authentification",
       "LIST": {
-        "BASIC": "De base",
+        "BASIC": "Basique",
         "COVER": "Couverture",
-        "SIGNIN": "S'identifier",
-        "SIGNUP": "S'inscrire",
+        "SIGNIN": "Connexion",
+        "SIGNUP": "Inscription",
         "PASSWORDRESET": "Réinitialisation du mot de passe",
-        "PASSWORDCREATE": "Créer un mot de passe",
-        "LOCKSCREEN": "Écran verrouillé",
-        "LOGOUT": "Se déconnecter",
-        "SUCCESSMESSAGE": "Message de réussite",
+        "PASSWORDCREATE": "Création du mot de passe",
+        "LOCKSCREEN": "Écran de verrouillage",
+        "LOGOUT": "Déconnexion",
+        "SUCCESSMESSAGE": "Message de succès",
         "TWOSTEPVERIFICATION": "Vérification en deux étapes",
-        "ERRORS": "les erreurs",
-        "404BASIC": "404 de base",
+        "ERRORS": "Erreurs",
+        "404BASIC": "404 Basique",
         "404COVER": "404 Couverture",
-        "404ALT": "404 Autre",
+        "404ALT": "404 Alt",
         "500": "500",
-        "OFFLINE": "Hors ligne"
+        "OFFLINE": "Page hors ligne"
       }
     },
-    "PAGES": {
-      "TEXT": "pages",
+    "PAGE_DETAIL": {
+      "TEXT": "Pages",
       "LIST": {
-        "STARTER": "Entrée",
+        "STARTER": "Initial",
         "PROFILE": "Profil",
-        "SIMPLEPAGE": "Page simplifiée",
-        "SETTINGS": "Réglages",
+        "SIMPLEPAGE": "Page Simple",
+        "SETTINGS": "Paramètres",
         "TEAM": "Équipe",
         "TIMELINE": "Chronologie",
-        "FAQS": "FAQ",
+        "FAQS": "FAQs",
         "PRICING": "Tarification",
         "GALLERY": "Galerie",
         "MAINTENANCE": "Maintenance",
-        "COMINGSOON": "À venir",
+        "COMINGSOON": "Bientôt disponible",
         "SITEMAP": "Plan du site",
         "SEARCHRESULTS": "Résultats de recherche",
         "PRIVACYPOLICY": "Politique de confidentialité",
-        "TERMS&CONDITIONS": "Conditions générales",
+        "TERMS&CONDITIONS": "Termes & Conditions",
         "BLOG": "Blog",
-        "BLOGLIST": "Vue en liste",
+        "BLOGLIST": "Vue en Liste",
         "BLOGOVERVIEW": "Aperçu",
-        "BLOGGRID": "Vue en grille"
+        "BLOGGRID": "Vue en Grille"
       }
     },
     "LANDING": {
-      "TEXT": "Un atterrissage",
+      "TEXT": "Atterrissage",
       "LIST": {
-        "ONEPAGE": "Une page",
+        "ONEPAGE": "Une Page",
         "NFTLANDING": "Atterrissage NFT",
-        "JOB": "TRAVAIL"
+        "JOB": "Emploi"
       }
     },
     "COMPONENTS": {
       "TEXT": "Composants"
     },
     "BASEUI": {
-      "TEXT": "Interface utilisateur de base",
+      "TEXT": "UI de Base",
       "LIST": {
         "ALERTS": "Alertes",
-        "BADGES": "Insignes",
+        "BADGES": "Badges",
         "BUTTONS": "Boutons",
         "COLORS": "Couleurs",
         "CARDS": "Cartes",
         "CAROUSEL": "Carrousel",
-        "DROPDOWNS": "Listes déroulantes",
+        "DROPDOWNS": "Listes Déroulantes",
         "GRID": "Grille",
         "IMAGES": "Images",
         "TABS": "Onglets",
-        "ACCORDION&COLLAPSE": "Accordéon et effondrement",
+        "ACCORDION&COLLAPSE": "Accordéon & Repliement",
         "MODALS": "Modaux",
-        "OFFCANVAS": "Hors toile",
-        "PLACEHOLDERS": "Espaces réservés",
-        "PROGRESS": "Le progrès",
-        "NOTIFICATIONS": "Avis",
-        "MEDIAOBJECT": "Objet multimédia",
-        "EMBEDVIDEO": "Intégrer la vidéo",
+        "OFFCANVAS": "Offcanvas",
+        "PLACEHOLDERS": "Espaces Réservés",
+        "PROGRESS": "Progrès",
+        "NOTIFICATIONS": "Notifications",
+        "MEDIAOBJECT": "Objet Média",
+        "EMBEDVIDEO": "Vidéo Intégrée",
         "TYPOGRAPHY": "Typographie",
         "LISTS": "Listes",
         "LINKS": "Liens",
@@ -210,97 +209,96 @@
       }
     },
     "ADVANCEUI": {
-      "TEXT": "Interface utilisateur avancée",
-      "BADGE": "Nouvelle",
+      "TEXT": "UI Avancée",
       "LIST": {
-        "SWEETALERTS": "Alertes sucrées",
-        "NESTABLELIST": "Liste imbriquée",
-        "SCROLLBAR": "Barre de défilement",
+        "SWEETALERTS": "Alertes Douces",
+        "NESTABLELIST": "Liste Imbriquée",
+        "SCROLLBAR": "Barre de Défilement",
         "ANIMATION": "Animation",
-        "TOUR": "Visiter",
-        "SWIPERSLIDER": "Glissière Curseur",
-        "RATTINGS": "Notes",
-        "HIGHLIGHT": "Surligner",
-        "SCROLLSPY": "DéfilementEspion"
+        "TOUR": "Visite",
+        "SWIPERSLIDER": "Curseur Swiper",
+        "RATTINGS": "Évaluations",
+        "HIGHLIGHT": "Surlignage",
+        "SCROLLSPY": "ScrollSpy"
       }
     },
     "WIDGETS": {
-      "TEXT": "Widget"
+      "TEXT": "Widgets"
     },
     "FORMS": {
-      "TEXT": "Formes",
+      "TEXT": "Formulaires",
       "LIST": {
-        "BASICELEMENTS": "Éléments basiques",
-        "FORMSELECT": "Sélection de formulaire",
-        "CHECKBOXS&RADIOS": "Cases à cocher et radios",
-        "PICKERS": "Cueilleurs",
-        "INPUTMASKS": "Masques de saisie",
-        "ADVANCED": "Avancée",
-        "RANGESLIDER": "Curseur de plage",
+        "BASICELEMENTS": "Éléments de Base",
+        "FORMSELECT": "Sélection de Formulaire",
+        "CHECKBOXS&RADIOS": "Cases à Cocher & Radios",
+        "PICKERS": "Sélecteurs",
+        "INPUTMASKS": "Masques de Saisie",
+        "ADVANCED": "Avancé",
+        "RANGESLIDER": "Curseur de Plage",
         "VALIDATION": "Validation",
-        "WIZARD": "sorcier",
+        "WIZARD": "Assistant",
         "EDITORS": "Éditeurs",
-        "FILEUPLOADS": "Téléchargements de fichiers",
-        "FORMLAYOUTS": "Dispositions de formulaire"
+        "FILEUPLOADS": "Téléchargements de Fichiers",
+        "FORMLAYOUTS": "Dispositions de Formulaire"
       }
     },
     "TABLES": {
-      "TEXT": "les tables",
+      "TEXT": "Tableaux",
       "LIST": {
-        "BASICTABLES": "Tableaux de base",
-        "GRIDJS": "Grille Js",
-        "LISTJS": "Liste J",
-        "DATATABLES": "Tableaux de données"
+        "BASICTABLES": "Tableaux de Base",
+        "GRIDJS": "Grid Js",
+        "LISTJS": "List Js",
+        "DATATABLES": "Datatables"
       }
     },
     "CHARTS": {
       "TEXT": "Graphiques",
       "LIST": {
-        "APEXCHARTS": "Apexchart",
+        "APEXCHARTS": "Apexcharts",
         "LINE": "Ligne",
-        "AREA": "Région",
+        "AREA": "Zone",
         "COLUMN": "Colonne",
-        "BAR": "Bar",
+        "BAR": "Barre",
         "MIXED": "Mixte",
         "TIMELINE": "Chronologie",
-        "RANGEAREA": "Zone de portée",
+        "RANGEAREA": "Zone de Plage",
         "FUNNEL": "Entonnoir",
         "SLOPE": "Pente",
-        "CANDLSTICK": "Chandelier",
-        "BOXPLOT": "Boîte à moustaches",
+        "CANDLSTICK": "Bougies",
+        "BOXPLOT": "Boxplot",
         "BUBBLE": "Bulle",
         "SCATTER": "Dispersion",
-        "HEATMAP": "Carte de chaleur",
+        "HEATMAP": "Carte Thermique",
         "TREEMAP": "Treemap",
-        "PIE": "Tarte",
-        "RADIALBAR": "Barre radiale",
+        "PIE": "Camembert",
+        "RADIALBAR": "Barre Radiale",
         "RADAR": "Radar",
-        "POLARAREA": "Zone polaire",
-        "CHARTJS": "Graphiques",
-        "ECHARTS": "Cartes électroniques"
+        "POLARAREA": "Zone Polaire",
+        "CHARTJS": "Chartjs",
+        "ECHARTS": "Echarts"
       }
     },
     "ICONS": {
       "TEXT": "Icônes",
       "LIST": {
-        "REMIX": "Remixer",
+        "REMIX": "Remix",
         "BOXICONS": "Boxicons",
-        "MATERIALDESIGN": "Conception matérielle",
-        "LINEAWESOME": "Ligne Génial",
-        "FEATHER": "La plume",
-        "CRYPTOSVG": "Crypto SVG"
+        "MATERIALDESIGN": "Material Design",
+        "LINEAWESOME": "Line Awesome",
+        "FEATHER": "Feather",
+        "CRYPTOSVG": "Icône Crypto SVG"
       }
     },
     "MAPS": {
-      "TEXT": "Plans",
+      "TEXT": "Cartes",
       "LIST": {
         "GOOGLE": "Google",
         "VECTOR": "Vecteur",
-        "LEAFLET": "Brochure"
+        "LEAFLET": "Leaflet"
       }
     },
     "MULTILEVEL": {
-      "TEXT": "Multi-niveaux",
+      "TEXT": "Plusieurs Niveaux",
       "LIST": {
         "LEVEL1": {
           "1": "Niveau 1.1",
@@ -308,6 +306,81 @@
           "LEVEL2": {
             "1": "Niveau 2.1",
             "2": "Niveau 2.2"
+          }
+        }
+      }
+    },
+    "BIGDEALS": {
+      "TEXT": "Admin BigDeals",
+      "DASHBOARDS": {
+        "TEXT": "Tableaux de Bord",
+        "ANALYTICS": "Analyses Globales",
+        "SALES": "Statistiques de Vente"
+      },
+      "MARKETPLACE": {
+        "TEXT": "Gestion du Marché",
+        "ADS": {
+          "TEXT": "Annonces (Ads)",
+          "ALL": "Toutes les Annonces",
+          "PENDING": "Approbations en Attente",
+          "CATEGORIES": "Gestion des Catégories",
+          "FEATURED": "Annonces à la Une"
+        },
+        "SELLERS": {
+          "TEXT": "Vendeurs",
+          "VERIFICATION": "Vérification d'Identité",
+          "SUBSCRIPTIONS": "Abonnements Annonceurs"
+        },
+        "CLIENTS": "Clients"
+      },
+      "SUPPORT": {
+        "TEXT": "Support & Retours",
+        "TICKETS": "Tickets de Support",
+        "REVIEWS": "Avis & Signalements"
+      },
+      "FINANCE": {
+        "TEXT": "Finance & Rapports",
+        "INVOICES": "Factures",
+        "TRANSACTIONS": "Transactions"
+      },
+      "SYSTEM": {
+        "TEXT": "Système",
+        "CONFIG": "Configuration du Site",
+        "I18N": "Traductions (i18n)",
+        "ROLES": "Rôles & Permissions"
+      },
+      "ADMIN_DASHBOARD": {
+        "TITLE": "Tableau de Bord Administrateur",
+        "STATS": {
+          "USERS": "Utilisateurs Totaux",
+          "SELLERS": "Vendeurs Actifs",
+          "ADS": "Annonces Totales",
+          "REVENUE": "Revenu Brut"
+        },
+        "REQUESTS": {
+          "TITLE": "Demandes d'Annonceurs en Attente",
+          "VIEW_ALL": "Voir tout",
+          "USER": "Utilisateur",
+          "STORE": "Boutique",
+          "DATE": "Date Demande",
+          "STATUS": "Statut",
+          "ACTIONS": "Actions",
+          "PENDING": "En attente",
+          "APPROVE": "Accepter",
+          "REJECT": "Refuser"
+        },
+        "ACTIVITY": {
+          "TITLE": "Activités Récentes",
+          "NEW_AD": "Nouvelle Annonce",
+          "NEW_AD_DESC": "Une nouvelle annonce pour 'PS5 Pro' a été publiée.",
+          "PURCHASE": "Achat Réalisé",
+          "PURCHASE_DESC": "Un utilisateur a acheté avec succès 'iPhone 15'.",
+          "NEW_USER": "Nouvel Utilisateur",
+          "NEW_USER_DESC": "Marie Curie vient de s'inscrire sur la plateforme.",
+          "TIME": {
+            "MIN": "Il y a 5 min",
+            "MIN_LONG": "Il y a 15 min",
+            "HOUR": "Il y a 1 heure"
           }
         }
       }

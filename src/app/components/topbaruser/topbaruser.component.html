@@ -2,13 +2,23 @@
     <div class="layout-width">
         <div class="navbar-header">
 
-            <!-- ===== LEFT: Logo ===== -->
-            <div class="d-flex">
-                <div>
-                    <a routerLink="/">
-                        <span>
-                            <img src="assets/images/logo.png" alt="logo" height="70">
+            <!-- ===== LEFT: Logo & Hamburger ===== -->
+            <div class="d-flex align-items-center">
+                <!-- Hamburger button (for Vertical layout users like Admin/Seller) -->
+                @if (currentUser && (currentUser.role === 'ADMIN' || currentUser.role === 'ANNOUNCER')) {
+                    <button type="button" class="btn btn-sm fs-16 header-item vertical-menu-btn topnav-hamburger" 
+                            id="topnav-hamburger-icon" (click)="toggleMobileMenu($event)">
+                        <span class="hamburger-icon" id="hamburger-icon">
+                            <span></span>
+                            <span></span>
+                            <span></span>
                         </span>
+                    </button>
+                }
+
+                <div class="logo-container">
+                    <a routerLink="/">
+                        <img src="assets/images/logo.png" alt="logo">
                     </a>
                 </div>
             </div>
@@ -133,7 +143,6 @@
                     <div class="dropdown ms-sm-3 header-item" ngbDropdown>
                         <button type="button" class="btn btn-ghost-secondary rounded-circle p-0" ngbDropdownToggle style="width: 40px; height: 40px;">
                             <span class="d-flex align-items-center justify-content-center">
-                                <!-- Profile Photo or Initial -->
                                 @if (currentUser.profilePhoto) {
                                     <img class="rounded-circle" [src]="currentUser.profilePhoto" alt="Avatar" style="width: 32px; height: 32px; object-fit: cover;">
                                 } @else {
@@ -143,22 +152,48 @@
                                 }
                             </span>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                        <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" ngbDropdownMenu>
                             <!-- Welcome -->
-                            <div class="dropdown-header px-3 py-2 border-bottom mb-2">
-                                <h6 class="text-overflow m-0">Bienvenue {{ displayName }} !</h6>
-                                <span class="text-muted fs-12">Propriétaire</span>
+                            <div class="dropdown-header px-4 py-3 border-bottom bg-light bg-opacity-50">
+                                <h6 class="text-overflow m-0 fw-bold fs-14">Bienvenue {{ displayName }} !</h6>
+                                <span class="text-muted fs-12 fw-medium text-uppercase ls-1">Rôle : {{ roleLabel }}</span>
                             </div>
 
-                            <a class="dropdown-item" href="javascript:void(0);"><i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Profil</span></a>
-                            <a class="dropdown-item" href="javascript:void(0);"><i class="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Messages</span>@if(true){ <span class="badge bg-success-subtle text-success mt-1 float-end">5</span> }</a>
-                            <a class="dropdown-item" href="javascript:void(0);"><i class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Aide</span></a>
+                            <a class="dropdown-item py-2" [routerLink]="dashboardLink">
+                                <i class="ri-dashboard-line text-muted fs-16 align-middle me-2"></i> 
+                                <span class="align-middle">Tableau de bord</span>
+                            </a>
+                            <a class="dropdown-item py-2" routerLink="/client/profile">
+                                <i class="ri-user-settings-line text-muted fs-16 align-middle me-2"></i> 
+                                <span class="align-middle">Mon Profil</span>
+                            </a>
+                            <a class="dropdown-item py-2" routerLink="/client/favorites">
+                                <i class="ri-heart-line text-muted fs-16 align-middle me-2"></i> 
+                                <span class="align-middle">Mes Favoris</span>
+                            </a>
+                            <a class="dropdown-item py-2" routerLink="/client/chat">
+                                <i class="ri-message-3-line text-muted fs-16 align-middle me-2"></i> 
+                                <span class="align-middle">Messages</span>
+                                <span class="badge bg-success-subtle text-success float-end ms-2">5</span>
+                            </a>
                             
+                            <!-- Development Role Switcher -->
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-header px-4 py-2 fs-11 text-uppercase text-muted">Dev Tools: Test Roles</div>
+                            <div class="px-2 pb-2">
+                                <div class="hstack gap-1 justify-content-around">
+                                    <button class="btn btn-xxs btn-outline-primary" (click)="testSetRole('CLIENT')">Client</button>
+                                    <button class="btn btn-xxs btn-outline-success" (click)="testSetRole('ANNOUNCER')">Seller</button>
+                                    <button class="btn btn-xxs btn-outline-danger" (click)="testSetRole('ADMIN')">Admin</button>
+                                </div>
+                            </div>
+
                             <div class="dropdown-divider"></div>
 
-                            <a class="dropdown-item" href="javascript:void(0);"><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Paramètres</span> <span class="badge bg-success-subtle text-success mt-1 float-end">New</span></a>
-                            <a class="dropdown-item" routerLink="/auth/lockscreen"><i class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Écran de verrouillage</span></a>
-                            <a class="dropdown-item" href="javascript:void(0);" (click)="onLogout()"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Se déconnecter</span></a>
+                            <a class="dropdown-item py-2 text-danger" href="javascript:void(0);" (click)="onLogout()">
+                                <i class="ri-logout-box-line fs-16 align-middle me-2"></i> 
+                                <span class="align-middle fw-semibold">Se déconnecter</span>
+                            </a>
                         </div>
                     </div>
                 }

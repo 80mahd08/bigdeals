@@ -7,4 +7,5 @@ export class User {
   token?: string;
   email?: string;
   profilePhoto?: string;
+  role?: 'VISITOR' | 'CLIENT' | 'ANNOUNCER' | 'ADMIN';
 }

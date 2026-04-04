@@ -1,0 +1,134 @@
+<div class="chat-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
+    <!-- Chat Left Side (Contacts) -->
+    <div class="chat-leftsidebar">
+        <div class="px-4 pt-4 mb-3">
+            <div class="d-flex align-items-start">
+                <div class="flex-grow-1">
+                    <h5 class="mb-3">Messages</h5>
+                </div>
+            </div>
+            <div class="search-box">
+                <input type="text" class="form-control bg-light border-light" placeholder="Rechercher un vendeur...">
+                <i class="ri-search-2-line search-icon"></i>
+            </div>
+        </div>
+
+        <div class="chat-room-list" data-simplebar>
+            <div class="d-flex align-items-center px-4 mb-2">
+                <div class="flex-grow-1">
+                    <h4 class="mb-0 fs-11 text-muted text-uppercase">Discussions Récentes</h4>
+                </div>
+            </div>
+
+            <div class="chat-message-list">
+                <ul class="list-unstyled chat-list chat-user-list">
+                    @for (contact of contacts; track $index) {
+                        <li [ngClass]="{'active': selectedContact?.id === contact.id}" (click)="selectContact(contact)">
+                            <a href="javascript:void(0);">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0 chat-user-img {{contact.status}} align-self-center me-2 ms-0">
+                                        <div class="avatar-xxs">
+                                            <img src="{{contact.avatar}}" class="rounded-circle img-fluid" alt="">
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 overflow-hidden">
+                                        <p class="text-truncate mb-0">{{contact.name}}</p>
+                                    </div>
+                                    <div class="flex-shrink-0">
+                                        <div class="text-muted fs-10">{{contact.time}}</div>
+                                        @if(contact.unread){
+                                            <span class="badge bg-success rounded-pill ms-auto">{{contact.unread}}</span>
+                                        }
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Right Side (Messages) -->
+    <div class="user-chat w-100 overflow-hidden">
+        <div class="d-flex flex-column h-100">
+            @if (selectedContact) {
+                <!-- User Chat Header -->
+                <div class="p-3 user-chat-topbar">
+                    <div class="row align-items-center">
+                        <div class="col-sm-4 col-8">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0 chat-user-img online user-own-img align-self-center me-3 ms-0">
+                                    <img src="{{selectedContact.avatar}}" class="rounded-circle avatar-xs" alt="">
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <h5 class="text-truncate mb-0 fs-16">{{selectedContact.name}}</h5>
+                                    <p class="text-truncate text-muted fs-12 mb-0">En ligne</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Conversation -->
+                <div class="chat-conversation p-3 p-lg-4" id="chat-conversation" data-simplebar>
+                    <ul class="list-unstyled chat-conversation-list">
+                        @for (msg of activeChat; track $index) {
+                            <li class="chat-list" [ngClass]="{'right': msg.from === 'me', 'left': msg.from !== 'me'}">
+                                <div class="conversation-list">
+                                    <div class="user-chat-content">
+                                        <div class="ctext-wrap">
+                                            <div class="ctext-wrap-content">
+                                                <p class="mb-0 ctext-content">{{msg.text}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="conversation-name">
+                                            <small class="text-muted time">{{msg.time}}</small>
+                                            <span class="text-success check-message-icon"><i class="ri-check-double-line align-bottom"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="chat-input-section p-3 p-lg-4 border-top">
+                    <form (ngSubmit)="sendMessage()">
+                        <div class="row g-0 align-items-center">
+                            <div class="col-auto">
+                                <div class="chat-input-links me-2">
+                                    <div class="links-list-item">
+                                        <button type="button" class="btn btn-link fs-20"><i class="ri-attachment-line"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control chat-input bg-light border-light" placeholder="Entrez votre message..." [(ngModel)]="newMessage" name="newMessage">
+                            </div>
+                            <div class="col-auto">
+                                <div class="chat-input-links ms-2">
+                                    <div class="links-list-item">
+                                        <button type="submit" class="btn btn-primary chat-send shadow-none"><i class="ri-send-plane-2-fill align-bottom"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            } @else {
+                <div class="h-100 d-flex align-items-center justify-content-center">
+                    <div class="text-center">
+                        <div class="avatar-lg mx-auto mb-4">
+                            <div class="avatar-title bg-soft-primary text-primary rounded-circle fs-36">
+                                <i class="ri-chat-3-line"></i>
+                            </div>
+                        </div>
+                        <h5>Sélectionnez une discussion pour commencer à discuter</h5>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

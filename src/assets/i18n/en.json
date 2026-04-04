@@ -145,7 +145,7 @@
         "OFFLINE": "Offline Page"
       }
     },
-    "PAGES": {
+    "PAGE_DETAIL": {
       "TEXT": "Pages",
       "LIST": {
         "STARTER": "Starter",
@@ -307,6 +307,81 @@
           "LEVEL2": {
             "1": "Level 2.1",
             "2": "Level 2.2"
+          }
+        }
+      }
+    },
+    "BIGDEALS": {
+      "TEXT": "BigDeals Admin",
+      "DASHBOARDS": {
+        "TEXT": "Dashboards",
+        "ANALYTICS": "Global Analytics",
+        "SALES": "Sales Statistics"
+      },
+      "MARKETPLACE": {
+        "TEXT": "Marketplace Management",
+        "ADS": {
+          "TEXT": "Announcements (Ads)",
+          "ALL": "All Ads",
+          "PENDING": "Pending Approvals",
+          "CATEGORIES": "Category Management",
+          "FEATURED": "Featured Ads"
+        },
+        "SELLERS": {
+          "TEXT": "Sellers",
+          "VERIFICATION": "Identity Verification",
+          "SUBSCRIPTIONS": "Announcer Subscriptions"
+        },
+        "CLIENTS": "Clients"
+      },
+      "SUPPORT": {
+        "TEXT": "Support & Returns",
+        "TICKETS": "Support Tickets",
+        "REVIEWS": "Reviews & Reports"
+      },
+      "FINANCE": {
+        "TEXT": "Finance & Reports",
+        "INVOICES": "Invoices",
+        "TRANSACTIONS": "Transactions"
+      },
+      "SYSTEM": {
+        "TEXT": "System",
+        "CONFIG": "Site Configuration",
+        "I18N": "Translations (i18n)",
+        "ROLES": "Roles & Permissions"
+      },
+      "ADMIN_DASHBOARD": {
+        "TITLE": "Administrator Dashboard",
+        "STATS": {
+          "USERS": "Total Users",
+          "SELLERS": "Active Sellers",
+          "ADS": "Total Ads",
+          "REVENUE": "Gross Revenue"
+        },
+        "REQUESTS": {
+          "TITLE": "Pending Announcer Requests",
+          "VIEW_ALL": "View All",
+          "USER": "User",
+          "STORE": "Store",
+          "DATE": "Request Date",
+          "STATUS": "Status",
+          "ACTIONS": "Actions",
+          "PENDING": "Pending",
+          "APPROVE": "Approve",
+          "REJECT": "Reject"
+        },
+        "ACTIVITY": {
+          "TITLE": "Recent Activities",
+          "NEW_AD": "New Announcement",
+          "NEW_AD_DESC": "A new advertisement for 'PS5 Pro' has been published.",
+          "PURCHASE": "Purchase Realized",
+          "PURCHASE_DESC": "A user has successfully purchased 'iPhone 15'.",
+          "NEW_USER": "New User Registration",
+          "NEW_USER_DESC": "Marie Curie has just registered on the platform.",
+          "TIME": {
+            "MIN": "5 min ago",
+            "MIN_LONG": "15 min ago",
+            "HOUR": "1 hour ago"
           }
         }
       }

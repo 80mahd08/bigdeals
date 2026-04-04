@@ -1,0 +1,105 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card mt-n4 mx-n4 border-0">
+            <div class="bg-primary-subtle">
+                <div class="card-body pb-0 px-4">
+                    <div class="row mb-3">
+                        <div class="col-md">
+                            <div class="row align-items-center g-3">
+                                <div class="col-md-auto">
+                                    <div class="avatar-md">
+                                        <img src="{{seller.avatar}}" alt="" class="img-fluid rounded-circle img-thumbnail shadow">
+                                    </div>
+                                </div>
+                                <div class="col-md">
+                                    <div>
+                                        <h4 class="fw-bold">{{seller.name}}</h4>
+                                        <div class="hstack gap-3 flex-wrap">
+                                            <div><i class="ri-map-pin-2-line align-bottom me-1"></i> {{seller.location}}</div>
+                                            <div class="vr"></div>
+                                            <div><i class="ri-calendar-line align-bottom me-1"></i> Membre depuis Jan 2024</div>
+                                            <div class="vr"></div>
+                                            <div class="badge rounded-pill bg-success fs-12">Vendeur Vérifié</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-auto">
+                            <div class="hstack gap-1 flex-wrap mt-4 mt-md-0">
+                                <button type="button" class="btn btn-primary shadow-none"><i class="ri-user-follow-line align-bottom me-1"></i> Suivre</button>
+                                <button type="button" class="btn btn-soft-info shadow-none" routerLink="/client/chat"><i class="ri-chat-1-line align-bottom me-1"></i> Message</button>
+                                <button type="button" class="btn btn-soft-secondary btn-icon shadow-none"><i class="ri-share-line"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ul ngbNav #nav="ngbNav" [activeId]="1" class="nav nav-tabs-custom border-bottom-0" role="tablist">
+                        <li [ngbNavItem]="1" class="nav-item">
+                            <a ngbNavLink class="nav-link" role="tab">
+                                Annonces Actives ({{seller.adsCount}})
+                            </a>
+                            <ng-template ngbNavContent>
+                                <div class="py-4">
+                                    <div class="row">
+                                        @for (ad of sellerAds; track $index) {
+                                            <div class="col-xl-3 col-md-6">
+                                                <div class="card explore-box card-animate border-0 shadow-sm">
+                                                    <div class="position-relative">
+                                                        <img src="{{ad.image}}" alt="" class="card-img-top explore-img rounded-top">
+                                                        <div class="bookmark-icon position-absolute top-0 end-0 m-2">
+                                                            <button type="button" class="btn btn-icon btn-soft-danger rounded-circle btn-sm shadow-none">
+                                                                <i class="ri-heart-fill"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-body text-center">
+                                                        <p class="text-muted mb-2 fs-12">{{ad.category}} • {{ad.date}}</p>
+                                                        <h5 class="mb-2 text-truncate fs-15"><a [routerLink]="['/ads', $index + 1]" class="text-body fw-semibold">{{ad.title}}</a></h5>
+                                                        <h5 class="text-success fw-bold mb-0 fs-16">{{ad.price | currency:'EUR':'symbol':'1.0-0'}}</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </li>
+                        <li [ngbNavItem]="2" class="nav-item">
+                            <a ngbNavLink class="nav-link" role="tab">
+                                Avis ({{seller.reviewsCount}})
+                            </a>
+                            <ng-template ngbNavContent>
+                                <div class="py-4">
+                                    @for (review of reviews; track $index) {
+                                        <div class="card border-0 shadow-sm mb-3">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-start mb-3">
+                                                    <img src="{{review.avatar}}" alt="" class="avatar-xs rounded-circle me-3">
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1">{{review.user}}</h6>
+                                                        <div class="text-warning fs-12">
+                                                            @for (star of [1,2,3,4,5]; track star) {
+                                                                <i class="ri-star-fill" [ngClass]="{'text-muted': star > review.rating}"></i>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <span class="text-muted fs-12">{{review.date}}</span>
+                                                </div>
+                                                <p class="text-muted mb-0">{{review.comment}}</p>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </ng-template>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content text-muted p-4">
+            <div [ngbNavOutlet]="nav"></div>
+        </div>
+    </div>
+</div>

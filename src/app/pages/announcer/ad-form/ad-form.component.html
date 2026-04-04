@@ -1,0 +1,87 @@
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">{{isEdit ? 'Modifier l\'Annonce' : 'Publier une Nouvelle Annonce'}}</h4>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <form (ngSubmit)="saveAd()">
+            <div class="card">
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <label class="form-label">Titre de l'annonce*</label>
+                                <input type="text" class="form-control" placeholder="Ex: iPhone 15 Pro Max 256GB" required>
+                                <p class="text-muted small mt-1">Un bon titre attire plus d'acheteurs.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Catégorie*</label>
+                                <select class="form-select" required>
+                                    <option value="" selected disabled>Choisir une catégorie</option>
+                                    <option>Électronique</option>
+                                    <option>Immobilier</option>
+                                    <option>Véhicules</option>
+                                    <option>Mode</option>
+                                    <option>Maison</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Prix (€)*</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">€</span>
+                                    <input type="number" class="form-control" placeholder="100" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <label class="form-label">Description détaillée*</label>
+                                <textarea class="form-control" rows="5" placeholder="Décrivez votre article avec précision..." required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Image Upload -->
+                        <div class="col-lg-12">
+                            <label class="form-label">Photos (Max 10)</label>
+                            <div class="dropzone p-5 text-center border border-dashed rounded bg-light">
+                                <div class="avatar-sm mx-auto mb-3">
+                                    <div class="avatar-title bg-soft-primary text-primary rounded-circle fs-24">
+                                        <i class="ri-image-add-line"></i>
+                                    </div>
+                                </div>
+                                <h5>Ajoutez des photos</h5>
+                                <p class="text-muted small">La première photo sera la photo principale de votre annonce.</p>
+                                <button type="button" class="btn btn-primary btn-sm shadow-none">Sélectionner des fichiers</button>
+                            </div>
+                        </div>
+
+                        <!-- Location -->
+                        <div class="col-lg-12 mt-4">
+                            <h5 class="fs-15 border-bottom pb-2 mb-3">Localisation</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Ville / Code Postal*</label>
+                                <input type="text" class="form-control" placeholder="Ex: Paris 75001" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light-subtle">
+                    <div class="hstack gap-2 justify-content-end">
+                        <button type="button" class="btn btn-soft-secondary shadow-none" (click)="cancel()">Annuler</button>
+                        <button type="submit" class="btn btn-success shadow-none">{{isEdit ? 'Mettre à jour' : 'Publier l\'Annonce'}}</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

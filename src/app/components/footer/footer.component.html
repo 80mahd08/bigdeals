@@ -1,12 +1,58 @@
-<footer class="footer">
-    <div class="container-fluid">
-        <div class="row">
+<footer class="bigdeals-footer py-5 bg-dark text-white-50 mt-auto">
+    <div class="container pb-4">
+        <div class="row gy-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="mb-4">
+                    <h4 class="text-white fw-bold">Big<span class="text-success">Deals</span></h4>
+                </div>
+                <p class="fs-14 pe-lg-4">BigDeals est la première place de marché sécurisée pour l'achat et la vente de produits neufs et d'occasion. Rejoignez notre communauté dès aujourd'hui.</p>
+                <div class="hstack gap-3 fs-20 mt-4">
+                    <a href="javascript:void(0);" class="text-white-50"><i class="ri-facebook-circle-fill"></i></a>
+                    <a href="javascript:void(0);" class="text-white-50"><i class="ri-twitter-fill"></i></a>
+                    <a href="javascript:void(0);" class="text-white-50"><i class="ri-instagram-line"></i></a>
+                    <a href="javascript:void(0);" class="text-white-50"><i class="ri-linkedin-box-fill"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-6 col-6">
+                <h6 class="text-white text-uppercase fs-13 mb-4 ls-1">Marketplace</h6>
+                <ul class="list-unstyled footer-link fs-14">
+                    <li class="mb-2"><a [routerLink]="['/ads']" [queryParams]="{category: 'Électronique'}" class="text-white-50 hover-white">Électronique</a></li>
+                    <li class="mb-2"><a [routerLink]="['/ads']" [queryParams]="{category: 'Véhicules'}" class="text-white-50 hover-white">Véhicules</a></li>
+                    <li class="mb-2"><a [routerLink]="['/ads']" [queryParams]="{category: 'Immobilier'}" class="text-white-50 hover-white">Immobilier</a></li>
+                    <li class="mb-2"><a [routerLink]="['/ads']" [queryParams]="{category: 'Mode'}" class="text-white-50 hover-white">Mode</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-md-6 col-6">
+                <h6 class="text-white text-uppercase fs-13 mb-4 ls-1">Informations</h6>
+                <ul class="list-unstyled footer-link fs-14">
+                    <li class="mb-2"><a href="javascript:void(0);" class="text-white-50 hover-white">À Propos</a></li>
+                    <li class="mb-2"><a routerLink="/announcer/apply" class="text-white-50 hover-white">Devenir Vendeur</a></li>
+                    <li class="mb-2"><a href="javascript:void(0);" class="text-white-50 hover-white">Aide & Support</a></li>
+                    <li class="mb-2"><a href="javascript:void(0);" class="text-white-50 hover-white">FAQ</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <h6 class="text-white text-uppercase fs-13 mb-4 ls-1">Newsletter</h6>
+                <p class="fs-14 mb-4">Recevez les meilleures annonces directement dans votre boîte mail.</p>
+                <div class="input-group mb-2">
+                    <input type="email" class="form-control bg-light-subtle border-0 " placeholder="Votre email" style="height: 46px;">
+                    <button class="btn btn-success" type="button">S'abonner</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row border-top border-secondary border-opacity-25 mt-5 pt-4">
             <div class="col-sm-6">
-               {{year}} © Velzon.
+                <div class="text-sm-start fs-13">
+                    {{year}} © BigDeals Marketplace.
+                </div>
             </div>
             <div class="col-sm-6">
-                <div class="text-sm-end d-none d-sm-block">
-                    Design & Develop by Themesbrand
+                <div class="text-sm-end fs-13 d-none d-sm-block">
+                    Design & Develop by Antigravity AI
                 </div>
             </div>
         </div>

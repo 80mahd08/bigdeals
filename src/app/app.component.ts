@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
+import { AuthenticationService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -18,12 +19,22 @@ export class AppComponent implements OnInit {
 
   constructor(
     public translate: TranslateService, 
-    private router: Router
+    private router: Router,
+    private authService: AuthenticationService
   ) {
+    // Configure the translation service
+    this.translate.addLangs(['en', 'fr', 'ar']);
+    this.translate.setDefaultLang('en');
+
     // Subscribe to translation language changes to update page layout direction (LTR/RTL)
     this.translate.onLangChange.subscribe((event) => {
       this.updateDirection(event.lang);
     });
+    
+    // Choose initial language
+    const browserLang = this.translate.getBrowserLang();
+    const useLang = browserLang?.match(/en|fr|ar/) ? browserLang : 'en';
+    this.translate.use(useLang);
 
     // Monitor routing events to hide the topbar on authentication pages (e.g. login, signup)
     this.router.events.pipe(
@@ -41,12 +52,49 @@ export class AppComponent implements OnInit {
    * We use it here to set default global layout attributes on the document body.
    */
   ngOnInit(): void {
-    // Set horizontal layout across the application globally
-    document.documentElement.setAttribute('data-layout', 'horizontal');
-    document.body.setAttribute('data-layout', 'horizontal');
+    // Subscribe to current user to toggle layout dynamically
+    this.authService.currentUser$.subscribe(user => {
+      const isAdmin = !!(user && user.role === 'ADMIN');
+      this.updateLayout(isAdmin);
+    });
+
     // Set light theme globally
     document.body.setAttribute('data-topbar', 'light');
     document.documentElement.setAttribute('data-bs-theme', 'light');
+  }
+
+  /**
+   * Switches between horizontal (Visitor/Client) and vertical (Admin) layouts.
+   */
+  updateLayout(isAdmin: boolean) {
+    const layout = isAdmin ? 'vertical' : 'horizontal';
+    document.documentElement.setAttribute('data-layout', layout);
+    document.body.setAttribute('data-layout', layout);
+    
+    if (isAdmin) {
+      document.documentElement.setAttribute('data-sidebar', 'dark');
+      document.documentElement.setAttribute('data-sidebar-size', 'lg');
+    }
+  }
+
+  /**
+   * Toggles the sidebar visibility.
+   * - On Desktop (>768px): Toggles between 'lg' (Large) and 'sm' (Small/Minified).
+   * - On Mobile (<768px): Toggles the 'vertical-sidebar-enable' class for the overlay menu.
+   */
+  onToggleMobileMenu() {
+    const width = window.innerWidth;
+    if (width > 768) {
+      const currentSize = document.documentElement.getAttribute('data-sidebar-size');
+      const newSize = currentSize === 'sm' ? 'lg' : 'sm';
+      document.documentElement.setAttribute('data-sidebar-size', newSize);
+    } else {
+      document.body.classList.toggle('vertical-sidebar-enable');
+    }
+  }
+
+  get isAdmin(): boolean {
+    return this.authService.currentUserValue?.role === 'ADMIN';
   }
 
   /**

@@ -1,0 +1,48 @@
+<div class="row align-items-center mb-4">
+    <div class="col-sm">
+        <div>
+            <h5 class="fs-17 mb-0">Mes Favoris</h5>
+            <p class="text-muted mb-0">Retrouvez toutes les annonces que vous avez aimées.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    @if (favorites.length > 0) {
+        @for (ad of favorites; track $index) {
+            <div class="col-xl-3 col-md-6">
+                <div class="card explore-box card-animate border-0 shadow-sm mb-4">
+                    <div class="position-relative">
+                        <img src="{{ad.image}}" alt="" class="card-img-top explore-img rounded-top">
+                        <div class="bookmark-icon position-absolute top-0 end-0 m-2">
+                            <button type="button" class="btn btn-icon btn-danger rounded-circle btn-sm shadow-none" (click)="removeFavorite(ad)">
+                                <i class="ri-heart-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-2 fs-12">{{ad.category}} • {{ad.date}}</p>
+                        <h5 class="mb-2 text-truncate fs-15"><a [routerLink]="['/ads', ad.id]" class="text-body fw-semibold">{{ad.title}}</a></h5>
+                        <h5 class="text-success fw-bold mb-0 fs-16">{{ad.price | currency:'EUR':'symbol':'1.0-0'}}</h5>
+                    </div>
+                    <div class="card-footer bg-transparent border-top-dashed py-2 text-center">
+                        <a [routerLink]="['/ads', ad.id]" class="link-success fw-medium">Voir l'annonce <i class="ri-arrow-right-line align-middle ms-1"></i></a>
+                    </div>
+                </div>
+            </div>
+        }
+    } @else {
+        <div class="col-lg-12">
+            <div class="text-center py-5">
+                <div class="avatar-lg mx-auto mb-4">
+                    <div class="avatar-title bg-light text-primary rounded-circle fs-36">
+                        <i class="ri-heart-line"></i>
+                    </div>
+                </div>
+                <h5>Aucun favori pour le moment</h5>
+                <p class="text-muted">Parcourez les annonces et cliquez sur le cœur pour les ajouter ici.</p>
+                <a routerLink="/ads" class="btn btn-success shadow-none">Parcourir les annonces</a>
+            </div>
+        </div>
+    }
+</div>

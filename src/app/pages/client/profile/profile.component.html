@@ -1,0 +1,114 @@
+<div class="position-relative mx-n4 mt-n4">
+    <div class="profile-wid-bg profile-setting-img">
+        <img src="assets/images/profile-bg.jpg" class="profile-wid-img" alt="">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xxl-3">
+        <div class="card mt-n5">
+            <div class="card-body p-4 text-center">
+                <div class="position-relative d-inline-block mx-auto mb-4">
+                    <div class="avatar-lg">
+                        <img [src]="currentUser?.profilePhoto || 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&fit=crop&q=80&w=100'" class="img-fluid rounded-circle img-thumbnail shadow">
+                    </div>
+                    <div class="avatar-xs p-0 rounded-circle profile-photo-edit">
+                        <input id="profile-img-file-input" type="file" class="profile-img-file-input" (change)="onFileSelected($event)">
+                        <label for="profile-img-file-input" class="profile-photo-edit avatar-xs">
+                            <span class="avatar-title rounded-circle bg-light text-body shadow">
+                                <i class="ri-camera-fill"></i>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <h5 class="fs-16 mb-1">{{currentUser?.firstName}} {{currentUser?.lastName}}</h5>
+                <p class="text-muted mb-0">Client BigDeals</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xxl-9">
+        <div class="card mt-xxl-n5">
+            <div class="card-header">
+                <ul ngbNav #nav="ngbNav" [activeId]="1" class="nav nav-tabs-custom rounded card-header-tabs border-bottom-0" role="tablist">
+                    <li [ngbNavItem]="1" class="nav-item">
+                        <a ngbNavLink class="nav-link" role="tab">Détails Personnels</a>
+                        <ng-template ngbNavContent>
+                            <form (ngSubmit)="updateProfile()">
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label for="firstnameInput" class="form-label">Prénom</label>
+                                            <input type="text" class="form-control" id="firstnameInput" placeholder="Entrez votre prénom" [value]="currentUser?.firstName">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label for="lastnameInput" class="form-label">Nom</label>
+                                            <input type="text" class="form-control" id="lastnameInput" placeholder="Entrez votre nom" [value]="currentUser?.lastName">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label for="phonenumberInput" class="form-label">Numéro de Téléphone</label>
+                                            <input type="text" class="form-control" id="phonenumberInput" placeholder="Ex: 06 12 34 56 78">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label for="emailInput" class="form-label">Adresse Email</label>
+                                            <input type="email" class="form-control" id="emailInput" placeholder="Ex: email@example.com" [value]="currentUser?.email" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="hstack gap-2 justify-content-end">
+                                            <button type="submit" class="btn btn-primary shadow-none">Enregistrer les modifications</button>
+                                            <button type="button" class="btn btn-soft-secondary shadow-none">Annuler</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="2" class="nav-item">
+                        <a ngbNavLink class="nav-link" role="tab">Changer le Mot de Passe</a>
+                        <ng-template ngbNavContent>
+                            <form>
+                                <div class="row g-2 justify-content-center">
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label for="oldpasswordInput" class="form-label">Ancien Mot de Passe*</label>
+                                            <input type="password" class="form-control" id="oldpasswordInput" placeholder="Entrez l'ancien mot de passe">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label for="newpasswordInput" class="form-label">Nouveau Mot de Passe*</label>
+                                            <input type="password" class="form-control" id="newpasswordInput" placeholder="Entrez le nouveau mot de passe">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label for="confirmpasswordInput" class="form-label">Confirmer le Mot de Passe*</label>
+                                            <input type="password" class="form-control" id="confirmpasswordInput" placeholder="Confirmez le nouveau mot de passe">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="text-end">
+                                            <button type="submit" class="btn btn-success shadow-none">Mettre à jour le mot de passe</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </ng-template>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body p-4">
+                <div class="tab-content">
+                    <div [ngbNavOutlet]="nav"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

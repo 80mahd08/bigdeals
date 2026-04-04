@@ -16,7 +16,7 @@ export class AuthGuard  {
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         if (environment.defaultauth === 'firebase') {
-            const currentUser = this.authenticationService.currentUser();
+            const currentUser = this.authenticationService.currentUserValue;
             if (currentUser) {
                 // logged in so return true
                 return true;

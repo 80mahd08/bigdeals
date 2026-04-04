@@ -6,106 +6,105 @@
   },
   "MENUITEMS": {
     "MENU": {
-      "TEXT": "MENU",
-      "Reclamations":  " الشكايات ",
-      "Add": "إضافة",
+      "TEXT": "القائمة",
+      "Reclamations": " تظلماتي ",
+      "Add": " إضافة ",
       "Edit": " تعديل ",
-      "View": " عرض"
-      
+      "View": " عرض "
     },
     "USERS": {
-      "Users" : "المستخدمين",
-      "User" : "المستخدم",
-      "FirstName": "الإسم",
-      "LastName":  " اللقب ",
+      "Users": "المستخدمين",
+      "User": "المستخدم",
+      "FirstName": "الاسم الأول",
+      "LastName": "اسم العائلة",
       "Email": "البريد الإلكتروني",
-      "Roles": " وظائف ",
-      "Active": " فعل",
-      "Gender": " الجنس",
+      "Roles": "الأدوار",
+      "Active": "نشط",
+      "Gender": "الجنس",
       "Male": "ذكر",
       "Femal": "أنثى"
     },
     "DASHBOARD": {
-      "TEXT": "لوحات القيادة",
+      "TEXT": "لوحات التحكم",
       "BADGE": "جديد",
       "LIST": {
-        "ANALYTICS": "تحليلات",
-        "CRM": "CRM",
+        "ANALYTICS": "التحليلات",
+        "CRM": "إدارة العملاء",
         "ECOMMERCE": "التجارة الإلكترونية",
-        "CRYPTO": "تشفير",
+        "CRYPTO": "العملات الرقمية",
         "PROJECTS": "المشاريع",
-        "NFT": "NFT",
-        "JOB": "مهنة"
+        "NFT": "الرموز غير القابلة للاستبدال",
+        "JOB": "الوظائف"
       }
     },
     "APPS": {
-      "TEXT": "تطبيقات",
+      "TEXT": "التطبيقات",
       "Submit": "إرسال",
-      "Reset": "إلغاء",
+      "Reset": "إعادة تعيين",
       "LIST": {
-        "CALENDAR": "تقويم",
+        "CALENDAR": "التقويم",
         "MAINCALENDAR": "التقويم الرئيسي",
         "MONTHGRID": "شبكة الشهر",
-        "CHAT": "دردشة",
-        "EMAIL": "البريد الإلكتروني",
-        "MAILBOX": "صندوق بريد",
-        "MAILTEMPLATES": "قوالب البريد الإلكتروني",
-        "BASICACTION": "الإجراء الأساسي",
-        "ECOMMERCEACTION": "إجراء التجارة الإلكترونية",
+        "CHAT": "الدردشة",
+        "EMAIL": "البريد",
+        "MAILBOX": "صندوق البريد",
+        "MAILTEMPLATES": "قوالب البريد",
+        "BASICACTION": "إجراء أساسي",
+        "ECOMMERCEACTION": "إجراء تجارة",
         "ECOMMERCE": "التجارة الإلكترونية",
-        "PRODUCTS": "منتجات",
+        "PRODUCTS": "المنتجات",
         "PRODUCTDETAILS": "تفاصيل المنتج",
         "CREATEPRODUCT": "إنشاء منتج",
-        "ORDERS": "الطلب #٪ s",
+        "ORDERS": "الطلبات",
         "ORDERDETAILS": "تفاصيل الطلب",
-        "CUSTOMERS": "عملاء",
+        "CUSTOMERS": "العملاء",
         "SHOPPINGCART": "عربة التسوق",
         "CHECKOUT": "الدفع",
-        "SELLERS": "الباعة",
+        "SELLERS": "البائعون",
         "SELLERDETAILS": "تفاصيل البائع",
         "PROJECTS": "المشاريع",
-        "LIST": "قائمة",
-        "OVERVIEW": "ملخص",
-        "CREATEPROJECT": "أنشئ مشروعًا",
-        "TASK": "مهام",
-        "KANBANBOARD": "مجلس كانبان",
+        "LIST": "القائمة",
+        "OVERVIEW": "نظرة عامة",
+        "CREATEPROJECT": "إنشاء مشروع",
+        "TASK": "المهام",
+        "KANBANBOARD": "لوحة كانبان",
         "LISTVIEW": "عرض القائمة",
         "TASKDETAILS": "تفاصيل المهمة",
-        "CRM": "CRM",
+        "CRM": "إدارة العملاء",
         "CONTACTS": "جهات الاتصال",
-        "COMPANIES": "شركات",
-        "DEALS": "صفقات",
-        "LEADS": "يؤدي",
-        "CRYPTO": "تشفير",
+        "COMPANIES": "الشركات",
+        "DEALS": "الصفقات",
+        "LEADS": "العملاء المحتملون",
+        "CRYPTO": "العملات الرقمية",
         "TRANSACTIONS": "المعاملات",
-        "BUY&SELL": "شراء بيع",
-        "MYWALLET": "محفظتى",
+        "BUY&SELL": "بيع وشراء",
+        "MYWALLET": "محفظتي",
         "ICOLIST": "قائمة ICO",
         "KYCAPPLICATION": "تطبيق KYC",
         "INVOICES": "الفواتير",
-        "DETAILS": "تفاصيل",
+        "DETAILS": "التفاصيل",
         "CREATEINVOICE": "إنشاء فاتورة",
-        "SUPPORTTICKETS": "تذاكر الدعم الفني",
+        "SUPPORTTICKETS": "تذاكر الدعم",
         "TICKETDETAILS": "تفاصيل التذكرة",
         "NFTMARKETPLACE": "سوق NFT",
-        "MARKETPLACE": "المتجر",
+        "MARKETPLACE": "السوق",
         "EXPLORENOW": "استكشف الآن",
-        "LIVEAUCTION": "المزاد الحي",
+        "LIVEAUCTION": "مزاد مباشر",
         "ITEMDETAILS": "تفاصيل العنصر",
         "COLLECTIONS": "المجموعات",
-        "CREATORS": "المبدعين",
-        "RANKING": "تصنيف",
-        "WALLETCONNECT": "Wallet Connect",
+        "CREATORS": "المبدعون",
+        "RANKING": "التصنيف",
+        "WALLETCONNECT": "اتصال المحفظة",
         "CREATENFT": "إنشاء NFT",
         "FILEMANAGER": "مدير الملفات",
-        "TODO": "لكى يفعل",
-        "JOBS": "وظائف",
-        "STATISTICS": "إحصائيات",
+        "TODO": "المهام",
+        "JOBS": "الوظائف",
+        "STATISTICS": "الإحصائيات",
         "JOBLISTS": "قوائم الوظائف",
-        "GRID": "جريد",
-        "CANDIDATELISTS": "قائمة المرشحين",
-        "GRIDVIEW": "عرض شبكي",
-        "APPLICATION": "طلب",
+        "GRID": "الشبكة",
+        "CANDIDATELISTS": "قوائم المرشحين",
+        "GRIDVIEW": "عرض الشبكة",
+        "APPLICATION": "التطبيقات",
         "NEWJOB": "وظيفة جديدة",
         "COMPANIESLIST": "قائمة الشركات",
         "JOBCATEGORIES": "فئات الوظائف",
@@ -117,8 +116,8 @@
       "LIST": {
         "HORIZONTAL": "أفقي",
         "DETACHED": "منفصل",
-        "TWOCOLUMN": "عمودان",
-        "HOVERED": "حلق"
+        "TWOCOLUMN": "عمودين",
+        "HOVERED": "عند الحوم"
       }
     },
     "PAGES": {
@@ -128,185 +127,260 @@
       "TEXT": "المصادقة",
       "LIST": {
         "BASIC": "أساسي",
-        "COVER": "التغطية",
+        "COVER": "غلاف",
         "SIGNIN": "تسجيل الدخول",
-        "SIGNUP": "اشتراك",
+        "SIGNUP": "تسجيل حساب",
         "PASSWORDRESET": "إعادة تعيين كلمة المرور",
-        "PASSWORDCREATE": "إنشاء كلمة المرور",
-        "LOCKSCREEN": "اقفل الشاشة",
-        "LOGOUT": "تسجيل خروج",
-        "SUCCESSMESSAGE": "نجاح رسالة",
+        "PASSWORDCREATE": "إنشاء كلمة مرور",
+        "LOCKSCREEN": "قفل الشاشة",
+        "LOGOUT": "تسجيل الخروج",
+        "SUCCESSMESSAGE": "رسالة نجاح",
         "TWOSTEPVERIFICATION": "التحقق بخطوتين",
         "ERRORS": "أخطاء",
         "404BASIC": "404 أساسي",
         "404COVER": "404 غلاف",
         "404ALT": "404 بديل",
         "500": "500",
-        "OFFLINE": "الصفحة غير المتصلة"
+        "OFFLINE": "صفحة غير متصل"
       }
     },
-    "PAGES": {
+    "PAGE_DETAIL": {
       "TEXT": "الصفحات",
       "LIST": {
         "STARTER": "بداية",
         "PROFILE": "الملف الشخصي",
         "SIMPLEPAGE": "صفحة بسيطة",
-        "SETTINGS": "إعدادات",
-        "TEAM": "فريق",
+        "SETTINGS": "الإعدادات",
+        "TEAM": "الفريق",
         "TIMELINE": "الجدول الزمني",
-        "FAQS": "أسئلة وأجوبة",
-        "PRICING": "التسعير",
-        "GALLERY": "صالة عرض",
-        "MAINTENANCE": "اعمال صيانة",
-        "COMINGSOON": "قريبا",
+        "FAQS": "الأسئلة الشائعة",
+        "PRICING": "الأسعار",
+        "GALLERY": "المعرض",
+        "MAINTENANCE": "الصيانة",
+        "COMINGSOON": "قريباً",
         "SITEMAP": "خريطة الموقع",
         "SEARCHRESULTS": "نتائج البحث",
         "PRIVACYPOLICY": "سياسة الخصوصية",
         "TERMS&CONDITIONS": "الشروط والأحكام",
-        "BLOG": "مدونة",
+        "BLOG": "المدونة",
         "BLOGLIST": "عرض القائمة",
         "BLOGOVERVIEW": "نظرة عامة",
         "BLOGGRID": "عرض الشبكة"
       }
     },
     "LANDING": {
-      "TEXT": "الهبوط",
+      "TEXT": "صفحة الهبوط",
       "LIST": {
         "ONEPAGE": "صفحة واحدة",
-        "NFTLANDING": "NFT الهبوط",
-        "JOB": "مهنة"
+        "NFTLANDING": "هبوط NFT",
+        "JOB": "وظيفة"
       }
     },
     "COMPONENTS": {
-      "TEXT": "عناصر"
+      "TEXT": "المكونات"
     },
     "BASEUI": {
       "TEXT": "واجهة المستخدم الأساسية",
       "LIST": {
-        "ALERTS": "تنبيهات",
-        "BADGES": "شارات",
-        "BUTTONS": "أزرار",
+        "ALERTS": "التنبيهات",
+        "BADGES": "الشارات",
+        "BUTTONS": "الأزرار",
         "COLORS": "الألوان",
         "CARDS": "البطاقات",
-        "CAROUSEL": "دائري",
-        "DROPDOWNS": "هبوط قطرة",
-        "GRID": "جريد",
+        "CAROUSEL": "دوارة اللقطات",
+        "DROPDOWNS": "القوائم المنسدلة",
+        "GRID": "الشبكة",
         "IMAGES": "الصور",
-        "TABS": "نوافذ التبويب",
-        "ACCORDION&COLLAPSE": "الأكورديون والانهيار",
-        "MODALS": "الوسائط",
-        "OFFCANVAS": "فكان",
-        "PLACEHOLDERS": "العناصر النائبة",
-        "PROGRESS": "تقدم",
-        "NOTIFICATIONS": "إشعارات",
+        "TABS": "التبويبات",
+        "ACCORDION&COLLAPSE": "أكورديون وطي",
+        "MODALS": "النوافذ المنبثقة",
+        "OFFCANVAS": "لوحة جانبية",
+        "PLACEHOLDERS": "عناصر نائبة",
+        "PROGRESS": "التقدم",
+        "NOTIFICATIONS": "الإشعارات",
         "MEDIAOBJECT": "كائن الوسائط",
-        "EMBEDVIDEO": "تضمين الفيديو",
-        "TYPOGRAPHY": "الطباعة",
+        "EMBEDVIDEO": "فيديو مدمج",
+        "TYPOGRAPHY": "الخطوط",
         "LISTS": "القوائم",
         "LINKS": "الروابط",
         "GENERAL": "عام",
-        "RIBBONS": "شرائط",
-        "UTILITIES": "خدمات"
+        "RIBBONS": "الأشرطة",
+        "UTILITIES": "الأدوات المساعدة"
       }
     },
     "ADVANCEUI": {
-      "TEXT": "واجهة المستخدم المتقدمة",
+      "TEXT": "واجهة مستخدم متقدمة",
       "LIST": {
-        "SWEETALERTS": "تنبيهات حلوة",
-        "NESTABLELIST": "قائمة عش",
+        "SWEETALERTS": "تنبيهات جميلة",
+        "NESTABLELIST": "قائمة متداخلة",
         "SCROLLBAR": "شريط التمرير",
-        "ANIMATION": "الرسوم المتحركة",
-        "TOUR": "رحلة",
-        "SWIPERSLIDER": "سويبر سلايدر",
+        "ANIMATION": "التحريك",
+        "TOUR": "جولة",
+        "SWIPERSLIDER": "شريط تمرير",
         "RATTINGS": "التقييمات",
-        "HIGHLIGHT": "تسليط الضوء",
-        "SCROLLSPY": "ScrollSpy"
+        "HIGHLIGHT": "تظليل",
+        "SCROLLSPY": "مراقبة التمرير"
       }
     },
     "WIDGETS": {
-      "TEXT": "الحاجيات"
+      "TEXT": "الأدوات"
     },
     "FORMS": {
-      "TEXT": "نماذج",
+      "TEXT": "النماذج",
       "LIST": {
         "BASICELEMENTS": "العناصر الأساسية",
-        "FORMSELECT": "حدد النموذج",
-        "CHECKBOXS&RADIOS": "مربعات الاختيار وأجهزة الراديو",
-        "PICKERS": "جامعي",
+        "FORMSELECT": "اختيار النموذج",
+        "CHECKBOXS&RADIOS": "خانات وتراسل",
+        "PICKERS": "منتقيات",
         "INPUTMASKS": "أقنعة الإدخال",
         "ADVANCED": "متقدم",
-        "RANGESLIDER": "نطاق المنزلق",
-        "VALIDATION": "تصديق",
-        "WIZARD": "ساحر",
+        "RANGESLIDER": "منزلق المدى",
+        "VALIDATION": "التحقق",
+        "WIZARD": "معالج",
         "EDITORS": "المحررين",
-        "FILEUPLOADS": "تحميلات الملف",
-        "FORMLAYOUTS": "تخطيطات النموذج"
+        "FILEUPLOADS": "تحميل الملفات",
+        "FORMLAYOUTS": "تخطيطات النماذج"
       }
     },
     "TABLES": {
       "TEXT": "الجداول",
       "LIST": {
-        "BASICTABLES": "الجداول الأساسية",
-        "GRIDJS": "شبكة شبيبة",
-        "LISTJS": "قائمة شبيبة",
-        "DATATABLES": "جداول البيانات"
+        "BASICTABLES": "جداول أساسية",
+        "GRIDJS": "جداول جافاسكريبت",
+        "LISTJS": "قوائم جافاسكريبت",
+        "DATATABLES": "قواعد البيانات"
       }
     },
     "CHARTS": {
       "TEXT": "الرسوم البيانية",
       "LIST": {
-        "APEXCHARTS": "أبكسشارتس",
+        "APEXCHARTS": "أبيكس تشارتس",
         "LINE": "خط",
         "AREA": "منطقة",
-        "COLUMN": "عمودي",
+        "COLUMN": "عمود",
         "BAR": "شريط",
         "MIXED": "مختلط",
-        "TIMELINE": "الجدول الزمني",
-        "RANGEAREA": "منطقة النطاق",
+        "TIMELINE": "زمني",
+        "RANGEAREA": "منطقة المدى",
         "FUNNEL": "قمع",
-        "SLOPE": "ميل",
-        "CANDLSTICK": "شمعدان",
-        "BOXPLOT": "مربع مؤامرة",
+        "SLOPE": "پنتي",
+        "CANDLSTICK": "قنديل",
+        "BOXPLOT": "رسم الصندوق",
         "BUBBLE": "فقاعة",
-        "SCATTER": "مبعثر",
-        "HEATMAP": "خريطة الحرارة",
-        "TREEMAP": "خريطة شجرة",
-        "PIE": "فطيرة",
-        "RADIALBAR": "شعاعي",
+        "SCATTER": "نقطي",
+        "HEATMAP": "خريطة حرارية",
+        "TREEMAP": "رسم شجري",
+        "PIE": "دائري",
+        "RADIALBAR": "شريط شعاعي",
         "RADAR": "رادار",
-        "POLARAREA": "المنطقة القطبية",
-        "CHARTJS": "تشارتجس",
-        "ECHARTS": "الصدى"
+        "POLARAREA": "منطقة قطبية",
+        "CHARTJS": "تشارت جي إس",
+        "ECHARTS": "إي تشارتس"
       }
     },
     "ICONS": {
-      "TEXT": "أيقونات",
+      "TEXT": "الأيقونات",
       "LIST": {
-        "REMIX": "ريمكس",
-        "BOXICONS": "بوكسيكونس",
-        "MATERIALDESIGN": "تصميم المواد",
-        "LINEAWESOME": "خط رائع",
-        "FEATHER": "ريشة",
-        "CRYPTOSVG": "تشفير SVG"
+        "REMIX": "ريميكس",
+        "BOXICONS": "بوكس أيكونز",
+        "MATERIALDESIGN": "ماتيريال ديزاين",
+        "LINEAWESOME": "لاين أوسم",
+        "FEATHER": "فيذر",
+        "CRYPTOSVG": "أيقونات مشفرة"
       }
     },
     "MAPS": {
-      "TEXT": "خرائط",
+      "TEXT": "الخرائط",
       "LIST": {
         "GOOGLE": "جوجل",
-        "VECTOR": "المتجه",
-        "LEAFLET": "منشور"
+        "VECTOR": "فيكتور",
+        "LEAFLET": "ليفليت"
       }
     },
     "MULTILEVEL": {
-      "TEXT": "متعدد المستويات",
+      "TEXT": "مستويات متعددة",
       "LIST": {
         "LEVEL1": {
-          "1": "المستوى 1.1",
-          "2": "المستوى 1.2",
+          "1": "مستوى 1.1",
+          "2": "مستوى 1.2",
           "LEVEL2": {
-            "1": "المستوى 2.1",
-            "2": "المستوى 2.2"
+            "1": "مستوى 2.1",
+            "2": "مستوى 2.2"
+          }
+        }
+      }
+    },
+    "BIGDEALS": {
+      "TEXT": "إدارة بيج ديلز",
+      "DASHBOARDS": {
+        "TEXT": "لوحات التحكم",
+        "ANALYTICS": "التحليلات العامة",
+        "SALES": "إحصائيات المبيعات"
+      },
+      "MARKETPLACE": {
+        "TEXT": "إدارة السوق",
+        "ADS": {
+          "TEXT": "الإعلانات",
+          "ALL": "كل الإعلانات",
+          "PENDING": "طلبات في انتظار الموافقة",
+          "CATEGORIES": "إدارة الفئات",
+          "FEATURED": "إعلانات مميزة"
+        },
+        "SELLERS": {
+          "TEXT": "البائعون",
+          "VERIFICATION": "توثيق الهوية",
+          "SUBSCRIPTIONS": "اشتراكات البائعين"
+        },
+        "CLIENTS": "العملاء"
+      },
+      "SUPPORT": {
+        "TEXT": "الدعم والطلبات",
+        "TICKETS": "تذاكر الدعم",
+        "REVIEWS": "التقييمات والبلاغات"
+      },
+      "FINANCE": {
+        "TEXT": "المالية والتقارير",
+        "INVOICES": "الفواتير",
+        "TRANSACTIONS": "المعاملات المالية"
+      },
+      "SYSTEM": {
+        "TEXT": "النظام",
+        "CONFIG": "إعدادات الموقع",
+        "I18N": "الترجمات",
+        "ROLES": "الأدوار والصلاحيات"
+      },
+      "ADMIN_DASHBOARD": {
+        "TITLE": "لوحة تحكم المدير",
+        "STATS": {
+          "USERS": "إجمالي المستخدمين",
+          "SELLERS": "البائعون النشطون",
+          "ADS": "إجمالي الإعلانات",
+          "REVENUE": "إجمالي الإيرادات"
+        },
+        "REQUESTS": {
+          "TITLE": "طلبات البائعين في انتظار الموافقة",
+          "VIEW_ALL": "عرض الكل",
+          "USER": "المستخدم",
+          "STORE": "المتجر",
+          "DATE": "تاريخ الطلب",
+          "STATUS": "الحالة",
+          "ACTIONS": "الإجراءات",
+          "PENDING": "في الانتظار",
+          "APPROVE": "موافقة",
+          "REJECT": "رفض"
+        },
+        "ACTIVITY": {
+          "TITLE": "الأنشطة الأخيرة",
+          "NEW_AD": "إعلان جديد",
+          "NEW_AD_DESC": "تم نشر إعلان جديد لـ 'PS5 Pro'.",
+          "PURCHASE": "عملية شراء",
+          "PURCHASE_DESC": "قام مستخدم بشراء 'iPhone 15' بنجاح.",
+          "NEW_USER": "مستخدم جديد",
+          "NEW_USER_DESC": "سجلت ماري كوري للتو في المنصة.",
+          "TIME": {
+            "MIN": "منذ 5 دقائق",
+            "MIN_LONG": "منذ 15 دقيقة",
+            "HOUR": "منذ ساعة واحدة"
           }
         }
       }

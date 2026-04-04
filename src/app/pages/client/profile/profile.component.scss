@@ -1,0 +1,29 @@
+.profile-wid-bg {
+    height: 150px;
+}
+
+.profile-wid-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-setting-img {
+    position: relative;
+    height: 260px;
+}
+
+.profile-photo-edit {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+.profile-img-file-input {
+    display: none;
+}
+
+.nav-tabs-custom .nav-link {
+    padding: 15px 20px;
+    font-weight: 500;
+}

@@ -1,7 +1,11 @@
 @if(showTopbar){
-<div id="layout-wrapper" class="vertical-layout">
-    <app-topbar-user></app-topbar-user>
+<div id="layout-wrapper" [class.vertical-layout]="isAdmin" [class.horizontal-layout]="!isAdmin">
+    <app-topbar-user (mobileMenuButtonClicked)="onToggleMobileMenu()"></app-topbar-user>
     
+    @if(isAdmin){
+        <app-admin-sidebar></app-admin-sidebar>
+    }
+
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">

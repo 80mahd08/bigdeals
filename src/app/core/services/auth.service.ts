@@ -58,6 +58,7 @@ export class AuthenticationService {
           firstName: firstName,
           token: undefined, // Firebase token is retrieved asynchronously via getIdToken()
           username: firstName,
+          role: 'CLIENT', // Default role for new registrations
         };
         return user;
       }),
@@ -84,6 +85,7 @@ export class AuthenticationService {
           email: credential.user.email ?? email,
           username: credential.user.displayName ?? email,
           token: undefined, // Firebase ID token is obtained asynchronously
+          role: email.includes('admin') ? 'ADMIN' : 'CLIENT', // Simple role mapping for now
         };
         return user;
       }),
@@ -109,6 +111,7 @@ export class AuthenticationService {
           username: credential.user.displayName ?? credential.user.email ?? '',
           token: undefined, // Firebase ID token is obtained asynchronously
           profilePhoto: credential.user.photoURL ?? undefined,
+          role: 'CLIENT', // Google login defaults to CLIENT
         };
         return user;
       }),

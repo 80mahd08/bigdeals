@@ -1,0 +1,67 @@
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-success-subtle py-3 text-center">
+                <h4 class="mb-0 fw-bold text-success">Devenir Annonceur BigDeals</h4>
+                <p class="text-muted mb-0 mt-2">Vendez vos produits à des milliers d'acheteurs potentiels.</p>
+            </div>
+            <div class="card-body p-4">
+                <form (ngSubmit)="submitApplication()">
+                    <div class="row g-4">
+                        <!-- Store Info -->
+                        <div class="col-lg-12">
+                            <h5 class="fs-15 border-bottom pb-2 mb-3"><i class="ri-store-2-line align-middle me-1"></i> Informations sur la Boutique</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nom de la Boutique*</label>
+                            <input type="text" class="form-control" placeholder="Ex: Ma Boutique Élec" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Type d'Annonceur*</label>
+                            <select class="form-select" required>
+                                <option value="" selected disabled>Choisir un type</option>
+                                <option value="individual">Particulier</option>
+                                <option value="professional">Professionnel / Entreprise</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-12">
+                            <label class="form-label">Description de votre activité</label>
+                            <textarea class="form-control" rows="3" placeholder="Décrivez ce que vous prévoyez de vendre..."></textarea>
+                        </div>
+
+                        <!-- Verification -->
+                        <div class="col-lg-12 mt-5">
+                            <h5 class="fs-15 border-bottom pb-2 mb-3"><i class="ri-checkbox-circle-line align-middle me-1"></i> Vérification d'Identité</h5>
+                        </div>
+                        <div class="col-lg-12 text-center py-4 bg-light rounded border border-dashed">
+                            <div class="avatar-sm mx-auto mb-3">
+                                <div class="avatar-title bg-soft-primary text-primary rounded-circle fs-24">
+                                    <i class="ri-upload-cloud-2-line"></i>
+                                </div>
+                            </div>
+                            <h6>Glissez-déposez votre pièce d'identité</h6>
+                            <p class="text-muted small">Format supporté : JPG, PNG, PDF (Max 2Mo)</p>
+                            <button type="button" class="btn btn-primary btn-sm shadow-none">Choisir un fichier</button>
+                        </div>
+
+                        <!-- Terms -->
+                        <div class="col-lg-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                                <label class="form-check-label text-muted small" for="termsCheck">
+                                    J'accepte les <a href="javascript:void(0);" class="text-decoration-underline">conditions générales d'utilisation</a> pour les annonceurs.
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12 mt-4">
+                            <div class="hstack gap-2 justify-content-center">
+                                <button type="submit" class="btn btn-success btn-lg px-5 shadow-none">Envoyer ma demande</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

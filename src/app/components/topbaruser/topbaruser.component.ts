@@ -67,13 +67,18 @@ export class TopbarUserComponent implements OnInit, OnDestroy {
     this.element = document.documentElement;
 
     // Initialize language selector from stored cookie
-    this.cookieValue = this.cookiesService.get('lang');
-    const val = this.listLang.filter(x => x.lang === this.cookieValue);
-    this.countryName = val.map(e => e.text);
-    if (val.length === 0) {
-      if (this.flagvalue === undefined) { this.valueset = 'assets/images/flags/us.svg'; }
+    this.cookieValue = this.cookiesService.get('lang') || 'en';
+    const val = this.listLang.find(x => x.lang === this.cookieValue);
+    
+    if (val) {
+      this.countryName = val.text;
+      this.flagvalue = val.flag;
     } else {
-      this.flagvalue = val.map(e => e.flag);
+      // Fallback to English if cookie is invalid or not set
+      const defaultLang = this.listLang[0]; // English
+      this.flagvalue = defaultLang.flag;
+      this.countryName = defaultLang.text;
+      this.cookieValue = defaultLang.lang;
     }
 
     // Subscribe to the current user observable to reactively toggle the topbar UI
@@ -81,6 +86,10 @@ export class TopbarUserComponent implements OnInit, OnDestroy {
     this.authService.currentUser$.pipe(
       takeUntil(this.destroy$)
     ).subscribe((user) => {
+      // Cleanup broken local paths from mock data if they exist
+      if (user && user.profilePhoto && user.profilePhoto.includes('assets/images/users')) {
+        user.profilePhoto = 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&fit=crop&q=80&w=100';
+      }
       this.currentUser = user;
     });
   }
@@ -107,6 +116,43 @@ export class TopbarUserComponent implements OnInit, OnDestroy {
    */
   get avatarLetter(): string {
     return this.displayName.charAt(0).toUpperCase();
+  }
+
+  /**
+   * Returns the appropriate dashboard link based on the current user's role.
+   */
+  get dashboardLink(): string {
+    if (!this.currentUser) return '/';
+    switch (this.currentUser.role) {
+      case 'ADMIN': return '/admin';
+      case 'ANNOUNCER': return '/announcer/dashboard';
+      case 'CLIENT': return '/client/profile';
+      default: return '/';
+    }
+  }
+
+  /**
+   * Returns the user's role label in French.
+   */
+  get roleLabel(): string {
+    if (!this.currentUser) return '';
+    switch (this.currentUser.role) {
+      case 'ADMIN': return 'Administrateur';
+      case 'ANNOUNCER': return 'Annonceur';
+      case 'CLIENT': return 'Client';
+      default: return 'Utilisateur';
+    }
+  }
+
+  /**
+   * Development only: Toggle user roles for testing purposes.
+   */
+  testSetRole(role: string) {
+    if (!this.currentUser) return;
+    const updatedUser = { ...this.currentUser, role: role as any };
+    sessionStorage.setItem('currentUser', JSON.stringify(updatedUser));
+    // We reload to ensure the guard and state reflect the change
+    window.location.reload();
   }
 
   /** Toggle the mobile hamburger menu */

@@ -1,0 +1,152 @@
+<div class="row">
+    <div class="col-xl-9">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <!-- Image Gallery -->
+                    <div class="col-lg-6">
+                        <div class="product-img-slider">
+                            <img [src]="ad.image" alt="" class="img-fluid d-block rounded mb-3">
+                            <div class="row g-2">
+                                @for (img of ad.gallery; track $index) {
+                                    <div class="col-3">
+                                        <img [src]="img" alt="" class="img-fluid d-block rounded cursor-pointer border" (click)="ad.image = img">
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ad Info -->
+                    <div class="col-lg-6">
+                        <div class="mt-4 mt-lg-0">
+                            <div class="mb-3">
+                                <span class="badge bg-success-subtle text-success fs-12">{{ad.category}}</span>
+                                <span class="text-muted ms-2"><i class="ri-calendar-line align-bottom me-1"></i> Publié {{ad.date}}</span>
+                            </div>
+                            <h4 class="mb-3 fw-bold">{{ad.title}}</h4>
+                            <div class="d-flex align-items-center mb-3">
+                                <h3 class="text-success fw-bold mb-0 me-3">{{ad.price | currency:'EUR':'symbol':'1.0-0'}}</h3>
+                                @if(ad.isPremium){
+                                    <span class="badge bg-warning-subtle text-warning"><i class="ri-vip-crown-fill me-1"></i>Vendeur Premium</span>
+                                }
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h6 class="fs-14 text-muted text-uppercase mb-2">Description :</h6>
+                                <p class="text-muted fs-15">{{ad.description}}</p>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-sm-6">
+                                    <div class="p-2 border border-dashed rounded text-center">
+                                        <p class="text-muted mb-1 fs-12">État</p>
+                                        <h6 class="mb-0">Neuf</h6>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="p-2 border border-dashed rounded text-center">
+                                        <p class="text-muted mb-1 fs-12">Localisation</p>
+                                        <h6 class="mb-0">{{ad.location}}</h6>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary flex-grow-1 py-2 shadow-none" (click)="contactWhatsapp()">
+                                    <i class="ri-whatsapp-line align-bottom me-1"></i> WhatsApp
+                                </button>
+                                <button class="btn btn-soft-info flex-grow-1 py-2 shadow-none" (click)="contactPhone()">
+                                    <i class="ri-phone-line align-bottom me-1"></i> Téléphone
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Détails supplémentaires</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-borderless mb-0">
+                        <tbody>
+                            @for (detail of ad.specs; track $index) {
+                                <tr>
+                                    <th scope="row" style="width: 250px;" class="ps-0">{{detail.label}}</th>
+                                    <td class="text-muted">{{detail.value}}</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Sidebar: Seller & Location -->
+    <div class="col-xl-3">
+        <!-- Seller Info -->
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="position-relative d-inline-block mb-3">
+                    <img [src]="ad.sellerAvatar" alt="" class="avatar-lg rounded-circle img-thumbnail shadow">
+                    <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-2 border-white rounded-circle"></span>
+                </div>
+                <h5 class="mb-1"><a [routerLink]="['/seller', 1]" class="text-body fw-bold">{{ad.sellerName}}</a></h5>
+                <p class="text-muted mb-3">Membre depuis Jan 2024</p>
+                
+                <div class="d-flex justify-content-center gap-2 mb-3">
+                    <div class="text-warning">
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-half-fill"></i>
+                        <span class="text-muted ms-1">(4.8)</span>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-soft-success w-100 shadow-none"><i class="ri-user-follow-line me-1"></i> Suivre</button>
+                    <button class="btn btn-soft-primary w-100 shadow-none" routerLink="/client/chat"><i class="ri-chat-1-line me-1"></i> Message</button>
+                </div>
+            </div>
+            <div class="card-footer bg-light-subtle text-center py-2">
+                <a [routerLink]="['/seller', 1]" class="link-success fw-medium">Voir toutes ses annonces <i class="ri-arrow-right-line align-middle ms-1"></i></a>
+            </div>
+        </div>
+
+        <!-- Location Map Placeholder -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Localisation</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <div class="text-center">
+                        <i class="ri-map-pin-2-fill fs-36 text-danger"></i>
+                        <p class="mt-2 text-muted fw-medium">{{ad.location}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Share -->
+        <div class="card">
+            <div class="card-body">
+                <h6 class="text-uppercase fw-semibold mb-3 fs-12">Partager l'annonce :</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-icon btn-soft-primary rounded-circle"><i class="ri-facebook-fill"></i></button>
+                    <button class="btn btn-icon btn-soft-info rounded-circle"><i class="ri-twitter-fill"></i></button>
+                    <button class="btn btn-icon btn-soft-danger rounded-circle"><i class="ri-instagram-fill"></i></button>
+                    <button class="btn btn-icon btn-soft-success rounded-circle"><i class="ri-whatsapp-fill"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
