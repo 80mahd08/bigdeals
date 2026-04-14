@@ -2,8 +2,9 @@ import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef, AfterVi
 import { NavigationEnd, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
-import { MENU } from './menu';
+import { MENU, SELLER_MENU } from './menu';
 import { MenuItem } from './menu.model';
+import { AuthenticationService } from '../../core/services/auth.service';
 
 @Component({
     selector: 'app-admin-sidebar',
@@ -11,6 +12,18 @@ import { MenuItem } from './menu.model';
     styles: [`
         .navbar-menu { border-right: 1px solid var(--vz-border-color); }
         .sidebar-menu-scroll { height: 100%; }
+        .sidebar-logo-small { display: none !important; }
+        .sidebar-logo-large { display: block !important; }
+        
+        [data-sidebar-size="sm"] .sidebar-logo-small { display: block !important; }
+        [data-sidebar-size="sm"] .sidebar-logo-large { display: none !important; }
+        
+        /* When hovering a shrunk sidebar */
+        .vertical-sidebar-enable .navbar-menu:hover .sidebar-logo-small,
+        [data-sidebar-size="sm"] .navbar-menu:hover .sidebar-logo-small { display: none !important; }
+        
+        .vertical-sidebar-enable .navbar-menu:hover .sidebar-logo-large,
+        [data-sidebar-size="sm"] .navbar-menu:hover .sidebar-logo-large { display: block !important; }
     `],
     standalone: false
 })
@@ -20,13 +33,22 @@ export class AdminSidebarComponent implements OnInit, AfterViewInit {
   @ViewChild('sideMenu') sideMenu!: ElementRef;
   @Output() mobileMenuButtonClicked = new EventEmitter();
 
-  constructor(private router: Router, public translate: TranslateService) {
+  constructor(
+    private router: Router, 
+    public translate: TranslateService,
+    private authService: AuthenticationService
+  ) {
     translate.setDefaultLang('en');
   }
 
   ngOnInit(): void {
     // Initialize Menu Items
-    this.menuItems = MENU;
+    const currentUser = this.authService.currentUserValue;
+    if (currentUser && currentUser.role === 'ANNOUNCER') {
+      this.menuItems = SELLER_MENU;
+    } else {
+      this.menuItems = MENU;
+    }
     
     this.router.events.subscribe((event) => {
         if (event instanceof NavigationEnd) {

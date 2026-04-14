@@ -17,6 +17,7 @@ import { SuccessMsgComponent } from './success-msg/success-msg.component';
 import { ErrorsComponent } from './errors/errors.component';
 import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgOtpInputModule } from 'ng-otp-input';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { NgOtpInputModule } from 'ng-otp-input';
     NgbToastModule,
     NgbCarouselModule,
     NgOtpInputModule,
-    AuthRoutingModule
+    AuthRoutingModule,
+    TranslateModule.forChild({ extend: true })
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

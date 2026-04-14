@@ -5,6 +5,7 @@ import { OrdersComponent as TransactionsComponent } from './transactions/orders.
 import { CustomersComponent as UsersComponent } from './users/customers.component';
 import { SellersComponent as AnnouncersComponent } from './announcers/sellers.component';
 import { ProductsComponent as AdsComponent } from './ads/products.component';
+import { CategoriesComponent } from './categories/categories.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,10 @@ const routes: Routes = [
   {
     path: 'ads',
     component: AdsComponent
+  },
+  {
+    path: 'categories',
+    component: CategoriesComponent
   },
   {
     path: '',

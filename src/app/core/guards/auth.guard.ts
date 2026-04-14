@@ -3,37 +3,37 @@ import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/ro
 
 // Auth Services
 import { AuthenticationService } from '../services/auth.service';
-import { AuthfakeauthenticationService } from '../services/authfake.service';
-import { environment } from '../../../environments/environment';
 
+/**
+ * AuthGuard
+ * 
+ * Protects routes by checking if the user is authenticated.
+ * If the user is logged in, the route can be activated.
+ * Otherwise, redirects the user to the sign-in page.
+ */
 @Injectable({ providedIn: 'root' })
-export class AuthGuard  {
+export class AuthGuard {
     constructor(
         private router: Router,
-        private authenticationService: AuthenticationService,
-        private authFackservice: AuthfakeauthenticationService
+        private authenticationService: AuthenticationService
     ) { }
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        if (environment.defaultauth === 'firebase') {
-            const currentUser = this.authenticationService.currentUserValue;
-            if (currentUser) {
-                // logged in so return true
-                return true;
-            }
-        } else {
-            const currentUser = this.authFackservice.currentUserValue;
-            if (currentUser) {
-                // logged in so return true
-                return true;
-            }
-            // check if user data is in storage is logged in via API.
-            if(sessionStorage.getItem('currentUser')) {
-                return true;
-            }
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+        // We check the AuthenticationService first as it's the source of truth for the app state
+        const currentUser = this.authenticationService.currentUserValue;
+        
+        if (currentUser && currentUser.token) {
+            // logged in so return true
+            return true;
         }
+
+        // Secondary check: check if user data is in storage directly (e.g. after refresh before service init)
+        if (sessionStorage.getItem('currentUser') && sessionStorage.getItem('token')) {
+            return true;
+        }
+
         // not logged in so redirect to login page with the return url
-        this.router.navigate(['/auth/login'], { queryParams: { returnUrl: state.url } });
+        this.router.navigate(['/auth/signin'], { queryParams: { returnUrl: state.url } });
         return false;
     }
 }

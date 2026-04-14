@@ -41,6 +41,77 @@
                     </div>
                 </div>
 
+                <!-- Cart Dropdown -->
+                @if (currentUser) {
+                <div class="dropdown topbar-head-dropdown ms-1 header-item" ngbDropdown>
+                    <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle" id="page-header-cart-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
+                        <i class='bx bx-shopping-bag fs-22'></i>
+                        <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-info">{{cart_length}}<span class="visually-hidden">unread messages</span></span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-xl dropdown-menu-end p-0" aria-labelledby="page-header-cart-dropdown" ngbDropdownMenu>
+                        <div class="p-3 border-top-0 border-start-0 border-end-0 border-dashed border">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h6 class="m-0 fs-16 fw-semibold"> My Cart</h6>
+                                </div>
+                                <div class="col-auto">
+                                    <span class="badge bg-info-subtle text-info fs-13"> {{cart_length}} items</span>
+                                </div>
+                            </div>
+                        </div>
+                        <ngx-simplebar style="max-height: 300px;">
+                            <div class="p-2">
+                                <div class="text-center empty-cart" id="empty-cart" style="display: none;">
+                                    <div class="avatar-md mx-auto my-3">
+                                        <div class="avatar-title bg-info-subtle text-info fs-36 rounded-circle">
+                                            <i class='bx bx-cart'></i>
+                                        </div>
+                                    </div>
+                                    <h5 class="mb-3">Your Cart is Empty!</h5>
+                                    <a routerLink="/client/products" class="btn btn-success w-md mb-3">Shop Now</a>
+                                </div>
+                                @for(data of topbarCartItems;track $index){
+                                <div class="d-block dropdown-item text-wrap px-3 py-2" id="item_{{data.id}}">
+                                    <div class="d-flex align-items-center">
+                                        <img src="{{data.img}}" class="me-3 rounded-circle avatar-sm p-2 bg-light" alt="user-pic">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mt-0 mb-1 fs-14">
+                                                <a routerLink="/client/product-detail" class="text-reset">{{data.product}}</a>
+                                            </h6>
+                                            <p class="mb-0 fs-12 text-muted">
+                                                Quantity: <span>{{data.quantity}} x ${{data.price}}</span>
+                                            </p>
+                                        </div>
+                                        <div class="px-2">
+                                            <h5 class="m-0 fw-normal">$ <span class="item_price">{{data.quantity *
+                                                    data.price}}</span></h5>
+                                        </div>
+                                        <div class="ps-2">
+                                            <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary" (click)="deleteItem($event,data.id)">
+                                                <i class="ri-close-fill fs-16"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                        </ngx-simplebar>
+                        <div class="p-3 border-bottom-0 border-start-0 border-end-0 border-dashed border d-grid">
+                            <div class="d-flex justify-content-between align-items-center pb-3">
+                                <h5 class="m-0 text-muted">Total:</h5>
+                                <div class="px-2">
+                                    <h5 class="m-0">$<span class="total_price">{{total}}</span></h5>
+                                </div>
+                            </div>
+
+                            <a routerLink="/client/checkout" class="btn btn-success text-center">
+                                Checkout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                }
+
                 <!-- Fullscreen -->
                 <div class="ms-1 header-item d-flex">
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle" (click)="fullscreen()">
@@ -60,6 +131,7 @@
                 </div>
 
                 <!-- Notification Dropdown -->
+                @if (currentUser) {
                 <div class="dropdown topbar-head-dropdown ms-1 header-item" ngbDropdown>
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle" ngbDropdownToggle>
                         <i class='bx bx-bell fs-22'></i>
@@ -121,6 +193,7 @@
                         <!-- 'Tout voir' button removed -->
                     </div>
                 </div>
+                }
 
                 <!-- ================================================== -->
                 <!--  VISITOR STATE: Show when no user is authenticated  -->
@@ -159,26 +232,30 @@
                                 <span class="text-muted fs-12 fw-medium text-uppercase ls-1">Rôle : {{ roleLabel }}</span>
                             </div>
 
-                            <a class="dropdown-item py-2" [routerLink]="dashboardLink">
-                                <i class="ri-dashboard-line text-muted fs-16 align-middle me-2"></i> 
-                                <span class="align-middle">Tableau de bord</span>
-                            </a>
-                            <a class="dropdown-item py-2" routerLink="/client/profile">
-                                <i class="ri-user-settings-line text-muted fs-16 align-middle me-2"></i> 
-                                <span class="align-middle">Mon Profil</span>
-                            </a>
-                            <a class="dropdown-item py-2" routerLink="/client/favorites">
-                                <i class="ri-heart-line text-muted fs-16 align-middle me-2"></i> 
-                                <span class="align-middle">Mes Favoris</span>
-                            </a>
-                            <a class="dropdown-item py-2" routerLink="/client/chat">
-                                <i class="ri-message-3-line text-muted fs-16 align-middle me-2"></i> 
-                                <span class="align-middle">Messages</span>
-                                <span class="badge bg-success-subtle text-success float-end ms-2">5</span>
-                            </a>
+                            @if (currentUser.role !== 'ADMIN') {
+                                @if (currentUser.role === 'ANNOUNCER') {
+                                    <a class="dropdown-item py-2" [routerLink]="dashboardLink">
+                                        <i class="ri-dashboard-line text-muted fs-16 align-middle me-2"></i> 
+                                        <span class="align-middle">Tableau de bord</span>
+                                    </a>
+                                }
+                                <a class="dropdown-item py-2" routerLink="/client/profile">
+                                    <i class="ri-user-settings-line text-muted fs-16 align-middle me-2"></i> 
+                                    <span class="align-middle">Mon Compte</span>
+                                </a>
+                                <a class="dropdown-item py-2" routerLink="/client/favorites">
+                                    <i class="ri-heart-line text-muted fs-16 align-middle me-2"></i> 
+                                    <span class="align-middle">Mes Favoris</span>
+                                </a>
+                                <a class="dropdown-item py-2" routerLink="/client/chat">
+                                    <i class="ri-message-3-line text-muted fs-16 align-middle me-2"></i> 
+                                    <span class="align-middle">Messages</span>
+                                    <span class="badge bg-success-subtle text-success float-end ms-2">5</span>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                            }
                             
                             <!-- Development Role Switcher -->
-                            <div class="dropdown-divider"></div>
                             <div class="dropdown-header px-4 py-2 fs-11 text-uppercase text-muted">Dev Tools: Test Roles</div>
                             <div class="px-2 pb-2">
                                 <div class="hstack gap-1 justify-content-around">

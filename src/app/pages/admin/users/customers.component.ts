@@ -49,7 +49,7 @@ export class CustomersComponent {
 
   constructor(private modalService: NgbModal, public service: PaginationService,
     private formBuilder: UntypedFormBuilder,
-    private restApiService: restApiService, private store: Store<{ data: RootReducerState }>) {
+    private restApiService: restApiService, private store: Store<RootReducerState>) {
   }
 
   ngOnInit(): void {

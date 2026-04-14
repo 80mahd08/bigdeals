@@ -10,6 +10,7 @@ import { OrdersComponent as TransactionsComponent } from './transactions/orders.
 import { CustomersComponent as UsersComponent } from './users/customers.component';
 import { SellersComponent as AnnouncersComponent } from './announcers/sellers.component';
 import { ProductsComponent as AdsComponent } from './ads/products.component';
+import { CategoriesComponent } from './categories/categories.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { ProductsComponent as AdsComponent } from './ads/products.component';
     TransactionsComponent,
     UsersComponent,
     AnnouncersComponent,
-    AdsComponent
+    AdsComponent,
+    CategoriesComponent
   ],
   imports: [
     CommonModule,
@@ -29,7 +31,7 @@ import { ProductsComponent as AdsComponent } from './ads/products.component';
     NgbNavModule,
     FormsModule,
     ReactiveFormsModule,
-    TranslateModule
+    TranslateModule.forChild({ extend: true })
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

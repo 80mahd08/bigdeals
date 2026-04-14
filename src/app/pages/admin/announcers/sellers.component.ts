@@ -31,7 +31,7 @@ export class SellersComponent {
 
   constructor(private modalService: NgbModal,
     public service: PaginationService,
-    private store: Store<{ data: RootReducerState }>) {
+    private store: Store<RootReducerState>) {
   }
 
   ngOnInit(): void {

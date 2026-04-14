@@ -320,18 +320,18 @@
       "MARKETPLACE": {
         "TEXT": "Gestion du Marché",
         "ADS": {
-          "TEXT": "Annonces (Ads)",
+          "TEXT": "Gérer annonces",
           "ALL": "Toutes les Annonces",
           "PENDING": "Approbations en Attente",
-          "CATEGORIES": "Gestion des Catégories",
+          "CATEGORIES": "Gérer catégories",
           "FEATURED": "Annonces à la Une"
         },
         "SELLERS": {
-          "TEXT": "Vendeurs",
+          "TEXT": "Examiner demande d'annonceur",
           "VERIFICATION": "Vérification d'Identité",
           "SUBSCRIPTIONS": "Abonnements Annonceurs"
         },
-        "CLIENTS": "Clients"
+        "CLIENTS": "Gestion des clients"
       },
       "SUPPORT": {
         "TEXT": "Support & Retours",
@@ -339,7 +339,7 @@
         "REVIEWS": "Avis & Signalements"
       },
       "FINANCE": {
-        "TEXT": "Finance & Rapports",
+        "TEXT": "Gérer paiements et transactions",
         "INVOICES": "Factures",
         "TRANSACTIONS": "Transactions"
       },

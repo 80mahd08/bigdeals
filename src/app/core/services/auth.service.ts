@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, tap, catchError } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { User } from 'src/app/store/Authentication/auth.models';
-import { FirebaseService } from './firebase.service';
+import { environment } from 'src/environments/environment';
 import { logout } from 'src/app/store/Authentication/authentication.actions';
 
 /**
  * AuthenticationService
  *
- * This service is the bridge between the NgRx store/effects and the Firebase SDK.
- * All authentication operations are delegated to FirebaseService and the results
- * are mapped to our internal User model for use throughout the application.
+ * This service handles authentication by communicating with the custom ASP.NET Core API.
+ * It manages the current user state using a BehaviorSubject and persists the JWT in sessionStorage.
  */
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -23,7 +23,7 @@ export class AuthenticationService {
   public currentUser$: Observable<User | null>;
 
   constructor(
-    private firebaseService: FirebaseService,
+    private http: HttpClient,
     private store: Store
   ) {
     // Restore user from sessionStorage if a previous session exists (e.g. after page refresh)
@@ -42,93 +42,75 @@ export class AuthenticationService {
   }
 
   /**
-   * Register a new user with Firebase using email and password.
-   * On success, maps the Firebase user to our internal User model and saves it to sessionStorage.
+   * Register a new user with the backend API.
    *
-   * @param email     - New user's email
-   * @param firstName - New user's display name (stored locally; Firebase doesn't require this)
-   * @param password  - New user's password
+   * @param email    - New user's email
+   * @param username - New user's username
+   * @param password - New user's password
    */
-  register(email: string, firstName: string, password: string): Observable<User> {
-    return this.firebaseService.register(email, password).pipe(
-      map((credential) => {
-        // Map Firebase UserCredential to our internal User model
+  register(email: string, username: string, password: string): Observable<User> {
+    return this.http.post<any>(`${environment.apiUrl}/api/account/register`, {
+      email,
+      username,
+      password
+    }).pipe(
+      map((response) => {
+        // Map backend NewUserDto to our internal User model
         const user: User = {
-          email: credential.user.email ?? email,
-          firstName: firstName,
-          token: undefined, // Firebase token is retrieved asynchronously via getIdToken()
-          username: firstName,
-          role: 'CLIENT', // Default role for new registrations
+          email: response.email,
+          username: response.userName,
+          token: response.token,
+          role: response.roles && response.roles.length > 0 ? response.roles[0] : 'CLIENT',
         };
         return user;
       }),
       tap((user) => {
-        // Persist user in sessionStorage so the session survives a page refresh
+        // Persist user and token
         sessionStorage.setItem('currentUser', JSON.stringify(user));
+        sessionStorage.setItem('token', user.token!);
         this.currentUserSubject.next(user);
       })
     );
   }
 
   /**
-   * Sign in an existing user with Firebase using email and password.
-   * On success, retrieves the Firebase ID token and saves it to sessionStorage.
+   * Sign in an existing user with the backend API.
    *
    * @param email    - The user's email
    * @param password - The user's password
    */
   login(email: string, password: string): Observable<User> {
-    return this.firebaseService.signIn(email, password).pipe(
-      map((credential) => {
-        // Map Firebase UserCredential to our internal User model
+    return this.http.post<any>(`${environment.apiUrl}/api/account/login`, {
+      email,
+      password
+    }).pipe(
+      map((response) => {
+        // Map backend NewUserDto to our internal User model
         const user: User = {
-          email: credential.user.email ?? email,
-          username: credential.user.displayName ?? email,
-          token: undefined, // Firebase ID token is obtained asynchronously
-          role: email.includes('admin') ? 'ADMIN' : 'CLIENT', // Simple role mapping for now
+          email: response.email,
+          username: response.userName,
+          token: response.token,
+          role: response.roles && response.roles.length > 0 ? response.roles[0] : 'CLIENT',
         };
         return user;
       }),
       tap((user) => {
-        // Save authenticated user to sessionStorage and update BehaviorSubject
+        // Save authenticated user and token
         sessionStorage.setItem('currentUser', JSON.stringify(user));
+        sessionStorage.setItem('token', user.token!);
         this.currentUserSubject.next(user);
-        sessionStorage.setItem('toast', 'true'); // Flag telling the dashboard to show a welcome toast
+        sessionStorage.setItem('toast', 'true');
       })
     );
   }
 
   /**
-   * Sign in using Google.
-   * On success, retrieves the Google user info and saves it to sessionStorage.
-   */
-  googleLogin(): Observable<User> {
-    return this.firebaseService.signInWithGoogle().pipe(
-      map((credential) => {
-        // Map Firebase UserCredential to our internal User model
-        const user: User = {
-          email: credential.user.email ?? '',
-          username: credential.user.displayName ?? credential.user.email ?? '',
-          token: undefined, // Firebase ID token is obtained asynchronously
-          profilePhoto: credential.user.photoURL ?? undefined,
-          role: 'CLIENT', // Google login defaults to CLIENT
-        };
-        return user;
-      }),
-      tap((user) => {
-        // Save authenticated user to sessionStorage and update BehaviorSubject
-        sessionStorage.setItem('currentUser', JSON.stringify(user));
-        this.currentUserSubject.next(user);
-        sessionStorage.setItem('toast', 'true'); // Flag telling the dashboard to show a welcome toast
-      })
-    );
-  }
-
-  /**
-   * Sign out the current user from Firebase and clear all local session data.
+   * Sign out the current user and clear all local session data.
    */
   logout(): Observable<void> {
-    return this.firebaseService.signOut().pipe(
+    return this.http.post(`${environment.apiUrl}/api/account/logout`, {}).pipe(
+      map(() => undefined as void),
+      catchError(() => of(undefined as void)),
       tap(() => {
         // Dispatch NgRx logout action to reset state
         this.store.dispatch(logout());
@@ -143,18 +125,10 @@ export class AuthenticationService {
   }
 
   /**
-   * Send a password reset email to the given address via Firebase.
-   *
-   * @param email - The email address to send the reset link to
+   * Placeholder for password reset (to be implemented on backend)
    */
   resetPassword(email: string): Observable<void> {
-    return this.firebaseService.resetPassword(email);
-  }
-
-  /**
-   * Returns the current user from Firebase (or null if not signed in).
-   */
-  getCurrentFirebaseUser() {
-    return this.firebaseService.getCurrentUser();
+    // Currently not implemented on backend
+    return of(undefined);
   }
 }

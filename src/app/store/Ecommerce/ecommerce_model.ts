@@ -66,8 +66,10 @@ export interface customerModel {
 }
 
 export interface CartModel {
-  image: string;
-  name: string;
+  image?: string;
+  img?: string;
+  name?: string;
+  product?: string;
   color: string;
   size: string;
   price: string;

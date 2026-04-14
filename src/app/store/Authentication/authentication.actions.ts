@@ -11,8 +11,7 @@ export const login = createAction('[Authentication] Login', props<{ email: strin
 export const loginSuccess = createAction('[Authentication] Login Success', props<{ user: User }>());
 export const loginFailure = createAction('[Authentication] Login Failure', props<{ error: string }>());
 
-// google login action
-export const googleLogin = createAction('[Authentication] Google Login');
+
 
 // logout action
 export const logout = createAction('[Authentication] Logout');

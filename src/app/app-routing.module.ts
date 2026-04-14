@@ -17,7 +17,7 @@ const routes: Routes = [
         path: "client",
         loadChildren: () => import('./pages/client/client.module').then(m => m.ClientModule),
         canActivate: [RoleGuard],
-        data: { roles: ['CLIENT'] }
+        data: { roles: ['CLIENT', 'ANNOUNCER'] }
     },
     {
         path: "announcer",

@@ -62,7 +62,7 @@ export class OrdersComponent {
 
   constructor(private modalService: NgbModal, private formBuilder: UntypedFormBuilder,
     public service: PaginationService,
-    private store: Store<{ data: RootReducerState }>) {
+    private store: Store<RootReducerState>) {
   }
 
   ngOnInit(): void {

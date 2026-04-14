@@ -13,6 +13,7 @@ import { EventService } from '../../core/services/event.service';
 // Auth
 import { AuthenticationService } from '../../core/services/auth.service';
 import { User } from 'src/app/store/Authentication/auth.models';
+import { cartData } from '../../core/data/cart';
 
 @Component({
   selector: 'app-topbar-user',
@@ -42,15 +43,19 @@ export class TopbarUserComponent implements OnInit, OnDestroy {
 
   // The currently logged-in user (null if visitor/not authenticated)
   currentUser: User | null = null;
+  
+  topbarCartItems!: any[];
+  total = 0;
+  cart_length: any = 0;
 
   // Used to clean up subscriptions when the component is destroyed
   private destroy$ = new Subject<void>();
 
   // Available languages for the language switcher dropdown
   listLang = [
-    { text: 'English',  flag: 'assets/images/flags/gb.svg',     lang: 'en' },
-    { text: 'Français', flag: 'assets/images/flags/cp.svg',  lang: 'fr' },
-    { text: 'العربية',  flag: 'assets/images/flags/tn.svg',      lang: 'ar' },
+    { text: 'English',  flag: '/assets/images/flags/gb.svg',     lang: 'en' },
+    { text: 'Français', flag: '/assets/images/flags/cp.svg',  lang: 'fr' },
+    { text: 'العربية',  flag: '/assets/images/flags/tn.svg',      lang: 'ar' },
   ];
 
   constructor(
@@ -80,6 +85,13 @@ export class TopbarUserComponent implements OnInit, OnDestroy {
       this.countryName = defaultLang.text;
       this.cookieValue = defaultLang.lang;
     }
+    
+    this.topbarCartItems = cartData;
+    this.cart_length = this.topbarCartItems.length;
+    this.topbarCartItems.forEach((item: any) => {
+      var item_price = item.quantity * item.price;
+      this.total += item_price;
+    });
 
     // Subscribe to the current user observable to reactively toggle the topbar UI
     // between visitor buttons (Se connecter / S'inscrire) and user widget (Profile / Logout)
@@ -138,7 +150,7 @@ export class TopbarUserComponent implements OnInit, OnDestroy {
     if (!this.currentUser) return '';
     switch (this.currentUser.role) {
       case 'ADMIN': return 'Administrateur';
-      case 'ANNOUNCER': return 'Annonceur';
+      case 'ANNOUNCER': return 'Vendeur';
       case 'CLIENT': return 'Client';
       default: return 'Utilisateur';
     }
@@ -218,6 +230,16 @@ export class TopbarUserComponent implements OnInit, OnDestroy {
   toggleDropdown(event: Event) {
     event.stopPropagation();
     this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  // Delete Item
+  deleteItem(event: any, id: any) {
+    var price = event.target.closest('.dropdown-item').querySelector('.item_price').innerHTML;
+    var Total_price = this.total - price;
+    this.total = Total_price;
+    this.cart_length = this.cart_length - 1;
+    this.total > 1 ? (document.getElementById("empty-cart") as HTMLElement).style.display = "none" : (document.getElementById("empty-cart") as HTMLElement).style.display = "block";
+    document.getElementById('item_' + id)?.remove();
   }
 
   /** Clean up subscriptions to prevent memory leaks */

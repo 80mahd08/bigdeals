@@ -1,5 +1,5 @@
 <!-- Start Breadcrumbs -->
-<app-breadcrumbs title="Sellers" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+<app-breadcrumbs title="Examiner demande d'annonceur" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 <!-- End Breadcrumbs -->
 
 
@@ -8,7 +8,7 @@
         <div class="row g-2">
             <div class="col-xl-3">
                 <div class="search-box">
-                    <input type="text" class="form-control search" placeholder="Search for sellers & owner name or something..." [(ngModel)]="searchTerm" (ngModelChange)="performSearch()">
+                    <input type="text" class="form-control search" placeholder="Rechercher une demande..." [(ngModel)]="searchTerm" (ngModelChange)="performSearch()">
                     <i class="ri-search-line search-icon"></i>
                 </div>
             </div>
@@ -16,13 +16,13 @@
             <div class="col-xl-3 ms-auto">
                 <div>
                     <select class="form-control" data-choices data-choices-search-false [(ngModel)]="category" (ngModelChange)="categoryFilter()">
-                        <option value="">Select Categories</option>
-                        <option value="All">All</option>
-                        <option value="Retailer">Retailer</option>
-                        <option value="Health & Medicine">Health & Medicine</option>
-                        <option value="Manufacturer">Manufacturer</option>
-                        <option value="Food Service">Food Service</option>
-                        <option value="Computers & Electronics">Computers & Electronics</option>
+                        <option value="">Toutes les catégories</option>
+                        <option value="All">Tout</option>
+                        <option value="Retailer">Détaillant</option>
+                        <option value="Health & Medicine">Santé & Médecine</option>
+                        <option value="Manufacturer">Fabricant</option>
+                        <option value="Food Service">Restauration</option>
+                        <option value="Computers & Electronics">Informatique & Électronique</option>
                     </select>
                 </div>
             </div>
@@ -68,8 +68,12 @@
                         <span class="text-muted">Wallet Balance</span>
                     </div>
                 </div>
-                <div class="mt-4">
-                    <a routerLink="/ecommerce/seller-details" class="btn btn-light w-100">View Details</a>
+                <div class="mt-4 hstack gap-2">
+                    <button type="button" class="btn btn-soft-success w-100">Approuver</button>
+                    <button type="button" class="btn btn-soft-danger w-100">Rejeter</button>
+                </div>
+                <div class="mt-2">
+                    <a routerLink="/ecommerce/seller-details" class="btn btn-light w-100">Détails</a>
                 </div>
             </div>
         </div>

@@ -267,15 +267,6 @@ export class restApiService {
     return this.http.delete(GlobalComponent.API_URL + 'apps/lead/' + id, { headers: headerToken, responseType: 'text' });
   }
 
-  // Crypto Order
-  getCryptoOrderData(): Observable<any[]> {
-    return this.http.get<any[]>('/app/cryptoOrder');
-  }
-
-  // Crypto Transaction
-  getTransactionData(): Observable<any[]> {
-    return this.http.get<any[]>('/app/transaction');
-  }
 
   // Job Application
   getApplicationData(): Observable<any[]> {

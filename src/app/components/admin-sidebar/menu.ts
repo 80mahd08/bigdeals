@@ -1,150 +1,121 @@
 import { MenuItem } from './menu.model';
 
 export const MENU: MenuItem[] = [
+  // ── TABLEAU DE BORD ──
   {
     id: 1,
-    label: 'MENUITEMS.BIGDEALS.DASHBOARDS.TEXT',
-    isTitle: true
+    label: 'Tableau de bord',
+    icon: 'ri-dashboard-2-line',
+    link: '/admin/dashboard',
   },
+
+  // ── GÉRER PAIEMENTS ET TRANSACTIONS ──
   {
     id: 2,
-    label: 'MENUITEMS.BIGDEALS.DASHBOARDS.ANALYTICS',
-    icon: 'ri-dashboard-2-line',
-    link: '/admin',
+    label: 'Gérer paiements et transactions',
+    icon: 'ri-money-dollar-circle-line',
+    link: '/admin/transactions',
   },
+
+  // ── EXAMINER DEMANDE D'ANNONCEUR ──
   {
     id: 3,
-    label: 'MENUITEMS.BIGDEALS.DASHBOARDS.SALES',
-    icon: 'ri-bar-chart-line',
-    link: '/admin',
+    label: "Examiner demande d'annonceur",
+    icon: 'ri-store-2-line',
+    link: '/admin/announcers',
   },
+
+  // ── GÉRER ANNONCES ──
   {
     id: 4,
-    label: 'MENUITEMS.BIGDEALS.MARKETPLACE.TEXT',
-    isTitle: true
+    label: 'Gérer annonces',
+    icon: 'ri-stack-line',
+    link: '/admin/ads',
   },
+
+  // ── GESTION DES CLIENTS (Valider / Bloquer) ──
   {
     id: 5,
-    label: 'MENUITEMS.BIGDEALS.MARKETPLACE.ADS.TEXT',
-    icon: 'ri-stack-line',
-    isCollapsed: true,
-    subItems: [
-      {
-        id: 51,
-        label: 'MENUITEMS.BIGDEALS.MARKETPLACE.ADS.ALL',
-        link: '/ads',
-        parentId: 5
-      },
-      {
-        id: 52,
-        label: 'MENUITEMS.BIGDEALS.MARKETPLACE.ADS.PENDING',
-        link: '/ads',
-        parentId: 5,
-        badge: { variant: 'badge-soft-danger', text: '5' }
-      },
-      {
-        id: 53,
-        label: 'MENUITEMS.BIGDEALS.MARKETPLACE.ADS.CATEGORIES',
-        link: '/admin',
-        parentId: 5
-      },
-      {
-        id: 54,
-        label: 'MENUITEMS.BIGDEALS.MARKETPLACE.ADS.FEATURED',
-        link: '/ads',
-        parentId: 5
-      }
-    ]
+    label: 'Gestion des clients',
+    icon: 'ri-group-line',
+    link: '/admin/users',
   },
+
+  // ── GÉRER CATÉGORIES ──
   {
     id: 6,
-    label: 'MENUITEMS.BIGDEALS.MARKETPLACE.SELLERS.TEXT',
-    icon: 'ri-store-2-line',
-    isCollapsed: true,
-    subItems: [
-      {
-        id: 61,
-        label: 'MENUITEMS.BIGDEALS.MARKETPLACE.SELLERS.TEXT',
-        link: '/admin',
-        parentId: 6
-      },
-      {
-        id: 62,
-        label: 'MENUITEMS.BIGDEALS.MARKETPLACE.SELLERS.VERIFICATION',
-        link: '/admin',
-        parentId: 6,
-        badge: { variant: 'badge-soft-warning', text: 'New' }
-      },
-      {
-        id: 63,
-        label: 'MENUITEMS.BIGDEALS.MARKETPLACE.SELLERS.SUBSCRIPTIONS',
-        link: '/admin',
-        parentId: 6
-      }
-    ]
+    label: 'Gérer catégories',
+    icon: 'ri-list-check',
+    link: '/admin/categories',
   },
-  {
-    id: 7,
-    label: 'MENUITEMS.BIGDEALS.MARKETPLACE.CLIENTS',
-    icon: 'ri-user-settings-line',
-    link: '/admin',
-  },
-  {
-    id: 8,
-    label: 'MENUITEMS.BIGDEALS.SUPPORT.TEXT',
-    isTitle: true
-  },
-  {
-    id: 9,
-    label: 'MENUITEMS.BIGDEALS.SUPPORT.TICKETS',
-    icon: 'ri-customer-service-2-line',
-    link: '/admin',
-    badge: { variant: 'bg-primary', text: '3' }
-  },
+
+  // ── PARAMÈTRES (Optional but good for completeness) ──
   {
     id: 10,
-    label: 'MENUITEMS.BIGDEALS.SUPPORT.REVIEWS',
-    icon: 'ri-chat-voice-line',
-    link: '/admin',
-  },
-  {
-    id: 11,
-    label: 'MENUITEMS.BIGDEALS.FINANCE.TEXT',
-    isTitle: true
-  },
-  {
-    id: 12,
-    label: 'MENUITEMS.BIGDEALS.FINANCE.INVOICES',
-    icon: 'ri-file-list-3-line',
-    link: '/admin',
-  },
-  {
-    id: 13,
-    label: 'MENUITEMS.BIGDEALS.FINANCE.TRANSACTIONS',
-    icon: 'ri-money-dollar-circle-line',
-    link: '/admin',
-  },
-  {
-    id: 14,
     label: 'MENUITEMS.BIGDEALS.SYSTEM.TEXT',
     isTitle: true
   },
   {
-    id: 15,
-    label: 'MENUITEMS.BIGDEALS.SYSTEM.CONFIG',
+    id: 11,
+    label: 'Configuration',
     icon: 'ri-settings-4-line',
-    link: '/admin',
+    link: '/admin/dashboard',
+  },
+];
+
+export const SELLER_MENU: MenuItem[] = [
+  // ── My Store ──
+  {
+    id: 200,
+    label: 'MON ESPACE VENDEUR',
+    isTitle: true
   },
   {
-    id: 16,
-    label: 'MENUITEMS.BIGDEALS.SYSTEM.I18N',
-    icon: 'ri-global-line',
-    link: '/admin',
+    id: 201,
+    label: 'Tableau de bord',
+    icon: 'ri-dashboard-2-line',
+    link: '/announcer/dashboard',
   },
   {
-    id: 17,
-    label: 'MENUITEMS.BIGDEALS.SYSTEM.ROLES',
-    icon: 'ri-shield-user-line',
-    link: '/admin',
+    id: 202,
+    label: 'Mes Annonces',
+    icon: 'ri-stack-line',
+    link: '/announcer/dashboard',
+  },
+  {
+    id: 203,
+    label: 'Créer une Annonce',
+    icon: 'ri-add-circle-line',
+    link: '/announcer/ads/new',
+  },
+  // ── Shopping ──
+  {
+    id: 210,
+    label: 'MON ESPACE CLIENT',
+    isTitle: true
+  },
+  {
+    id: 211,
+    label: 'Mon Profil',
+    icon: 'ri-user-settings-line',
+    link: '/client/profile',
+  },
+  {
+    id: 212,
+    label: 'Mon Panier',
+    icon: 'ri-shopping-cart-2-line',
+    link: '/client/cart',
+  },
+  {
+    id: 213,
+    label: 'Mes Favoris',
+    icon: 'ri-heart-line',
+    link: '/client/favorites',
+  },
+  {
+    id: 214,
+    label: 'Mes Commandes',
+    icon: 'ri-file-list-3-line',
+    link: '/client/orders',
   }
 ];

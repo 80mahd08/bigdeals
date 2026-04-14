@@ -20,7 +20,7 @@ import { AdFormComponent } from './ad-form/ad-form.component';
     AnnouncerRoutingModule,
     NgbDropdownModule,
     FormsModule,
-    TranslateModule
+    TranslateModule.forChild({ extend: true })
   ]
 })
 export class AnnouncerModule { }

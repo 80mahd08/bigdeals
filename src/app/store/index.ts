@@ -1,9 +1,13 @@
-// Helper to satisfy imports in ported template components
+import { ActionReducerMap } from '@ngrx/store';
+import { authenticationReducer, AuthenticationState } from './Authentication/authentication.reducer';
+import { ecommercerReducer, EcommerceState } from './Ecommerce/ecommerce_reducer';
 
 export interface RootReducerState {
-    Authentication?: any;
-    Ecommerce?: any;
-    Invoice?: any;
+  authentication: AuthenticationState;
+  ecommerce: EcommerceState;
 }
 
-export const rootReducer = {};
+export const rootReducer: ActionReducerMap<RootReducerState> = {
+  authentication: authenticationReducer,
+  ecommerce: ecommercerReducer
+};

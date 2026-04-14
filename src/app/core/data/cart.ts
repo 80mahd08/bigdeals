@@ -1,35 +1,35 @@
-const cartData = [
-    {
-        image: 'assets/images/products/img-8.png',
-        name: 'Sweatshirt for Men (Pink)',
-        color: 'Pink',
-        size: 'M',
-        price: '119.99',
-        quantity: 2,
-        total: '239.98',
-        id:"1",
-    },
-    {
-        image: 'assets/images/products/img-7.png',
-        name: 'Noise NoiseFit Endure Smart Watch',
-        color: 'Black',
-        size: '32.5mm',
-        price: '94.99',
-        quantity: 1,
-        total: '94.99',
-        id:"2",
-    },
-    {
-        image: 'assets/images/products/img-3.png',
-        name: '350 ml Glass Grocery Container',
-        color: 'White',
-        size: '350 ml',
-        price: '24.99',
-        quantity: 1,
-        total: '24.99',
-        id:"3",
-    }
-  ];
-  
-  export { cartData };
-  
+export const cartData = [
+  {
+    id: '1',
+    img: 'assets/images/products/img-1.png',
+    product: 'Premium Wireless Headphones',
+    price: '199.99',
+    quantity: 1,
+    category: 'Electronics',
+    color: 'Matte Black',
+    size: 'Adjustable',
+    total: '199.99'
+  },
+  {
+    id: '2',
+    img: 'assets/images/products/img-2.png',
+    product: 'Ultra Smartwatch Series 7',
+    price: '349.00',
+    quantity: 1,
+    category: 'Electronics',
+    color: 'Space Grey',
+    size: '44mm',
+    total: '349.00'
+  },
+  {
+    id: '3',
+    img: 'assets/images/products/img-10.png',
+    product: 'Leather Messenger Bag',
+    price: '85.50',
+    quantity: 1,
+    category: 'Fashion',
+    color: 'Coffee Brown',
+    size: 'Large',
+    total: '85.50'
+  }
+];

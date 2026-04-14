@@ -25,12 +25,6 @@ export class LandingRedirectGuard implements CanActivate {
                 this.router.navigate(['/admin']);
                 return false;
             }
-            
-            // If user is ANNOUNCER, redirect to announcer dashboard
-            if (currentUser.role === 'ANNOUNCER') {
-                this.router.navigate(['/announcer/dashboard']);
-                return false;
-            }
         }
 
         // Otherwise (Visitor or Client), allow landing page access

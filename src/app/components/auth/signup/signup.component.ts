@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 // NgRx actions and state type
-import { Register, googleLogin } from 'src/app/store/Authentication/authentication.actions';
+import { Register } from 'src/app/store/Authentication/authentication.actions';
 import { AuthenticationState } from 'src/app/store/Authentication/authentication.reducer';
 
 @Component({
@@ -112,11 +112,6 @@ export class SignupComponent implements OnInit, OnDestroy {
     return this.signupForm.controls;
   }
 
-  /**
-   * Triggered when the user submits the registration form.
-   * Validates form and dispatches the `Register` NgRx action.
-   * The NgRx Effect will call Firebase.createUserWithEmailAndPassword().
-   */
   onSubmit() {
     this.submitted = true;
     this.error = ''; // Clear any previous errors
@@ -126,19 +121,12 @@ export class SignupComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Dispatch the Register action — the Effect handles Firebase communication
+    // Dispatch the Register action — the Effect handles API communication
     this.store.dispatch(Register({
       email:      this.f['email'].value,
       first_name: this.f['name'].value,
       password:   this.f['password'].value
     }));
-  }
-
-  /**
-   * Triggered when the user clicks the Google login button.
-   */
-  onGoogleLogin() {
-    this.store.dispatch(googleLogin());
   }
 
   /**

@@ -1,5 +1,5 @@
 <!-- Start Breadcrumbs -->
-<app-breadcrumbs title="Customers" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+<app-breadcrumbs title="Gestion des clients" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 <!-- End Breadcrumbs -->
 
 <div class="row">
@@ -10,14 +10,14 @@
                 <div class="row g-4 align-items-center">
                     <div class="col-sm">
                         <div>
-                            <h5 class="card-title mb-0">Customer List</h5>
+                            <h5 class="card-title mb-0">Liste des utilisateurs</h5>
                         </div>
                     </div>
                     <div class="col-sm-auto">
                         <div class="d-flex flex-wrap align-items-start gap-2">
                             <button class="btn btn-soft-danger" id="remove-actions" style="display: none" (click)="deleteMultiple(deleteModel)"><i class="ri-delete-bin-2-line"></i></button>
-                            <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#showModal" (click)="openModal(content)"><i class="ri-add-line align-bottom me-1"></i> Add Customer</button>
-                            <button type="button" class="btn btn-info" (click)="csvFileExport()"><i class="ri-file-download-line align-bottom me-1"></i> Export</button>
+                            <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#showModal" (click)="openModal(content)"><i class="ri-add-line align-bottom me-1"></i> Ajouter un client</button>
+                            <button type="button" class="btn btn-info" (click)="csvFileExport()"><i class="ri-file-download-line align-bottom me-1"></i> Exporter</button>
                         </div>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
                 <div class="row g-3">
                     <div class="col-xl-6">
                         <div class="search-box">
-                            <input type="text" name="searchTerm" class="form-control" placeholder="Search for customer, email, phone, status or something..." [(ngModel)]="searchTerm" (ngModelChange)="performSearch()">
+                            <input type="text" name="searchTerm" class="form-control" placeholder="Rechercher un client..." [(ngModel)]="searchTerm" (ngModelChange)="performSearch()">
                             <i class="ri-search-line search-icon"></i>
                         </div>
                     </div>
@@ -72,15 +72,12 @@
                                             <input class="form-check-input" type="checkbox" id="checkAll" value="option" [(ngModel)]="masterSelected" (change)="checkUncheckAll($event)">
                                         </div>
                                     </th>
-                                    <th class="sort" (click)="onSort('customer')">Customer
-                                    </th>
-                                    <th class="sort" (click)="onSort('email')">Email</th>
-                                    <th class="sort" (click)="onSort('phone')">Phone</th>
-                                    <th class="sort" (click)="onSort('date')">Joining
-                                        Date</th>
-                                    <th class="sort" (click)="onSort('status')">Status
-                                    </th>
-                                    <th class="sort">Action</th>
+                                    <th class="sort" (click)="onSort('customer')">Client</th>
+                                    <th class="sort" (click)="onSort('email')">E-mail</th>
+                                    <th class="sort" (click)="onSort('phone')">Téléphone</th>
+                                    <th class="sort" (click)="onSort('date')">Date d'inscription</th>
+                                    <th class="sort" (click)="onSort('status')">Statut</th>
+                                    <th class="sort">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -106,16 +103,23 @@
                                     <td>
                                         <ngb-highlight [result]="data.date | date :'longDate'" [term]="searchTerm"></ngb-highlight>
                                     </td>
-                                    <td class="status"><span class="badge text-uppercase" [ngClass]=" { 'bg-success-subtle text-success': data.status === 'Active', 'bg-danger-subtle text-danger': data.status === 'Block' }">{{data.status}}</span>
+                                    <td class="status">
+                                        <span class="badge text-uppercase" [ngClass]=" { 'bg-success-subtle text-success': data.status === 'Active', 'bg-danger-subtle text-danger': data.status === 'Block' }">{{data.status === 'Active' ? 'Vérifié' : 'Bloqué'}}</span>
                                     </td>
                                     <td>
                                         <ul class="list-inline hstack gap-2 mb-0">
-                                            <li class="list-inline-item edit" ngbTooltip="Edit" placement="top">
+                                            <li class="list-inline-item" ngbTooltip="Valider" placement="top">
+                                                <button class="btn btn-sm btn-soft-success" [disabled]="data.status === 'Active'"><i class="ri-check-line"></i></button>
+                                            </li>
+                                            <li class="list-inline-item" ngbTooltip="Bloquer" placement="top">
+                                                <button class="btn btn-sm btn-soft-danger" [disabled]="data.status === 'Block'"><i class="ri-stop-mini-line"></i></button>
+                                            </li>
+                                            <li class="list-inline-item edit" ngbTooltip="Modifier" placement="top">
                                                 <a href="javascript:void(0);" data-bs-toggle="modal" class="text-primary d-inline-block edit-item-btn" (click)="editDataGet($index,content)">
                                                     <i class="ri-pencil-fill fs-16"></i>
                                                 </a>
                                             </li>
-                                            <li class="list-inline-item me-0" ngbTooltip="Remove" placement="top">
+                                            <li class="list-inline-item me-0" ngbTooltip="Supprimer" placement="top">
                                                 <a class="text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" data-bs-target="#deleteRecordModal" (click)="confirm(deleteModel,data._id)">
                                                     <i class="ri-delete-bin-5-fill fs-16"></i>
                                                 </a>

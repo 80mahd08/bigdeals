@@ -12,7 +12,6 @@ import {
   login,
   loginSuccess,
   loginFailure,
-  googleLogin,
   logout,
   logoutSuccess
 } from './authentication.actions';
@@ -21,33 +20,25 @@ import {
  * AuthenticationEffects
  *
  * NgRx Effects listen to dispatched actions and handle side-effects such as
- * making Firebase API calls, navigating between routes, and managing sessionStorage.
- *
- * Effects are the correct place to do async work in the NgRx pattern.
+ * making API calls and managing navigation.
  */
 @Injectable()
 export class AuthenticationEffects {
 
   /**
    * Register$ Effect
-   *
-   * Triggered by the `Register` action (dispatched from signup.component.ts).
-   * Calls the AuthenticationService.register() method which communicates with Firebase,
-   * then dispatches RegisterSuccess on success, or RegisterFailure on error.
-   * On success, navigates the user to the sign-in page.
    */
   Register$ = createEffect(() =>
     this.actions$.pipe(
       ofType(Register),
       exhaustMap(({ email, first_name, password }) =>
+        // Mapping first_name to username as expected by the backend RegisterDto
         this.authService.register(email, first_name, password).pipe(
           map((user) => {
-            // Navigate to sign-in page after successful registration
             this.router.navigate(['/auth/signin']);
             return RegisterSuccess({ user });
           }),
           catchError((error) => {
-            // Extract a readable error message from Firebase errors
             const errorMessage = this.extractErrorMessage(error);
             return of(RegisterFailure({ error: errorMessage }));
           })
@@ -58,11 +49,6 @@ export class AuthenticationEffects {
 
   /**
    * login$ Effect
-   *
-   * Triggered by the `login` action (dispatched from signin.component.ts).
-   * Calls the AuthenticationService.login() method which communicates with Firebase,
-   * then dispatches loginSuccess on success, or loginFailure on error.
-   * On success, navigates the user to the root route (home page / dashboard).
    */
   login$ = createEffect(() =>
     this.actions$.pipe(
@@ -70,40 +56,10 @@ export class AuthenticationEffects {
       exhaustMap(({ email, password }) =>
         this.authService.login(email, password).pipe(
           map((user) => {
-            // Navigate to the root home page on successful sign-in
             this.router.navigate(['/']);
             return loginSuccess({ user });
           }),
           catchError((error) => {
-            // Extract a readable error message from Firebase errors
-            const errorMessage = this.extractErrorMessage(error);
-            return of(loginFailure({ error: errorMessage }));
-          })
-        )
-      )
-    )
-  );
-
-  /**
-   * googleLogin$ Effect
-   *
-   * Triggered by the `googleLogin` action.
-   * Calls the AuthenticationService.googleLogin() method which communicates with Firebase,
-   * then dispatches loginSuccess on success, or loginFailure on error.
-   * On success, navigates the user to the root route.
-   */
-  googleLogin$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(googleLogin),
-      exhaustMap(() =>
-        this.authService.googleLogin().pipe(
-          map((user) => {
-            // Navigate to the root home page on successful sign-in
-            this.router.navigate(['/']);
-            return loginSuccess({ user });
-          }),
-          catchError((error) => {
-            // Extract a readable error message from Firebase errors
             const errorMessage = this.extractErrorMessage(error);
             return of(loginFailure({ error: errorMessage }));
           })
@@ -114,10 +70,6 @@ export class AuthenticationEffects {
 
   /**
    * logout$ Effect
-   *
-   * Triggered by the `logout` action (dispatched from the topbar or logout component).
-   * Calls the AuthenticationService.logout() method which signs out from Firebase,
-   * clears sessionStorage, then navigates the user to the sign-in page.
    */
   logout$ = createEffect(() =>
     this.actions$.pipe(
@@ -125,7 +77,6 @@ export class AuthenticationEffects {
       exhaustMap(() =>
         this.authService.logout().pipe(
           tap(() => {
-            // Navigate to sign-in page after successful logout
             this.router.navigate(['/auth/signin']);
           }),
           map(() => logoutSuccess())
@@ -141,33 +92,30 @@ export class AuthenticationEffects {
   ) { }
 
   /**
-   * Helper method to convert Firebase error codes into human-readable messages.
-   * Firebase throws errors with a `code` property like 'auth/wrong-password'.
-   *
-   * @param error - The error thrown by Firebase
-   * @returns A user-friendly error string
+   * Extracts a human-readable error message from the backend HttpErrorResponse.
    */
   private extractErrorMessage(error: any): string {
-    if (error?.code) {
-      switch (error.code) {
-        case 'auth/email-already-in-use':
-          return 'This email address is already registered.';
-        case 'auth/invalid-email':
-          return 'Please enter a valid email address.';
-        case 'auth/weak-password':
-          return 'Password must be at least 6 characters.';
-        case 'auth/user-not-found':
-          return 'No account found with this email.';
-        case 'auth/wrong-password':
-          return 'Incorrect password. Please try again.';
-        case 'auth/invalid-credential':
-          return 'Invalid email or password. Please try again.';
-        case 'auth/too-many-requests':
-          return 'Too many failed attempts. Please try again later.';
-        default:
-          return error.message || 'An unexpected error occurred.';
+    if (error.status === 0) {
+      return 'Impossible de se connecter au serveur. Vérifiez que l\'API est en cours d\'exécution.';
+    }
+
+    if (error.error) {
+      // If the error is a simple string (e.g., return Unauthorized("Invalid credentials"))
+      if (typeof error.error === 'string') {
+        return error.error;
+      }
+      
+      // If the error is an array of messages (e.g., Identity error result)
+      if (Array.isArray(error.error)) {
+        return error.error.join(' ');
+      }
+
+      // If it's a validation error object (ModelState)
+      if (typeof error.error === 'object') {
+        return 'Une erreur de validation est survenue. Veuillez vérifier vos informations.';
       }
     }
-    return error?.message || 'An unexpected error occurred.';
+
+    return 'Une erreur inattendue est survenue. Veuillez réessayer.';
   }
 }

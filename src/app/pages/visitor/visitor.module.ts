@@ -9,6 +9,8 @@ import { AdDetailComponent } from './ad-detail/ad-detail.component';
 import { SellerProfileComponent } from './seller-profile/seller-profile.component';
 import { LayoutsModule } from '../../components/layouts.module';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @NgModule({
   declarations: [
     LandingComponent,
@@ -22,7 +24,8 @@ import { LayoutsModule } from '../../components/layouts.module';
     LayoutsModule,
     NgbNavModule,
     NgbPaginationModule,
-    NgbDropdownModule
+    NgbDropdownModule,
+    TranslateModule.forChild({ extend: true })
   ]
 })
 export class VisitorModule { }

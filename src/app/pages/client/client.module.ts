@@ -14,6 +14,8 @@ import { DetailsComponent as InvoiceDetailsComponent } from './invoices/details/
 
 // Ng2SearchPipeModule or other common template modules might be needed, add them if the build complains.
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @NgModule({
   declarations: [
     ProfileComponent,
@@ -33,7 +35,8 @@ import { DetailsComponent as InvoiceDetailsComponent } from './invoices/details/
     NgbTypeaheadModule,
     NgbTooltipModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslateModule.forChild({ extend: true })
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

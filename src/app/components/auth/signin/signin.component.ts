@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 // NgRx actions and state selectors
-import { login, googleLogin } from 'src/app/store/Authentication/authentication.actions';
+import { login } from 'src/app/store/Authentication/authentication.actions';
 import { AuthenticationState } from 'src/app/store/Authentication/authentication.reducer';
 
 @Component({
@@ -90,18 +90,11 @@ export class SigninComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Dispatch the `login` action — effects will handle the Firebase API call
+    // Dispatch the `login` action — effects will handle the API call
     this.store.dispatch(login({
       email: this.f['email'].value,
       password: this.f['password'].value
     }));
-  }
-
-  /**
-   * Triggered when the user clicks the Google login button.
-   */
-  onGoogleLogin() {
-    this.store.dispatch(googleLogin());
   }
 
   /**

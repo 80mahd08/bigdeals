@@ -9,7 +9,7 @@ import { Options } from 'ngx-slider-v2';
 import { restApiService } from "../../../core/services/rest-api.service";
 import { GlobalComponent } from '../../../global-component';
 import { Router } from '@angular/router';
-import { RootReducerState } from '../../../store/index';
+import { RootReducerState } from 'src/app/store';
 import { Store } from '@ngrx/store';
 import { deleteProduct, fetchProductListData } from 'src/app/store/Ecommerce/ecommerce_action';
 import { selectDataLoading, selectProductData } from 'src/app/store/Ecommerce/ecommerce_selector';
@@ -73,7 +73,7 @@ export class ProductsComponent {
     private router: Router,
     public service: PaginationService,
     private formBuilder: UntypedFormBuilder,
-    private store: Store<{ data: RootReducerState }>,
+    private store: Store<RootReducerState>,
     public restApiService: restApiService) { }
 
   ngOnInit(): void {
