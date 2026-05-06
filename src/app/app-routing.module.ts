@@ -6,7 +6,8 @@ import { LandingRedirectGuard } from './core/guards/landing-redirect.guard';
 const routes: Routes = [
     {
         path: "auth",
-        loadChildren: () => import('./components/auth/auth.module').then(m => m.AuthModule)    
+        loadChildren: () => import('./components/auth/auth.module').then(m => m.AuthModule),
+        canActivate: [LandingRedirectGuard]
     },
     {
         path: "",
@@ -17,11 +18,13 @@ const routes: Routes = [
         path: "client",
         loadChildren: () => import('./pages/client/client.module').then(m => m.ClientModule),
         canActivate: [RoleGuard],
-        data: { roles: ['CLIENT', 'ANNOUNCER'] }
+        data: { roles: ['CLIENT', 'ANNONCEUR'] }
     },
     {
         path: "announcer",
-        loadChildren: () => import('./pages/announcer/announcer.module').then(m => m.AnnouncerModule)
+        loadChildren: () => import('./pages/announcer/announcer.module').then(m => m.AnnouncerModule),
+        canActivate: [RoleGuard],
+        data: { roles: ['ANNONCEUR', 'CLIENT'] }
     },
     {
         path: "admin",

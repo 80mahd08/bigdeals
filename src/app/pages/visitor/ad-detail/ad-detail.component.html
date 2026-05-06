@@ -1,152 +1,432 @@
-<div class="row">
-    <div class="col-xl-9">
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <!-- Image Gallery -->
-                    <div class="col-lg-6">
-                        <div class="product-img-slider">
-                            <img [src]="ad.image" alt="" class="img-fluid d-block rounded mb-3">
-                            <div class="row g-2">
-                                @for (img of ad.gallery; track $index) {
-                                    <div class="col-3">
-                                        <img [src]="img" alt="" class="img-fluid d-block rounded cursor-pointer border" (click)="ad.image = img">
+@if (isLoading) {
+    <div class="py-5 text-center">
+        <div class="spinner-border text-success" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+} @else if (hasError || !ad) {
+    <div class="py-5 text-center">
+        <lord-icon
+            src="https://cdn.lordicon.com/tdrtiskw.json"
+            trigger="loop"
+            colors="primary:#f06548,secondary:#f06548"
+            style="width:72px;height:72px">
+        </lord-icon>
+
+        <h5 class="mt-4">Annonce introuvable</h5>
+        <p class="text-muted">Cette annonce a peut-être été supprimée ou n'existe pas.</p>
+
+        <button class="btn btn-primary mt-3" routerLink="/ads">
+            Retour aux annonces
+        </button>
+    </div>
+} @else {
+    <div class="marketplace-container container py-5">
+        <div class="row">
+        <div class="col-xl-8 col-lg-7">
+            <!-- Main Image Card -->
+            <div class="card card-marketplace overflow-hidden mb-4">
+                <div class="card-body p-0">
+                    <div class="product-img-slider bg-light-subtle p-4 text-center position-relative">
+                        <img
+                            [src]="currentMainImage"
+                            (error)="onImageError($event)"
+                            [alt]="ad.titre"
+                            class="img-fluid rounded shadow-sm"
+                            style="max-height: 500px; width: auto; object-fit: contain;">
+
+                        @if (ad.images && ad.images.length > 1) {
+                            <div class="mt-4 d-flex gap-2 justify-content-center overflow-auto pb-2">
+                                @for (img of ad.images; track img.idImageAnnonce) {
+                                    <div
+                                        class="thumbnail-item"
+                                        [class.active]="currentMainImage === img.url"
+                                        (click)="setMainImage(img.url)">
+
+                                        <img
+                                            [src]="img.url"
+                                            (error)="onImageError($event)"
+                                            alt="Miniature annonce"
+                                            class="rounded border"
+                                            style="height: 60px; width: 60px; object-fit: cover; cursor: pointer;">
                                     </div>
                                 }
                             </div>
-                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description Card -->
+            <div class="card card-marketplace mb-4">
+                <div class="card-header pt-4 px-4">
+                    <h5 class="card-title mb-0 fw-bold">Description</h5>
+                </div>
+
+                <div class="card-body px-4 pb-4">
+                    <p class="fs-15 lh-base mb-0">
+                        {{ ad.description || 'Aucune description fournie.' }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Characteristics Card -->
+            @if (ad.valeursAttributs && ad.valeursAttributs.length > 0) {
+                <div class="card card-marketplace mb-4">
+                    <div class="card-header pt-4 px-4">
+                        <h5 class="card-title mb-0 fw-bold">Caractéristiques</h5>
                     </div>
 
-                    <!-- Ad Info -->
-                    <div class="col-lg-6">
-                        <div class="mt-4 mt-lg-0">
-                            <div class="mb-3">
-                                <span class="badge bg-success-subtle text-success fs-12">{{ad.category}}</span>
-                                <span class="text-muted ms-2"><i class="ri-calendar-line align-bottom me-1"></i> Publié {{ad.date}}</span>
+                    <div class="card-body px-4 pb-4">
+                        <div class="row g-3">
+                            @for (attr of ad.valeursAttributs; track attr.idAttributCategorie) {
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center p-3 border rounded bg-light-subtle">
+                                        <span class="text-muted flex-grow-1">
+                                            <i class="ri-checkbox-circle-line text-success me-2"></i>
+                                            {{ attr.nom }}
+                                        </span>
+
+                                        <span class="fw-bold">
+                                            {{ attr.valeur }}
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Avis section -->
+            <div class="card card-marketplace mb-4 shadow-sm border-0">
+                <div class="card-header pt-4 px-4 d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0 fw-bold">Avis Clients ({{ avisList.length }})</h5>
+                </div>
+
+                <div class="card-body px-4 pb-4">
+                    <!-- Avis List -->
+                    @if (avisList.length > 0) {
+                        <div class="avis-list mb-4">
+                            @for (avis of avisList; track avis.idAvis) {
+                                <div class="d-flex mb-4 pb-3 border-bottom last-child-border-0">
+                                    <div class="flex-shrink-0">
+                                        <div class="avatar-sm">
+                                            @if (avis.photoProfilUrl) {
+                                                <img [src]="avis.photoProfilUrl" [alt]="avis.prenomUtilisateur" class="rounded-circle img-fluid" style="width: 40px; height: 40px; object-fit: cover;">
+                                            } @else {
+                                                <div class="avatar-title bg-info-subtle text-info rounded-circle fw-bold text-uppercase">
+                                                    {{ avis.prenomUtilisateur.charAt(0) }}
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="mb-1 fw-bold">{{ avis.prenomUtilisateur }} {{ avis.nomUtilisateur }}</h6>
+                                                
+                                                <!-- Stars Display -->
+                                                <div class="text-warning mb-2 fs-13">
+                                                    @for (star of [1,2,3,4,5]; track star) {
+                                                        <i [class]="star <= avis.note ? 'ri-star-fill' : 'ri-star-line'"></i>
+                                                    }
+                                                </div>
+
+                                                <p class="text-muted fs-12 mb-2">
+                                                    <i class="ri-calendar-line align-bottom me-1"></i>
+                                                    {{ avis.dateCreation | date:'mediumDate' }}
+                                                </p>
+                                            </div>
+                                            
+                                            <!-- My Avis Actions -->
+                                            @if (currentUser && currentUser.idUtilisateur === avis.idUtilisateur && !isEditingAvis) {
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-sm btn-soft-primary" (click)="startEditing()">
+                                                        <i class="ri-edit-line"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-soft-danger" (click)="deleteAvis()">
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </button>
+                                                </div>
+                                            }
+                                        </div>
+                                        
+                                        @if (currentUser && currentUser.idUtilisateur === avis.idUtilisateur && isEditingAvis) {
+                                            <!-- Edit Form -->
+                                            <div class="mt-2 bg-light-subtle p-3 rounded border">
+                                                <div class="mb-2">
+                                                    <label class="form-label fs-13 text-muted mb-1">Votre note :</label>
+                                                    <div class="d-flex gap-1 text-warning fs-18">
+                                                        @for (star of [1,2,3,4,5]; track star) {
+                                                            <i [class]="star <= selectedNote ? 'ri-star-fill' : 'ri-star-line'" 
+                                                               (click)="setNote(star)" style="cursor: pointer;"></i>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <textarea class="form-control mb-2 border-0 shadow-none" rows="3" [(ngModel)]="newCommentaire" placeholder="Modifiez votre avis..."></textarea>
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-success btn-sm px-3" [disabled]="isSubmittingAvis || !newCommentaire.trim()" (click)="submitAvis()">
+                                                        @if (isSubmittingAvis) {
+                                                            <span class="spinner-border spinner-border-sm me-1"></span>
+                                                        }
+                                                        Enregistrer
+                                                    </button>
+                                                    <button class="btn btn-light btn-sm px-3" (click)="cancelEditing()">Annuler</button>
+                                                </div>
+                                            </div>
+                                        } @else {
+                                            <p class="mb-0 lh-base">{{ avis.commentaire }}</p>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        @if (totalAvisCount > avisPageSize) {
+                            <div class="d-flex justify-content-center mt-4">
+                                <ngb-pagination
+                                    [collectionSize]="totalAvisCount"
+                                    [(page)]="currentAvisPage"
+                                    [pageSize]="avisPageSize"
+                                    (pageChange)="onAvisPageChange($event)"
+                                    [maxSize]="5"
+                                    [rotate]="true"
+                                    [boundaryLinks]="false"
+                                    class="pagination-separated pagination-sm">
+                                </ngb-pagination>
                             </div>
-                            <h4 class="mb-3 fw-bold">{{ad.title}}</h4>
-                            <div class="d-flex align-items-center mb-3">
-                                <h3 class="text-success fw-bold mb-0 me-3">{{ad.price | currency:'EUR':'symbol':'1.0-0'}}</h3>
-                                @if(ad.isPremium){
-                                    <span class="badge bg-warning-subtle text-warning"><i class="ri-vip-crown-fill me-1"></i>Vendeur Premium</span>
-                                }
-                            </div>
+                        }
+                    } @else {
+                        <div class="text-center py-5 mb-4 bg-light-subtle bg-opacity-50 rounded-3 border border-dashed">
+                            <i class="ri-chat-voice-line fs-48 text-muted mb-2 d-block"></i>
+                            <p class="text-muted mb-0">Aucun avis pour le moment. Soyez le premier à en laisser un !</p>
+                        </div>
+                    }
+
+                    <!-- Add Avis Form -->
+                    @if (isLoggedIn && !isOwner && !myAvis) {
+                        <div class="bg-light-subtle p-4 rounded-3 border mt-4">
+                            <h6 class="fw-bold mb-3">Laisser un avis</h6>
                             
-                            <div class="mb-4">
-                                <h6 class="fs-14 text-muted text-uppercase mb-2">Description :</h6>
-                                <p class="text-muted fs-15">{{ad.description}}</p>
+                            <div class="mb-3">
+                                <label class="form-label fs-14 text-muted mb-1">Votre note globale :</label>
+                                <div class="d-flex gap-2 text-warning fs-24">
+                                    @for (star of [1,2,3,4,5]; track star) {
+                                        <i [class]="star <= selectedNote ? 'ri-star-fill cursor-pointer' : 'ri-star-line cursor-pointer'" 
+                                           (click)="setNote(star)" style="cursor: pointer;"></i>
+                                    }
+                                </div>
                             </div>
 
-                            <div class="row g-3 mb-4">
-                                <div class="col-sm-6">
-                                    <div class="p-2 border border-dashed rounded text-center">
-                                        <p class="text-muted mb-1 fs-12">État</p>
-                                        <h6 class="mb-0">Neuf</h6>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="p-2 border border-dashed rounded text-center">
-                                        <p class="text-muted mb-1 fs-12">Localisation</p>
-                                        <h6 class="mb-0">{{ad.location}}</h6>
-                                    </div>
-                                </div>
+                            <textarea 
+                                class="form-control mb-3 border-0 shadow-sm" 
+                                rows="3" 
+                                [(ngModel)]="newCommentaire"
+                                placeholder="Partagez votre expérience avec ce vendeur pour cette annonce..."></textarea>
+                            <button 
+                                class="btn btn-success px-4 py-2 fw-bold shadow-none" 
+                                [disabled]="isSubmittingAvis || !newCommentaire.trim()"
+                                (click)="submitAvis()">
+                                @if (isSubmittingAvis) {
+                                    <span class="spinner-border spinner-border-sm me-1"></span>
+                                }
+                                Publier l'avis
+                            </button>
+                        </div>
+                    } @else if (!isLoggedIn) {
+                        <div class="alert alert-info border-info-subtle d-flex align-items-center mt-4 mb-0 fs-13">
+                            <i class="ri-information-line fs-18 me-2"></i>
+                            <div>
+                                <a routerLink="/auth/signin" class="fw-bold text-decoration-underline text-info">Connectez-vous</a> pour publier un avis sur cette annonce.
                             </div>
+                        </div>
+                    } @else if (isOwner) {
+                        <div class="alert alert-warning border-warning-subtle d-flex align-items-center mt-4 mb-0 fs-13">
+                            <i class="ri-alert-line fs-18 me-2"></i>
+                            <div>
+                                Vous ne pouvez pas publier un avis sur votre propre annonce.
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-5">
+            <!-- Sticky Sidebar Info -->
+            <div class="sticky-side-div">
+                <div class="card card-marketplace mb-4">
+                    <div class="card-body p-4">
+                        <div class="mb-3 d-flex justify-content-between align-items-start">
+                            <span class="badge bg-success-subtle text-success px-3 py-2 fs-12">
+                                {{ categorie?.nom || 'Chargement...' }}
+                            </span>
 
                             <div class="d-flex gap-2">
-                                <button class="btn btn-primary flex-grow-1 py-2 shadow-none" (click)="contactWhatsapp()">
-                                    <i class="ri-whatsapp-line align-bottom me-1"></i> WhatsApp
-                                </button>
-                                <button class="btn btn-soft-info flex-grow-1 py-2 shadow-none" (click)="contactPhone()">
-                                    <i class="ri-phone-line align-bottom me-1"></i> Téléphone
+                                @if (isLoggedIn) {
+                                    <button
+                                        class="btn btn-icon btn-soft-danger rounded-circle shadow-none"
+                                        [class.active]="isFavorite()"
+                                        (click)="toggleFavorite()">
+                                        <i [class]="isFavorite() ? 'ri-heart-fill fs-20' : 'ri-heart-line fs-20'"></i>
+                                    </button>
+                                }
+                                
+                                <span class="text-muted fs-13 mt-2">
+                                    <i class="ri-time-line align-bottom me-1"></i>
+                                    {{ ad.dateCreation | date:'mediumDate' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <h3 class="fw-bold mb-3">{{ ad.titre }}</h3>
+
+                        <div class="d-flex align-items-center mb-4">
+                            <h2 class="text-success fw-bold mb-0">
+                                {{ ad.prix | currency:'TND':'code':'1.0-0' }}
+                            </h2>
+                        </div>
+
+                        <div class="p-3 border rounded bg-light-subtle mb-4">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="ri-map-pin-2-fill text-danger fs-20"></i>
+                                </div>
+
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1 fw-bold">Localisation</h6>
+                                    <p class="text-muted mb-0">
+                                        {{ ad.ville || 'Non spécifié' }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CTA Buttons -->
+                        @if (canSeeBuyerActions) {
+                            <div class="d-grid gap-3 mb-4 mt-2">
+                                <button
+                                    class="btn btn-success btn-lg py-3 fw-bold shadow-none"
+                                    (click)="addToCart()">
+                                    <i class="ri-shopping-cart-2-line align-bottom me-1"></i>
+                                    Ajouter au panier
                                 </button>
                             </div>
+                        } @else if (!isLoggedIn) {
+                            <div class="alert alert-info border-info-subtle mb-4 mt-2 text-center fs-13">
+                                <i class="ri-information-line align-bottom me-1"></i>
+                                <a routerLink="/auth/signin" class="fw-bold text-decoration-underline text-info">Connectez-vous</a> pour contacter l’annonceur ou ajouter au panier.
+                            </div>
+                        }
+
+                        <!-- Contact Methods -->
+                        @if (canSeeBuyerActions) {
+                            <div class="row g-2 mb-4 mt-2">
+                                <div class="col-6">
+                                    <button
+                                        class="btn btn-outline-success w-100 py-2 shadow-none"
+                                        (click)="contactWhatsapp()">
+                                        <i class="ri-whatsapp-line align-bottom me-1"></i>
+                                        WhatsApp
+                                    </button>
+                                </div>
+
+                                <div class="col-6">
+                                    <button
+                                        class="btn btn-outline-info w-100 py-2 shadow-none"
+                                        (click)="contactPhone()">
+                                        <i class="ri-phone-line align-bottom me-1"></i>
+                                        Appeler
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <a href="javascript:void(0);" class="text-muted text-decoration-underline" (click)="openReportModal(reportModal)">
+                                    <i class="ri-flag-line align-bottom me-1"></i> Signaler cette annonce
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Seller Info Card -->
+                <div class="card card-marketplace mb-4">
+                    <div class="card-body p-4 text-center">
+                        <div class="avatar-lg mx-auto mb-3">
+                            @if (ad.annonceurPhotoUrl) {
+                                <img [src]="ad.annonceurPhotoUrl" [alt]="ad.annonceurNom" class="img-thumbnail rounded-circle shadow-sm" style="width: 80px; height: 80px; object-fit: cover;">
+                            } @else {
+                                <div class="avatar-title bg-info-subtle text-info rounded-circle fs-48 fw-bold shadow-sm border border-2 d-flex align-items-center justify-content-center">
+                                    {{ ad.annonceurNom ? ad.annonceurNom.charAt(0).toUpperCase() : 'U' }}
+                                </div>
+                            }
+                        </div>
+
+                        @if (ad.annonceurNom) {
+                            <h5 class="mb-1 fw-bold">{{ ad.annonceurNom }}</h5>
+                        } @else {
+                            <h5 class="mb-1 fw-bold">Vendeur #{{ ad.idUtilisateur }}</h5>
+                        }
+                        <p class="text-muted mb-0">Membre de BigDeals</p>
+                        <div class="mt-3">
+                            <button class="btn btn-soft-success btn-sm w-100" [routerLink]="['/seller', ad.idUtilisateur]">
+                                <i class="ri-user-search-line align-bottom me-1"></i> {{ isOwner ? 'Voir mon profil comme visiteur' : 'Voir le profil' }}
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Additional Info -->
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Détails supplémentaires</h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-borderless mb-0">
-                        <tbody>
-                            @for (detail of ad.specs; track $index) {
-                                <tr>
-                                    <th scope="row" style="width: 250px;" class="ps-0">{{detail.label}}</th>
-                                    <td class="text-muted">{{detail.value}}</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <!-- Right Sidebar: Seller & Location -->
-    <div class="col-xl-3">
-        <!-- Seller Info -->
-        <div class="card">
-            <div class="card-body text-center">
-                <div class="position-relative d-inline-block mb-3">
-                    <img [src]="ad.sellerAvatar" alt="" class="avatar-lg rounded-circle img-thumbnail shadow">
-                    <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-2 border-white rounded-circle"></span>
-                </div>
-                <h5 class="mb-1"><a [routerLink]="['/seller', 1]" class="text-body fw-bold">{{ad.sellerName}}</a></h5>
-                <p class="text-muted mb-3">Membre depuis Jan 2024</p>
-                
-                <div class="d-flex justify-content-center gap-2 mb-3">
-                    <div class="text-warning">
-                        <i class="ri-star-fill"></i>
-                        <i class="ri-star-fill"></i>
-                        <i class="ri-star-fill"></i>
-                        <i class="ri-star-fill"></i>
-                        <i class="ri-star-half-fill"></i>
-                        <span class="text-muted ms-1">(4.8)</span>
-                    </div>
-                </div>
-
-                <div class="d-flex gap-2">
-                    <button class="btn btn-soft-success w-100 shadow-none"><i class="ri-user-follow-line me-1"></i> Suivre</button>
-                    <button class="btn btn-soft-primary w-100 shadow-none" routerLink="/client/chat"><i class="ri-chat-1-line me-1"></i> Message</button>
+    @if (relatedAds.length > 0) {
+        <div class="mt-5 mb-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="flex-grow-1">
+                    <h4 class="mb-0 fw-bold">Annonces Similaires</h4>
                 </div>
             </div>
-            <div class="card-footer bg-light-subtle text-center py-2">
-                <a [routerLink]="['/seller', 1]" class="link-success fw-medium">Voir toutes ses annonces <i class="ri-arrow-right-line align-middle ms-1"></i></a>
+
+            <div class="row">
+                @for (related of relatedAds; track related.idAnnonce) {
+                    <div class="col-xl-3 col-sm-6 mb-4">
+                        <app-ad-card [ad]="related" [compact]="true"></app-ad-card>
+                    </div>
+                }
             </div>
         </div>
+    }
+    </div>
+}
 
-        <!-- Location Map Placeholder -->
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Localisation</h5>
+<!-- Report Modal -->
+<ng-template #reportModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header border-bottom-dashed">
+            <h5 class="modal-title fw-bold">Signaler cette annonce</h5>
+            <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+        </div>
+        <div class="modal-body p-4">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Type de signalement</label>
+                <select class="form-select" #reportType>
+                    @for (type of reportTypes; track type) {
+                        <option [value]="type">{{type}}</option>
+                    }
+                </select>
             </div>
-            <div class="card-body p-0">
-                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                    <div class="text-center">
-                        <i class="ri-map-pin-2-fill fs-36 text-danger"></i>
-                        <p class="mt-2 text-muted fw-medium">{{ad.location}}</p>
-                    </div>
-                </div>
+            <div class="mb-0">
+                <label class="form-label fw-bold">Détails / Motif</label>
+                <textarea class="form-control" rows="4" placeholder="Expliquez pourquoi vous signalez cette annonce..." #reportMotif></textarea>
             </div>
         </div>
-
-        <!-- Share -->
-        <div class="card">
-            <div class="card-body">
-                <h6 class="text-uppercase fw-semibold mb-3 fs-12">Partager l'annonce :</h6>
-                <div class="d-flex flex-wrap gap-2">
-                    <button class="btn btn-icon btn-soft-primary rounded-circle"><i class="ri-facebook-fill"></i></button>
-                    <button class="btn btn-icon btn-soft-info rounded-circle"><i class="ri-twitter-fill"></i></button>
-                    <button class="btn btn-icon btn-soft-danger rounded-circle"><i class="ri-instagram-fill"></i></button>
-                    <button class="btn btn-icon btn-soft-success rounded-circle"><i class="ri-whatsapp-fill"></i></button>
-                </div>
-            </div>
+        <div class="modal-footer bg-light-subtle">
+            <button type="button" class="btn btn-light" (click)="modal.dismiss()">Annuler</button>
+            <button type="button" class="btn btn-danger" (click)="submitReport(reportType.value, reportMotif.value, modal)">
+                Envoyer le signalement
+            </button>
         </div>
     </div>
-</div>
+</ng-template>

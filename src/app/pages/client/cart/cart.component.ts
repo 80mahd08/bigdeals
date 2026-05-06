@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { cartData } from 'src/app/core/data';
-import { CartModel } from 'src/app/store/Ecommerce/ecommerce_model';
+import { CartService } from '../../../core/services/cart.service';
+import { Panier, LignePanier } from '../../../core/models';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-cart',
@@ -9,118 +10,60 @@ import { CartModel } from 'src/app/store/Ecommerce/ecommerce_model';
     styleUrls: ['./cart.component.scss'],
     standalone: false
 })
-
-/**
- * Cart Component
- */
 export class CartComponent implements OnInit {
-
-  // bread crumb items
   breadCrumbItems!: Array<{}>;
-  cartData!: CartModel[];
-  deleteId: any;
-  dataCount: any;
+  cart$: Observable<Panier | null>;
+  
+  taxRate = 0.125;
+  shippingRate = 7.0; // 7 TND delivery
 
-  constructor(private modalService: NgbModal) { }
+  constructor(
+    private cartService: CartService,
+    private modalService: NgbModal
+  ) {
+    this.cart$ = this.cartService.cart$;
+  }
 
   ngOnInit(): void {
-    /**
-    * BreadCrumb
-    */
     this.breadCrumbItems = [
-      { label: 'Ecommerce' },
-      { label: 'Shopping Cart', active: true }
+      { label: 'Marketplace' },
+      { label: 'Panier', active: true }
     ];
-
-    /**
-     * fetches the data
-     */
-    this._fetchData();
   }
 
-  /**
-   * Cart data fetch
-   */
-  private _fetchData() {
-    this.cartData = cartData;
-    this.dataCount = this.cartData.length
+  increment(idAnnonce: number, currentQty: number) {
+    this.cartService.updateQuantity(idAnnonce, currentQty + 1);
   }
 
-  // Default
-  counter: any = 0;
-  increment(event: any, id: any) {
-    this.counter = (document.getElementById('cart-' + id) as HTMLInputElement).value;
-    this.counter++;
-    (document.getElementById('cart-' + id) as HTMLInputElement).value = this.counter;
-
-    var priceselection = event.target.closest('.card.product').querySelector('.product-line-price') as HTMLInputElement;
-    var amount = event.target.closest('.card.product').querySelector('.product-price').innerHTML;
-    var sub_total_get: any = document.getElementById('cart-subtotal')?.innerHTML;
-
-    var Price = amount * this.counter;
-    priceselection.innerHTML = Price.toFixed(2);
-
-    var subTotal: any = parseFloat(amount) + parseFloat(sub_total_get);
-    (document.getElementById('cart-subtotal') as HTMLInputElement).innerHTML = subTotal.toFixed(2);
-
-    this.updateQuantity(subTotal);
-  }
-
-  decrement(event: any, id: any) {
-    this.counter = (document.getElementById('cart-' + id) as HTMLInputElement).value;
-    if (this.counter > 1) {
-      this.counter--;
-
-      (document.getElementById('cart-' + id) as HTMLInputElement).value = this.counter;
-
-      var priceselection = event.target.closest('.card.product').querySelector('.product-line-price') as HTMLInputElement;
-      var amount = event.target.closest('.card.product').querySelector('.product-price').innerHTML;
-      var sub_total_get: any = document.getElementById('cart-subtotal')?.innerHTML;
-
-      var Price = amount * this.counter;
-      priceselection.innerHTML = Price.toFixed(2);
-
-      var subTotal: any = parseFloat(sub_total_get) - parseFloat(amount);
-      (document.getElementById('cart-subtotal') as HTMLInputElement).innerHTML = subTotal.toFixed(2);
-      this.updateQuantity(subTotal);
+  decrement(idAnnonce: number, currentQty: number) {
+    if (currentQty > 1) {
+      this.cartService.updateQuantity(idAnnonce, currentQty - 1);
     }
   }
 
-  discountRate = 0.15;
-  taxRate = 0.125;
-  shippingRate = 65.0;
-  updateQuantity(subTotal: any) {
-    // Discount
-    var discount = parseFloat(subTotal) * this.discountRate;
-    (document.getElementById('cart-discount') as HTMLInputElement).innerHTML = discount.toFixed(2);
-    // Shipping
-    var shipping = parseFloat(subTotal) > 0 ? this.shippingRate : 0;
-    (document.getElementById('cart-shipping') as HTMLInputElement).innerHTML = shipping.toFixed(2);
-    // Rate 
-    var tax = parseFloat(subTotal) * this.taxRate;
-    (document.getElementById('cart-tax') as HTMLInputElement).innerHTML = tax.toFixed(2);
-    // Total
-    var total = parseFloat(subTotal) + tax + shipping - discount;
-    (document.getElementById('cart-total') as HTMLInputElement).innerHTML = total.toFixed(2);
+  remove(idAnnonce: number) {
+    this.cartService.removeFromCart(idAnnonce);
   }
 
-  /**
-   * Confirmation mail model
-   */
-  confirm(event: any, content: any, id: any) {
-    this.deleteId = id;
-    this.modalService.open(content, { centered: true });
+  calculateSubtotal(cart: Panier): number {
+    return cart.total || 0;
   }
 
-  // Delete Data
-  deleteData(event: any, content: any, id: any) {
-    var itemTotal: any = (document.getElementById('cart-id' + id)?.querySelector('.product-line-price') as HTMLInputElement).innerHTML;
-    var Total: any = document.getElementById('cart-subtotal')?.innerHTML;
-    var subTotal: any = parseFloat(Total) - parseFloat(itemTotal);
-    (document.getElementById('cart-subtotal') as HTMLInputElement).innerHTML = subTotal.toFixed(2);
-    this.updateQuantity(subTotal);
-    document.getElementById("cart-id" + id)?.remove();
-    this.dataCount = this.dataCount - 1;
+  calculateTax(subtotal: number): number {
+    return subtotal * this.taxRate;
   }
 
+  calculateTotal(subtotal: number): number {
+    const tax = this.calculateTax(subtotal);
+    const shipping = subtotal > 0 ? this.shippingRate : 0;
+    return subtotal + tax + shipping;
+  }
+
+  confirmDelete(content: any, idAnnonce: number) {
+    this.modalService.open(content, { centered: true }).result.then((result) => {
+      if (result === 'delete') {
+        this.remove(idAnnonce);
+      }
+    }, () => {});
+  }
 }

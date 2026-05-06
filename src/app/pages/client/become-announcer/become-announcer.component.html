@@ -1,0 +1,121 @@
+<app-breadcrumbs title="Devenir Annonceur" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+
+<div class="row justify-content-center">
+    <div class="col-xxl-8">
+        @if (existingRequest$ | async; as request) {
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-5 text-center">
+                    @if (request.statut === 'EN_ATTENTE') {
+                        <lord-icon src="https://cdn.lordicon.com/lupuorrc.json" trigger="loop" colors="primary:#405189,secondary:#0ab39c" style="width:120px;height:120px"></lord-icon>
+                        <h3 class="fw-bold mt-4">Demande en cours</h3>
+                        <p class="text-muted fs-16">
+                            Votre demande de passage au statut annonceur est en cours de traitement. 
+                            Notre équipe l'examine et vous contactera très bientôt.
+                        </p>
+                    } @else if (request.statut === 'APPROUVEE') {
+                        <lord-icon src="https://cdn.lordicon.com/lupuorrc.json" trigger="loop" colors="primary:#0ab39c,secondary:#405189" style="width:120px;height:120px"></lord-icon>
+                        <h3 class="fw-bold mt-4 text-success">Félicitations !</h3>
+                        <p class="text-muted fs-16">
+                            Votre demande a été approuvée. Vous êtes maintenant un annonceur BigDeals.
+                            <br><small class="text-info">Si vous ne voyez pas encore vos outils annonceur, veuillez vous déconnecter et vous reconnecter.</small>
+                        </p>
+                    } @else if (request.statut === 'REJETEE') {
+                        <lord-icon src="https://cdn.lordicon.com/hrqwmuhr.json" trigger="loop" colors="primary:#f06548,secondary:#405189" style="width:120px;height:120px"></lord-icon>
+                        <h3 class="fw-bold mt-4 text-danger">Demande Rejetée</h3>
+                        <p class="text-muted fs-16">
+                            Malheureusement, votre demande n'a pas pu être acceptée pour le moment.
+                        </p>
+                        @if (request.motifRejet) {
+                            <div class="alert alert-danger mt-3">
+                                <strong>Motif du rejet :</strong> {{ request.motifRejet }}
+                            </div>
+                        }
+                        <button class="btn btn-outline-primary mt-3" (click)="refresh$.next()">Ressoumettre une demande</button>
+                    }
+                    
+                    <div class="alert d-inline-block px-4 py-3 mt-3" [ngClass]="{
+                        'alert-warning': request.statut === 'EN_ATTENTE',
+                        'alert-success': request.statut === 'APPROUVEE',
+                        'alert-danger': request.statut === 'REJETEE'
+                    }">
+                        <span class="fw-bold">Statut actuel : </span>
+                        <span class="badge px-3 py-2 ms-2" [ngClass]="{
+                            'bg-warning': request.statut === 'EN_ATTENTE',
+                            'bg-success': request.statut === 'APPROUVEE',
+                            'bg-danger': request.statut === 'REJETEE'
+                        }">{{ request.statut }}</span>
+                    </div>
+                    
+                    <div class="mt-4 border-top pt-4">
+                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Détails de la demande</h6>
+                        <div class="row text-start justify-content-center">
+                            <div class="col-sm-6">
+                                <p class="mb-1 text-muted">Document : <span class="text-dark fw-medium">{{ request.documentNomOriginal }}</span></p>
+                                <button class="btn btn-sm btn-link p-0" (click)="downloadDocument()">Télécharger le document</button>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="mb-1 text-muted">Date de demande : <span class="text-dark fw-medium">{{ request.dateDemande | date:'medium' }}</span></p>
+                                @if (request.dateTraitement) {
+                                    <p class="mb-1 text-muted">Date de traitement : <span class="text-dark fw-medium">{{ request.dateTraitement | date:'medium' }}</span></p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        } @else {
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary-subtle py-4">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="fw-bold mb-1">Devenez Annonceur sur BigDeals !</h4>
+                            <p class="text-muted mb-0">Veuillez fournir un document justificatif (Patente, Registre de Commerce, ou pièce d'identité) pour validation.</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <i class="ri-shield-user-line fs-1 display-5 text-primary opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <form (ngSubmit)="onSubmit()" #becomeForm="ngForm">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">Document justificatif <span class="text-danger">*</span></label>
+                                <div class="p-4 border border-dashed rounded text-center bg-light">
+                                    <i class="ri-upload-cloud-2-line display-4 text-muted"></i>
+                                    <div class="mt-3">
+                                        <input type="file" class="form-control" (change)="onFileSelected($event)" accept=".pdf,.jpg,.jpeg,.png,.webp" required>
+                                        <p class="text-muted mt-2 fs-12">Formats acceptés : PDF, JPG, PNG, WEBP. Taille max : 5 Mo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 mt-4 pt-2">
+                                <div class="p-3 bg-light rounded border-start border-4 border-primary">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="terms" required ngModel name="terms">
+                                        <label class="form-check-label text-muted fs-13" for="terms">
+                                            Je certifie que le document fourni est authentique et j'accepte les conditions générales d'utilisation de la plateforme BigDeals.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold fs-15" [disabled]="!becomeForm.valid || !selectedFile || uploading">
+                                    @if (uploading) {
+                                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        Envoi en cours...
+                                    } @else {
+                                        Soumettre ma demande d'annonceur
+                                    }
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>

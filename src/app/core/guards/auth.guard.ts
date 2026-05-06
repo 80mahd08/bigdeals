@@ -28,7 +28,7 @@ export class AuthGuard {
         }
 
         // Secondary check: check if user data is in storage directly (e.g. after refresh before service init)
-        if (sessionStorage.getItem('currentUser') && sessionStorage.getItem('token')) {
+        if (localStorage.getItem('currentUser') && localStorage.getItem('token')) {
             return true;
         }
 

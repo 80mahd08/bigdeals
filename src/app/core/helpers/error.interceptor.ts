@@ -24,8 +24,8 @@ export class ErrorInterceptor implements HttpInterceptor {
         if (err.status === 401) {
           // 401 = Unauthorized: session expired or invalid token
           // Clear session and redirect to login
-          sessionStorage.removeItem('currentUser');
-          sessionStorage.removeItem('token');
+          localStorage.removeItem('currentUser');
+          localStorage.removeItem('token');
           this.router.navigate(['/auth/signin']);
         }
 

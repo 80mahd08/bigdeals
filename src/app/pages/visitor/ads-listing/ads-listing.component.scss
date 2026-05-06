@@ -1,66 +1,54 @@
-.explore-box {
-    border-radius: 12px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    min-width: 200px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.explore-box:hover {
-    transform: translateY(-5px);
-}
-
-.explore-img {
-    height: 180px;
-    width: 100%;
-    object-fit: cover;
-    transition: all 0.5s ease;
-}
-
-.explore-box:hover .explore-img {
-    transform: scale(1.1);
-}
-
-.bookmark-icon .btn {
-    opacity: 0.8;
-}
-
-.bookmark-icon .btn:hover,
-.bookmark-icon .btn.active {
-    opacity: 1;
-    background-color: #f06548;
-    color: white;
-}
-
 .search-box {
     position: relative;
-    width: 250px;
-}
-
-.search-box .search-icon {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    inset-inline-start: 12px;
-    font-size: 16px;
-    color: #878a99;
-}
-
-.search-box .form-control {
-    padding-inline-start: 38px;
-}
-
-.list-group-item.active-category {
-    background-color: var(--vz-success-bg-subtle) !important;
-    border-inline-end: 3px solid var(--vz-success) !important;
-    color: var(--vz-success) !important;
-    font-weight: 600;
-}
-
-[data-layout-mode="dark"] {
-    .list-group-item.active-category {
-        background-color: rgba(10, 179, 156, 0.15) !important;
+    width: 100%;
+    
+    .search-icon {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 12px;
+        color: #878a99;
     }
+    
+    .form-control {
+        padding-left: 38px;
+        border-radius: 8px;
+        border: 1px solid rgba(0,0,0,0.05);
+        background-color: #f3f3f9;
+        
+        &:focus {
+            background-color: #fff;
+            border-color: var(--vz-success);
+        }
+    }
+}
+
+.list-group-item {
+    border-radius: 6px !important;
+    margin-bottom: 2px;
+    border: none !important;
+    transition: all 0.2s ease;
+    
+    &.active-category {
+        background-color: var(--vz-success-bg-subtle) !important;
+        color: var(--vz-success) !important;
+        font-weight: 600;
+        
+        i {
+            color: var(--vz-success) !important;
+        }
+    }
+    
+    &:hover:not(.active-category) {
+        background-color: #f3f3f9;
+    }
+}
+
+.card-header {
+    background-color: #fff !important;
+}
+
+.filter-sidebar {
+    position: sticky;
+    top: 100px;
 }

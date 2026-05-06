@@ -1,117 +1,48 @@
-.landing-hero {
-    padding: 120px 0;
-    background-image: linear-gradient(135deg, #405189 0%, #0ab39c 100%);
-    position: relative;
-    overflow: hidden;
-}
-
-.bg-overlay-pattern {
-    // background-image: url('assets/images/landing/grid.svg');
-    background-color: rgba(255, 255, 255, 0.05);
-    background-repeat: no-repeat;
-    background-position: center;
-    opacity: 0.1;
-}
-
-// Hero Search Bar
-.search-box-container {
-    transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(8px);
-    
-    // Default base background (light)
-    background-color: rgba(255, 255, 255, 0.95);
-
-    .form-control, .form-select {
-        color: var(--vz-body-color);
-        font-size: 15px;
-        &::placeholder {
-            color: var(--vz-muted-color);
-        }
-    }
-
-    .border-end-md {
-        @media (min-width: 768px) {
-            border-right: 1px solid var(--vz-border-color);
-        }
-    }
-}
-
-.search-box-container:focus-within {
-    transform: translateY(-5px);
-    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1) !important;
-    background-color: #ffffff;
-}
-
-// Dark Mode using :host-context to detect global theme attribute
-:host-context([data-layout-mode="dark"]) {
-    .search-box-container {
-        background-color: rgba(33, 37, 41, 0.7) !important; // More transparent glass
-        border: 1px solid rgba(255, 255, 255, 0.15);
-
-        .form-control, .form-select {
-            color: #ffffff !important;
-            option {
-                background-color: #212529;
-                color: #ffffff;
-            }
-        }
-
-        .text-muted {
-            color: rgba(255, 255, 255, 0.6) !important;
-        }
-
-        .input-group-text i {
-            color: rgba(255, 255, 255, 0.5) !important;
-        }
-    }
-    
-    .search-box-container:focus-within {
-        background-color: rgba(33, 37, 41, 0.9) !important;
-    }
-}
-
 .category-card {
     cursor: pointer;
-    border-radius: 15px;
+    background-color: var(--vz-card-bg);
+    border-radius: 16px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    .avatar-title {
+        transition: all 0.3s ease;
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    h6 {
+        transition: color 0.3s ease;
+    }
+
+    &:hover {
+        transform: translateY(-8px);
+        background: var(--vz-success);
+        box-shadow: 0 10px 20px rgba(10, 179, 156, 0.2) !important;
+
+        .avatar-title {
+            background-color: rgba(255, 255, 255, 0.2) !important;
+            color: #fff !important;
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        h6, p {
+            color: #fff !important;
+        }
+
+        p {
+            opacity: 0.9;
+        }
+    }
 }
 
-.category-card:hover {
-    transform: translateY(-10px);
-    background-color: #f8f9fa;
+.shadow-hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .transition {
-    transition: all 0.3s ease-in-out;
-}
-
-.explore-box {
-    border-radius: 12px;
-    overflow: hidden;
     transition: all 0.3s ease;
-}
-
-.explore-box:hover {
-    transform: translateY(-5px);
-}
-
-.explore-img {
-    height: 180px;
-    object-fit: cover;
-    transition: all 0.5s ease;
-}
-
-.explore-box:hover .explore-img {
-    transform: scale(1.1);
-}
-
-.bookmark-icon .btn {
-    opacity: 0.8;
-}
-
-.bookmark-icon .btn:hover,
-.bookmark-icon .btn.active {
-    opacity: 1;
-    background-color: #f06548;
-    color: white;
 }

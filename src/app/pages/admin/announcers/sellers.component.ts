@@ -1,12 +1,7 @@
-import { Component } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
-import { fetchSellerListData } from 'src/app/store/Ecommerce/ecommerce_action';
-import { selectDataLoading, selectSellerData } from 'src/app/store/Ecommerce/ecommerce_selector';
-import { RootReducerState } from 'src/app/store';
-import { Store } from '@ngrx/store';
-import { cloneDeep } from 'lodash';
-import { PaginationService } from 'src/app/core/services/pagination.service';
+import { Component, OnInit } from '@angular/core';
+import { AdminDemandesAnnonceurService } from 'src/app/core/services/admin-demandes-annonceur.service';
+import { DemandeAnnonceur } from 'src/app/core/models';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-sellers',
@@ -14,94 +9,95 @@ import { PaginationService } from 'src/app/core/services/pagination.service';
     styleUrls: ['./sellers.component.scss'],
     standalone: false
 })
-
-/**
- * Sellers Component
- */
-export class SellersComponent {
-
-  // bread crumb items
+export class SellersComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
-  submitted = false;
-  sellerList: any;
-  sellers?: any;
-  category: any = '';
-  searchResults: any;
-  searchTerm: any;
+  requests: DemandeAnnonceur[] = [];
+  loading = false;
 
-  constructor(private modalService: NgbModal,
-    public service: PaginationService,
-    private store: Store<RootReducerState>) {
-  }
+  constructor(private adminService: AdminDemandesAnnonceurService) {}
 
   ngOnInit(): void {
-    /**
-    * BreadCrumb
-    */
     this.breadCrumbItems = [
-      { label: 'Ecommerce' },
-      { label: 'Sellers', active: true }
+      { label: 'Administration' },
+      { label: "Demandes d'annonceurs", active: true }
     ];
-
-    /**
-     * Fetches the data
-     */
-    this.fetchData();
+    this.loadRequests();
   }
 
-  /**
-   * Fetches the data
-   */
-  private fetchData() {
-    this.store.dispatch(fetchSellerListData());
-    this.store.select(selectDataLoading).subscribe((data) => {
-      if (data == false) {
-        document.getElementById('elmLoader')?.classList.add('d-none');
+  loadRequests() {
+    this.loading = true;
+    this.adminService.getAllRequests().subscribe({
+      next: (res: any) => {
+        this.loading = false;
+        if (res.success && res.data) {
+          this.requests = res.data.sort((a: any, b: any) => new Date(b.dateDemande).getTime() - new Date(a.dateDemande).getTime());
+        }
+      },
+      error: () => {
+        this.loading = false;
+        Swal.fire('Erreur', 'Impossible de charger les demandes.', 'error');
       }
     });
+  }
 
-    this.store.select(selectSellerData).subscribe((data) => {
-      this.sellers = data;
-      this.sellerList = cloneDeep(data);
-      this.sellers = this.service.changePage(this.sellerList)
+  viewDocument(id: number) {
+    this.adminService.getDocument(id).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
     });
-
   }
 
-  // Pagination
-  changePage() {
-    this.sellers = this.service.changePage(this.sellerList)
-  }
-
-  /**
-   * Open modal
-   * @param content modal content
-   */
-  openModal(content: any) {
-    this.submitted = false;
-    this.modalService.open(content, { size: 'lg', centered: true });
-  }
-
-  // Category Filter
-  categoryFilter() {
-    if (this.category != 'All' && this.category != '') {
-      this.sellers = this.sellerList.filter((seller: any) => seller.category == this.category);
-    } else {
-      this.sellers = this.sellerList
-    }
-  }
-
-  // Search
-  performSearch() {
-    this.searchResults = this.sellerList.filter((item: any) => {
-      return (
-        item.category.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.sellername.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
+  approve(id: number) {
+    Swal.fire({
+      title: 'Approuver la demande ?',
+      text: "L'utilisateur deviendra un annonceur actif.",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Oui, approuver',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.adminService.approveRequest(id).subscribe((res: any) => {
+          if (res.success) {
+            Swal.fire('Approuvé', 'La demande a été approuvée avec succès.', 'success');
+            this.loadRequests();
+          } else {
+            Swal.fire('Erreur', res.message || 'Une erreur est survenue.', 'error');
+          }
+        });
+      }
     });
-    this.sellers = this.service.changePage(this.searchResults)
-
   }
 
+  reject(id: number) {
+    Swal.fire({
+      title: 'Rejeter la demande',
+      input: 'textarea',
+      inputLabel: 'Motif du rejet',
+      inputPlaceholder: 'Entrez la raison du rejet...',
+      inputAttributes: {
+        'aria-label': 'Entrez la raison du rejet'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Rejeter',
+      cancelButtonText: 'Annuler',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'Vous devez spécifier un motif !';
+        }
+        return null;
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.adminService.rejectRequest(id, result.value).subscribe((res: any) => {
+          if (res.success) {
+            Swal.fire('Rejeté', 'La demande a été rejetée.', 'success');
+            this.loadRequests();
+          } else {
+            Swal.fire('Erreur', res.message || 'Une erreur est survenue.', 'error');
+          }
+        });
+      }
+    });
+  }
 }

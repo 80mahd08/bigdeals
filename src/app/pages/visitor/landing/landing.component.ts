@@ -1,4 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AnnoncesService } from '../../../core/services/annonces.service';
+import { CategoriesService } from '../../../core/services/categories.service';
+import { Annonce, Categorie } from '../../../core/models';
+import { AuthenticationService } from '../../../core/services/auth.service';
+import { User } from 'src/app/store/Authentication/auth.models';
 
 @Component({
   selector: 'app-landing',
@@ -8,75 +14,31 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LandingComponent implements OnInit {
 
-  categories = [
-    { name: 'Électronique', icon: 'ri-smartphone-line', count: '1,250', color: 'primary' },
-    { name: 'Immobilier', icon: 'ri-home-4-line', count: '850', color: 'success' },
-    { name: 'Véhicules', icon: 'ri-car-line', count: '2,100', color: 'info' },
-    { name: 'Emploi', icon: 'ri-briefcase-line', count: '450', color: 'warning' },
-    { name: 'Mode', icon: 'ri-shirt-line', count: '3,400', color: 'danger' },
-    { name: 'Maison', icon: 'ri-home-gear-line', count: '1,100', color: 'secondary' },
-    { name: 'Sport', icon: 'ri-basketball-line', count: '600', color: 'success' },
-    { name: 'Services', icon: 'ri-customer-service-2-line', count: '300', color: 'primary' }
-  ];
+  categories: Categorie[] = [];
+  featuredAds: Annonce[] = [];
+  currentUser: User | null = null;
 
-  featuredAds = [
-    {
-      title: 'iPhone 15 Pro Max - 256GB',
-      category: 'Électronique',
-      price: 1100,
-      location: 'Paris',
-      date: 'Il y a 2h',
-      image: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=400',
-      sellerName: 'Jean Dupont',
-      sellerAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100',
-      rating: 4.8,
-      isFavorite: false,
-      isPremium: true
-    },
-    {
-      title: 'Appartement T3 Vue Mer',
-      category: 'Immobilier',
-      price: 250000,
-      location: 'Marseille',
-      date: 'Il y a 5h',
-      image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&q=80&w=400',
-      sellerName: 'ImmoTech',
-      sellerAvatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=100',
-      rating: 4.9,
-      isFavorite: true,
-      isPremium: false
-    },
-    {
-      title: 'MacBook Air M2 Silver',
-      category: 'Électronique',
-      price: 950,
-      location: 'Lyon',
-      date: 'Hier',
-      image: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&q=80&w=400',
-      sellerName: 'Alice Martin',
-      sellerAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=100',
-      rating: 4.7,
-      isFavorite: false,
-      isPremium: false
-    },
-    {
-      title: 'Tesla Model 3 Performance',
-      category: 'Véhicules',
-      price: 35000,
-      location: 'Nantes',
-      date: 'Il y a 1j',
-      image: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&q=80&w=400',
-      sellerName: 'AutoPremium',
-      sellerAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100',
-      rating: 5.0,
-      isFavorite: false,
-      isPremium: true
-    }
-  ];
-
-  constructor() { }
+  constructor(
+    private annoncesService: AnnoncesService,
+    private categoriesService: CategoriesService,
+    private authService: AuthenticationService,
+    public router: Router
+  ) { }
 
   ngOnInit(): void {
+    this.currentUser = this.authService.currentUserValue;
+    
+    this.categoriesService.getCategories().subscribe(res => {
+      if (res.success && res.data) {
+        this.categories = res.data.slice(0, 8);
+      }
+    });
+
+    this.annoncesService.getAnnonces(undefined, undefined, undefined, undefined, undefined, 1, 4).subscribe(res => {
+      if (res.success && res.data) {
+        this.featuredAds = res.data.items;
+      }
+    });
   }
 
 }

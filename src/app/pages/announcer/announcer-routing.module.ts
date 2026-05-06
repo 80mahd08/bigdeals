@@ -3,6 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { ApplicationComponent } from './application/application.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdFormComponent } from './ad-form/ad-form.component';
+import { AnnouncementsComponent } from './announcements/announcements.component';
+import { OrdersComponent } from './orders/orders.component';
+import { ReviewsComponent } from './reviews/reviews.component';
 import { RoleGuard } from '../../core/guards/role.guard';
 
 const routes: Routes = [
@@ -10,23 +13,37 @@ const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [RoleGuard],
-    data: { roles: ['ANNOUNCER'] }
+    data: { roles: ['ANNONCEUR'] }
   },
   {
-    path: 'ads/new',
+    path: 'announcements',
+    component: AnnouncementsComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ['ANNONCEUR'] }
+  },
+  {
+    path: 'announcements/create',
     component: AdFormComponent,
     canActivate: [RoleGuard],
-    data: { roles: ['ANNOUNCER'] }
+    data: { roles: ['ANNONCEUR'] }
   },
   {
-    path: 'ads/:id',
+    path: 'announcements/:id/edit',
     component: AdFormComponent,
     canActivate: [RoleGuard],
-    data: { roles: ['ANNOUNCER'] }
+    data: { roles: ['ANNONCEUR'] }
   },
   {
-    path: 'apply',
-    component: ApplicationComponent
+    path: 'orders',
+    component: OrdersComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ['ANNONCEUR'] }
+  },
+  {
+    path: 'reviews',
+    component: ReviewsComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ['ANNONCEUR'] }
   },
   {
     path: '',

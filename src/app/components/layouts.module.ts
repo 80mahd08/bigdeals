@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
 import { NgbDropdownModule, NgbNavModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { SimplebarAngularModule } from 'simplebar-angular';
 import { FormsModule } from '@angular/forms';
@@ -21,7 +20,6 @@ import { AdminSidebarComponent } from './admin-sidebar/admin-sidebar.component';
   imports: [
     CommonModule,
     RouterModule,
-    TranslateModule,
     NgbDropdownModule,
     NgbNavModule,
     NgbCollapseModule,

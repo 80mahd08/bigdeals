@@ -6,37 +6,36 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClientRoutingModule } from './client-routing.module';
 import { ProfileComponent } from './profile/profile.component';
 import { FavoritesComponent } from './favorites/favorites.component';
-import { ChatComponent } from './chat/chat.component';
 import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { OrdersComponent } from './orders/orders.component';
 import { DetailsComponent as InvoiceDetailsComponent } from './invoices/details/details.component';
-
-// Ng2SearchPipeModule or other common template modules might be needed, add them if the build complains.
-
-import { TranslateModule } from '@ngx-translate/core';
+import { BecomeAnnouncerComponent } from './become-announcer/become-announcer.component';
+import { LayoutsModule } from '../../components/layouts.module';
+import { VisitorModule } from '../visitor/visitor.module';
 
 @NgModule({
   declarations: [
     ProfileComponent,
     FavoritesComponent,
-    ChatComponent,
     CartComponent,
     CheckoutComponent,
     OrdersComponent,
-    InvoiceDetailsComponent
+    InvoiceDetailsComponent,
+    BecomeAnnouncerComponent
   ],
   imports: [
     CommonModule,
     ClientRoutingModule,
+    LayoutsModule,
+    VisitorModule,
     NgbNavModule,
     NgbDropdownModule,
     NgbPaginationModule,
     NgbTypeaheadModule,
     NgbTooltipModule,
     FormsModule,
-    ReactiveFormsModule,
-    TranslateModule.forChild({ extend: true })
+    ReactiveFormsModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

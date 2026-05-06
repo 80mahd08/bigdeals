@@ -9,7 +9,7 @@ import { jobcategories } from 'src/app/core/data/category';
 })
 export class CategoriesComponent implements OnInit {
 
-  breadCrumbItems!: Array<{}>;
+  breadCrumbItems!: Array<{ label: string; active?: boolean }>;
   categories: any[] = [];
 
   constructor() { }

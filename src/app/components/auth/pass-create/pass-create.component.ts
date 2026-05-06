@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthenticationService } from 'src/app/core/services/auth.service';
 
 @Component({
     selector: 'app-pass-create',
@@ -22,80 +24,78 @@ export class PassCreateComponent implements OnInit {
    returnUrl!: string;
    // set the current year
    year: number = new Date().getFullYear();
+   success = '';
+   loading = false;
+   showPasswordRequirements = false;
+   token: string | null = null;
  
-   constructor(private formBuilder: UntypedFormBuilder) { }
+   constructor(
+     private formBuilder: UntypedFormBuilder,
+     private authService: AuthenticationService,
+     private route: ActivatedRoute,
+     private router: Router
+   ) { }
  
    ngOnInit(): void {
      /**
       * Form Validatyion
       */
       this.passresetForm = this.formBuilder.group({
-        password: ['', [Validators.required]],
+        password: ['', [
+          Validators.required, 
+          Validators.minLength(8),
+          (control: AbstractControl) => {
+            const value = control.value || '';
+            if (!/[a-z]/.test(value)) return { missingLower: true };
+            if (!/[A-Z]/.test(value)) return { missingUpper: true };
+            if (!/[0-9]/.test(value)) return { missingNumber: true };
+            return null;
+          }
+        ]],
         cpassword: ['', [Validators.required]]
      });
 
-      // Password Validation set
-      var myInput = document.getElementById("password-input") as HTMLInputElement;
-      var letter = document.getElementById("pass-lower");
-      var capital = document.getElementById("pass-upper");
-      var number = document.getElementById("pass-number");
-      var length = document.getElementById("pass-length");
+     this.token = this.route.snapshot.queryParamMap.get('token');
+     if (!this.token) {
+       this.error = "Jeton de réinitialisation manquant dans l'URL.";
+     }
 
-      // When the user clicks on the password field, show the message box
-      myInput.onfocus = function () {
-        let input = document.getElementById("password-contain") as HTMLElement;
-        input.style.display = "block"
-      };
+      // Password Strength UI setup
+      setTimeout(() => {
+        const passwordInput = document.getElementById('password-input') as HTMLInputElement;
+        const passLower  = document.getElementById('pass-lower');
+        const passUpper  = document.getElementById('pass-upper');
+        const passNumber = document.getElementById('pass-number');
+        const passLength = document.getElementById('pass-length');
 
-      // When the user clicks outside of the password field, hide the password-contain box
-      myInput.onblur = function () {
-        let input = document.getElementById("password-contain") as HTMLElement;
-        input.style.display = "none"
-      };
+        if (passwordInput) {
+          passwordInput.onfocus = () => {
+            const container = document.getElementById('password-contain');
+            if (container) container.style.display = 'block';
+          };
 
-      // When the user starts to type something inside the password field
-      myInput.onkeyup = function () {
-        // Validate lowercase letters
-        var lowerCaseLetters = /[a-z]/g;
-        if (myInput.value.match(lowerCaseLetters)) {
-            letter?.classList.remove("invalid");
-            letter?.classList.add("valid");
-        } else {
-            letter?.classList.remove("valid");
-            letter?.classList.add("invalid");
+          passwordInput.onblur = () => {
+            const container = document.getElementById('password-contain');
+            if (container) container.style.display = 'none';
+          };
+
+          passwordInput.onkeyup = () => {
+            const val = passwordInput.value;
+            this.toggleValidation(passLower, /[a-z]/.test(val));
+            this.toggleValidation(passUpper, /[A-Z]/.test(val));
+            this.toggleValidation(passNumber, /[0-9]/.test(val));
+            this.toggleValidation(passLength, val.length >= 8);
+          };
         }
+      }, 500);
 
-        // Validate capital letters
-        var upperCaseLetters = /[A-Z]/g;
-        if (myInput.value.match(upperCaseLetters)) {
-            capital?.classList.remove("invalid");
-            capital?.classList.add("valid");
-        } else {
-            capital?.classList.remove("valid");
-            capital?.classList.add("invalid");
-        }
+    }
 
-        // Validate numbers
-        var numbers = /[0-9]/g;
-        if (myInput.value.match(numbers)) {
-            number?.classList.remove("invalid");
-            number?.classList.add("valid");
-        } else {
-            number?.classList.remove("valid");
-            number?.classList.add("invalid");
-        }
-
-        // Validate length
-        if (myInput.value.length >= 8) {
-            length?.classList.remove("invalid");
-            length?.classList.add("valid");
-        } else {
-            length?.classList.remove("valid");
-            length?.classList.add("invalid");
-        }
-      };
-
-   }
+    private toggleValidation(element: HTMLElement | null, isValid: boolean) {
+      if (!element) return;
+      element.classList.toggle('valid', isValid);
+      element.classList.toggle('invalid', !isValid);
+    }
  
    // convenience getter for easy access to form fields
    get f() { return this.passresetForm.controls; }
@@ -110,6 +110,38 @@ export class PassCreateComponent implements OnInit {
      if (this.passresetForm.invalid) {
        return;
      }
+
+     if (this.f['password'].value !== this.f['cpassword'].value) {
+       this.error = "Les mots de passe ne correspondent pas.";
+       return;
+     }
+
+     if (!this.token) {
+       this.error = "Jeton invalide.";
+       return;
+     }
+
+     this.loading = true;
+     this.error = '';
+     this.success = '';
+
+     this.authService.resetPasswordConfirm(this.token, this.f['password'].value).subscribe({
+       next: (res) => {
+         this.loading = false;
+         if (res.success) {
+           this.success = "Mot de passe réinitialisé avec succès. Redirection vers la page de connexion...";
+           setTimeout(() => {
+             this.router.navigate(['/auth/signin']);
+           }, 3000);
+         } else {
+           this.error = res.message || 'Une erreur est survenue.';
+         }
+       },
+       error: (err) => {
+         this.loading = false;
+         this.error = err.error?.message || 'Erreur lors de la réinitialisation.';
+       }
+     });
    }
 
    /**

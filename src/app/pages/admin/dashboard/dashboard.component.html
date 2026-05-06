@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">{{ 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.TITLE' | translate }}</h4>
+            <h4 class="mb-sm-0">Tableau de bord Administrateur</h4>
             <div class="text-muted fs-13">
                 <i class="ri-calendar-line me-1"></i> April 2024
             </div>
@@ -22,7 +22,7 @@
                             </span>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <p class="text-uppercase fw-medium text-muted mb-1 fs-12">{{ stat.label | translate }}</p>
+                            <p class="text-uppercase fw-medium text-muted mb-1 fs-12">{{ stat.label }}</p>
                             <h4 class="fs-22 fw-semibold mb-0">{{stat.value}}</h4>
                         </div>
                         <div class="flex-shrink-0 align-self-start">
@@ -49,7 +49,7 @@
         <div class="card border-0 shadow-sm">
             <div class="card-header d-flex align-items-center">
                 <h5 class="card-title mb-0 flex-grow-1">
-                    {{ 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.STATS.REVENUE_CHART' | translate }}
+                    Graphique des revenus
                 </h5>
                 <span class="badge bg-success-subtle text-success fs-11">2024</span>
             </div>
@@ -74,7 +74,7 @@
     <div class="col-xl-4">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header">
-                <h5 class="card-title mb-0">{{ 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.ACTIVITY.TITLE' | translate }}</h5>
+                <h5 class="card-title mb-0">Activité Récente</h5>
             </div>
             <div class="card-body">
                 <div class="acitivity-timeline acitivity-main">
@@ -88,9 +88,9 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-1 fs-13">{{ activity.title | translate }}</h6>
-                                <p class="text-muted mb-0 fs-12">{{ activity.desc | translate }}</p>
-                                <small class="text-muted">{{ activity.time | translate }}</small>
+                                <h6 class="mb-1 fs-13">{{ activity.title }}</h6>
+                                <p class="text-muted mb-0 fs-12">{{ activity.desc }}</p>
+                                <small class="text-muted">{{ activity.time }}</small>
                             </div>
                         </div>
                     }
@@ -165,7 +165,7 @@
                         <thead class="table-light text-muted">
                             <tr>
                                 <th>#</th>
-                                <th>{{ 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.REQUESTS.STORE' | translate }}</th>
+                                <th>Boutique</th>
                                 <th>Ads</th>
                                 <th>Revenue</th>
                                 <th>⭐</th>

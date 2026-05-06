@@ -9,7 +9,7 @@ import { AuthenticationService } from 'src/app/core/services/auth.service';
  * via a direct URL visit (e.g. /auth/logout). It immediately calls the
  * AuthenticationService logout method which:
  *   1. Signs the user out of Firebase
- *   2. Clears sessionStorage (currentUser, token)
+ *   2. Clears localStorage (currentUser, token)
  *   3. Dispatches the NgRx logout action
  *   4. Redirects to /auth/signin
  *
@@ -44,7 +44,7 @@ export class LogoutComponent implements OnInit {
       },
       error: () => {
         // Even if Firebase logout fails, clear locally and redirect
-        sessionStorage.clear();
+        localStorage.clear();
         this.router.navigate(['/auth/signin']);
       }
     });

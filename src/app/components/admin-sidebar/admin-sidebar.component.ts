@@ -1,6 +1,5 @@
 import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
 
 import { MENU, SELLER_MENU } from './menu';
 import { MenuItem } from './menu.model';
@@ -35,16 +34,14 @@ export class AdminSidebarComponent implements OnInit, AfterViewInit {
 
   constructor(
     private router: Router, 
-    public translate: TranslateService,
     private authService: AuthenticationService
-  ) {
-    translate.setDefaultLang('en');
-  }
+  ) { }
+
 
   ngOnInit(): void {
     // Initialize Menu Items
     const currentUser = this.authService.currentUserValue;
-    if (currentUser && currentUser.role === 'ANNOUNCER') {
+    if (currentUser && currentUser.role === 'ANNONCEUR') {
       this.menuItems = SELLER_MENU;
     } else {
       this.menuItems = MENU;
@@ -55,6 +52,13 @@ export class AdminSidebarComponent implements OnInit, AfterViewInit {
           this.initActiveMenu();
         }
     });
+  }
+
+  get dashboardHome(): string {
+    const user = this.authService.currentUserValue;
+    if (user && user.role === 'ADMIN') return '/admin';
+    if (user && user.role === 'ANNONCEUR') return '/announcer/dashboard';
+    return '/';
   }
 
   ngAfterViewInit() {

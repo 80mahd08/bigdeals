@@ -1,11 +1,14 @@
 export class User {
-  id?: number;
-  username?: string;
-  password?: string;
-  firstName?: string;
-  lastName?: string;
-  token?: string;
+  idUtilisateur?: number;
+  nom?: string;
+  prenom?: string;
   email?: string;
-  profilePhoto?: string;
-  role?: 'VISITOR' | 'CLIENT' | 'ANNOUNCER' | 'ADMIN';
+  telephone?: string;
+  adresse?: string;
+  ville?: string;
+  photoProfilUrl?: string;
+  token?: string;
+  role?: 'VISITOR' | 'CLIENT' | 'ANNONCEUR' | 'ADMIN';
+  statutCompte?: string;
+  dateCreation?: string | Date;
 }

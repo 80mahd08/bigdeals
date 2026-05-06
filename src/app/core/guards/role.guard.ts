@@ -13,16 +13,22 @@ export class RoleGuard {
         const currentUser = this.authenticationService.currentUserValue;
         const expectedRoles: string[] = route.data['roles'];
 
-        if (currentUser && currentUser.role && expectedRoles.includes(currentUser.role)) {
-            // role authorized so return true
+        // If no user is authenticated (VISITOR), redirect to signin
+        if (!currentUser) {
+            this.router.navigate(['/auth/signin'], { queryParams: { returnUrl: state.url } });
+            return false;
+        }
+
+        // If user is authenticated, check roles
+        if (currentUser.role && expectedRoles.includes(currentUser.role)) {
             return true;
         }
 
-        // role not authorized so redirect to home or login
-        if (currentUser) {
-            this.router.navigate(['/']);
+        // Authenticated but unauthorized
+        if (currentUser.role === 'ADMIN') {
+            this.router.navigate(['/admin']);
         } else {
-            this.router.navigate(['/auth/login'], { queryParams: { returnUrl: state.url } });
+            this.router.navigate(['/']);
         }
         return false;
     }

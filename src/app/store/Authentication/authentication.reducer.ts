@@ -22,12 +22,15 @@ export interface AuthenticationState {
   loading: boolean;
 }
 
+const storedUser = localStorage.getItem('currentUser');
+const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
 /**
  * Initial state: no user is logged in, no errors, not loading.
  */
 const initialState: AuthenticationState = {
-  isLoggedIn: false,
-  user: null,
+  isLoggedIn: !!parsedUser,
+  user: parsedUser,
   error: null,
   loading: false,
 };

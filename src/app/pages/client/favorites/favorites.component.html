@@ -1,37 +1,51 @@
-<div class="row align-items-center mb-4">
-    <div class="col-sm">
-        <div>
-            <h5 class="fs-17 mb-0">Mes Favoris</h5>
-            <p class="text-muted mb-0">Retrouvez toutes les annonces que vous avez aimées.</p>
+<div class="marketplace-container">
+    <div class="row align-items-center mb-4">
+        <div class="col-sm">
+            <div>
+                <h3 class="fw-bold mb-0">Mes Favoris</h3>
+                <p class="text-muted mb-0">Retrouvez toutes les annonces que vous avez aimées.</p>
+            </div>
+        </div>
+
+
+        <div class="col-sm-auto mt-3 mt-sm-0 d-flex gap-2">
+            <div class="search-box">
+                <input type="text" class="form-control" placeholder="Rechercher dans vos favoris..." [(ngModel)]="searchTerm">
+                <i class="ri-search-line search-icon"></i>
+            </div>
+            <select class="form-select w-auto shadow-none border-light" [(ngModel)]="selectedCity">
+                <option value="">Toute la Tunisie</option>
+                @for (city of cities; track city) {
+                    <option [value]="city">{{city}}</option>
+                }
+            </select>
         </div>
     </div>
-</div>
 
-<div class="row">
-    @if (favorites.length > 0) {
-        @for (ad of favorites; track $index) {
-            <div class="col-xl-3 col-md-6">
-                <div class="card explore-box card-animate border-0 shadow-sm mb-4">
-                    <div class="position-relative">
-                        <img src="{{ad.image}}" alt="" class="card-img-top explore-img rounded-top">
-                        <div class="bookmark-icon position-absolute top-0 end-0 m-2">
-                            <button type="button" class="btn btn-icon btn-danger rounded-circle btn-sm shadow-none" (click)="removeFavorite(ad)">
-                                <i class="ri-heart-fill"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <p class="text-muted mb-2 fs-12">{{ad.category}} • {{ad.date}}</p>
-                        <h5 class="mb-2 text-truncate fs-15"><a [routerLink]="['/ads', ad.id]" class="text-body fw-semibold">{{ad.title}}</a></h5>
-                        <h5 class="text-success fw-bold mb-0 fs-16">{{ad.price | currency:'EUR':'symbol':'1.0-0'}}</h5>
-                    </div>
-                    <div class="card-footer bg-transparent border-top-dashed py-2 text-center">
-                        <a [routerLink]="['/ads', ad.id]" class="link-success fw-medium">Voir l'annonce <i class="ri-arrow-right-line align-middle ms-1"></i></a>
-                    </div>
+    <div class="row g-4">
+        @if (loading) {
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
             </div>
-        }
-    } @else {
+        } @else if (filteredFavorites && filteredFavorites.length > 0) {
+            @for (ad of filteredFavorites; track ad.idAnnonce) {
+                <div class="col-xl-3 col-lg-4 col-md-6">
+                    <app-ad-card [ad]="ad"></app-ad-card>
+                </div>
+            }
+        } @else if (searchTerm && favorites.length > 0) {
+            <div class="col-12 text-center py-5">
+                <div class="avatar-md mx-auto mb-3">
+                    <div class="avatar-title bg-light text-muted rounded-circle fs-24">
+                        <i class="ri-search-2-line"></i>
+                    </div>
+                </div>
+                <h5>Aucun résultat pour "{{searchTerm}}"</h5>
+                <p class="text-muted">Essayez un autre mot-clé.</p>
+            </div>
+        } @else {
         <div class="col-lg-12">
             <div class="text-center py-5">
                 <div class="avatar-lg mx-auto mb-4">
@@ -42,6 +56,33 @@
                 <h5>Aucun favori pour le moment</h5>
                 <p class="text-muted">Parcourez les annonces et cliquez sur le cœur pour les ajouter ici.</p>
                 <a routerLink="/ads" class="btn btn-success shadow-none">Parcourir les annonces</a>
+            </div>
+        </div>
+    }
+    </div>
+    
+    <!-- Pagination -->
+    @if (totalPages > 1) {
+        <div class="row g-0 text-center text-sm-start align-items-center mb-4 mt-5">
+            <div class="col-sm-6">
+                <div>
+                    <p class="mb-sm-0 text-muted">Affichage de <span class="fw-semibold">{{(currentPage-1)*pageSize + 1}}</span> à <span class="fw-semibold">{{currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize}}</span> sur <span class="fw-semibold">{{totalItems}}</span> résultats</p>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <ul class="pagination pagination-separated justify-content-center justify-content-sm-end mb-sm-0">
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                        <a href="javascript:void(0);" class="page-link" (click)="onPageChange(currentPage - 1)">Précédent</a>
+                    </li>
+                    @for (page of pages; track page) {
+                        <li class="page-item" [class.active]="currentPage === page">
+                            <a href="javascript:void(0);" class="page-link" (click)="onPageChange(page)">{{page}}</a>
+                        </li>
+                    }
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                        <a href="javascript:void(0);" class="page-link" (click)="onPageChange(currentPage + 1)">Suivant</a>
+                    </li>
+                </ul>
             </div>
         </div>
     }

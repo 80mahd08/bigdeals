@@ -6,7 +6,8 @@ export const environment = {
 
     // Authentication provider: use 'firebase' to enable Firebase Auth
     defaultauth: 'jwt',
-    apiUrl: 'http://localhost:5250',
+    apiUrl: 'http://localhost:5049/api',
+    imageBaseUrl: 'http://localhost:5049',
 
     // Firebase project configuration — obtained from Firebase Console → Project Settings
     firebaseConfig: {

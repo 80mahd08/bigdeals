@@ -24,12 +24,6 @@
     margin: 10px;
 }
 
-#notificationItemsTabContent {
-    .avatar-title {
-        height: 30px !important;
-        width: 30px !important;
-    }
-}
 
 [data-bs-theme="dark"] {
     .fc {
@@ -76,4 +70,78 @@
         }
     }
 
+}
+
+/* BigDeals Marketplace Global Utilities */
+.shadow-hover {
+    transition: all 0.3s ease;
+    &:hover {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+        transform: translateY(-4px);
+    }
+}
+
+.text-price {
+    color: var(--vz-success);
+    font-weight: 800;
+}
+
+.bg-body-alt {
+    background-color: #f3f3f9;
+}
+
+.category-card {
+    cursor: pointer;
+    .avatar-title {
+        transition: all 0.3s ease;
+    }
+    &:hover {
+        .avatar-title {
+            transform: scale(1.1) rotate(5deg);
+        }
+    }
+}
+
+.sticky-side-div {
+    position: sticky;
+    top: 80px;
+    z-index: 10;
+}
+
+/* Marketplace Global Card Styling */
+.card-marketplace {
+    border: 0 !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 0.75rem !important;
+    transition: all 0.3s ease;
+    
+    &.hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+    }
+}
+
+.marketplace-container {
+    padding-top: 100px;
+    padding-bottom: 60px;
+}
+
+.badge-soft-success {
+    background-color: rgba(10, 179, 156, 0.1) !important;
+    color: #0ab39c !important;
+}
+
+/* Custom Scrollbar for Dropdowns */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #e2e5e8;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #d1d4d7;
 }

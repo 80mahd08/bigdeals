@@ -15,72 +15,145 @@
                         <div class="col-lg-12">
                             <div class="mb-3">
                                 <label class="form-label">Titre de l'annonce*</label>
-                                <input type="text" class="form-control" placeholder="Ex: iPhone 15 Pro Max 256GB" required>
+                                <input type="text" class="form-control" name="titre" [(ngModel)]="ad.titre" placeholder="Ex: iPhone 15 Pro Max 256GB" required>
                                 <p class="text-muted small mt-1">Un bon titre attire plus d'acheteurs.</p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Catégorie*</label>
-                                <select class="form-select" required>
-                                    <option value="" selected disabled>Choisir une catégorie</option>
-                                    <option>Électronique</option>
-                                    <option>Immobilier</option>
-                                    <option>Véhicules</option>
-                                    <option>Mode</option>
-                                    <option>Maison</option>
+                                <select class="form-select" name="idCategorie" [(ngModel)]="ad.idCategorie" (change)="onCategoryChange(ad.idCategorie)" required>
+                                    <option [value]="null" disabled>Choisir une catégorie</option>
+                                    @for (cat of categories; track cat.idCategorie) {
+                                        <option [value]="cat.idCategorie">{{cat.nom}}</option>
+                                    }
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Prix (€)*</label>
+                                <label class="form-label">Prix (TND)*</label>
                                 <div class="input-group">
-                                    <span class="input-group-text">€</span>
-                                    <input type="number" class="form-control" placeholder="100" required>
+                                    <span class="input-group-text">TND</span>
+                                    <input type="number" class="form-control" name="prix" [(ngModel)]="ad.prix" placeholder="100" min="0" required>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-12">
-                            <div class="mb-3">
-                                <label class="form-label">Description détaillée*</label>
-                                <textarea class="form-control" rows="5" placeholder="Décrivez votre article avec précision..." required></textarea>
-                            </div>
-                        </div>
 
-                        <!-- Image Upload -->
-                        <div class="col-lg-12">
-                            <label class="form-label">Photos (Max 10)</label>
-                            <div class="dropzone p-5 text-center border border-dashed rounded bg-light">
-                                <div class="avatar-sm mx-auto mb-3">
-                                    <div class="avatar-title bg-soft-primary text-primary rounded-circle fs-24">
-                                        <i class="ri-image-add-line"></i>
+                        <!-- Dynamic Attributes Section -->
+                        @if (selectedCategorySchema && selectedCategorySchema.attributs.length > 0) {
+                            <div class="col-lg-12">
+                                <div class="border-top pt-3 mt-2">
+                                    <h6 class="text-primary mb-3">Informations Complémentaires ({{selectedCategorySchema.nom}})</h6>
+                                    <div class="row g-3">
+                                        @for (attr of selectedCategorySchema.attributs; track attr.idAttributCategorie) {
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">{{attr.nom}} {{attr.obligatoire ? '*' : ''}}</label>
+                                                    
+                                                    @switch (attr.typeDonnee) {
+                                                        @case ('LISTE') {
+                                                            <select class="form-select" [name]="'attr_' + attr.idAttributCategorie" [(ngModel)]="dynamicValues[attr.idAttributCategorie]" [required]="attr.obligatoire">
+                                                                <option [value]="null">Sélectionner...</option>
+                                                                @for (opt of attr.options; track opt.idOptionAttributCategorie) {
+                                                                    <option [value]="opt.idOptionAttributCategorie">{{opt.valeur}}</option>
+                                                                }
+                                                            </select>
+                                                        }
+                                                        @case ('BOOLEAN') {
+                                                            <div class="d-flex gap-3 pt-2">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio" [name]="'attr_' + attr.idAttributCategorie" [id]="'attr_y_' + attr.idAttributCategorie" [value]="true" [(ngModel)]="dynamicValues[attr.idAttributCategorie]" [required]="attr.obligatoire">
+                                                                    <label class="form-check-label" [for]="'attr_y_' + attr.idAttributCategorie">Oui</label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio" [name]="'attr_' + attr.idAttributCategorie" [id]="'attr_n_' + attr.idAttributCategorie" [value]="false" [(ngModel)]="dynamicValues[attr.idAttributCategorie]" [required]="attr.obligatoire">
+                                                                    <label class="form-check-label" [for]="'attr_n_' + attr.idAttributCategorie">Non</label>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        @case ('NOMBRE') {
+                                                            <input type="number" class="form-control" [name]="'attr_' + attr.idAttributCategorie" [(ngModel)]="dynamicValues[attr.idAttributCategorie]" [required]="attr.obligatoire" min="0">
+                                                        }
+                                                        @case ('DATE') {
+                                                            <input type="date" class="form-control" [name]="'attr_' + attr.idAttributCategorie" [(ngModel)]="dynamicValues[attr.idAttributCategorie]" [required]="attr.obligatoire">
+                                                        }
+                                                        @default {
+                                                            <input type="text" class="form-control" [name]="'attr_' + attr.idAttributCategorie" [(ngModel)]="dynamicValues[attr.idAttributCategorie]" [required]="attr.obligatoire">
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
-                                <h5>Ajoutez des photos</h5>
-                                <p class="text-muted small">La première photo sera la photo principale de votre annonce.</p>
-                                <button type="button" class="btn btn-primary btn-sm shadow-none">Sélectionner des fichiers</button>
                             </div>
-                        </div>
+                        }
 
-                        <!-- Location -->
-                        <div class="col-lg-12 mt-4">
-                            <h5 class="fs-15 border-bottom pb-2 mb-3">Localisation</h5>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Ville / Code Postal*</label>
-                                <input type="text" class="form-control" placeholder="Ex: Paris 75001" required>
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Description détaillée*</label>
+                                        <textarea class="form-control" name="description" [(ngModel)]="ad.description" rows="5" placeholder="Décrivez votre article avec précision..." required></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Image Upload -->
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Photos de l'annonce (Max 8)</label>
+                                        <div class="file-upload-wrapper border rounded p-3 text-center bg-light">
+                                            <input type="file" id="adImages" class="d-none" multiple accept="image/*" (change)="onFilesSelected($event)">
+                                            <label for="adImages" class="btn btn-primary mb-0 cursor-pointer">
+                                                <i class="ri-upload-2-line me-1"></i> Ajouter des photos
+                                            </label>
+                                            <p class="text-muted small mt-2 mb-0">La première image sera l'image principale.</p>
+                                        </div>
+                                        
+                                        @if (existingImages.length > 0 || previews.length > 0) {
+                                            <div class="d-flex flex-wrap gap-2 mt-3">
+                                                <!-- Existing Images -->
+                                                @for (img of existingImages; track img.idImageAnnonce) {
+                                                    <div class="position-relative">
+                                                        <img [src]="img.url" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                                                        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 p-0 rounded-circle" style="width: 20px; height: 20px;" (click)="removeExistingImage(img.idImageAnnonce)">
+                                                            <i class="ri-close-line"></i>
+                                                        </button>
+                                                        @if ($index === 0 && previews.length === 0) {
+                                                            <span class="badge bg-success position-absolute bottom-0 start-0 w-100 opacity-75">Principal</span>
+                                                        }
+                                                    </div>
+                                                }
+
+                                                <!-- New Previews -->
+                                                @for (preview of previews; track $index) {
+                                                    <div class="position-relative">
+                                                        <img [src]="preview" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                                                        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 p-0 rounded-circle" style="width: 20px; height: 20px;" (click)="removeImage($index)">
+                                                            <i class="ri-close-line"></i>
+                                                        </button>
+                                                        @if ($index === 0 && existingImages.length === 0) {
+                                                            <span class="badge bg-success position-absolute bottom-0 start-0 w-100 opacity-75">Principal</span>
+                                                        }
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="card-footer bg-light-subtle">
-                    <div class="hstack gap-2 justify-content-end">
-                        <button type="button" class="btn btn-soft-secondary shadow-none" (click)="cancel()">Annuler</button>
-                        <button type="submit" class="btn btn-success shadow-none">{{isEdit ? 'Mettre à jour' : 'Publier l\'Annonce'}}</button>
-                    </div>
-                </div>
+                        <div class="card-footer bg-light-subtle">
+                            <div class="hstack gap-2 justify-content-end">
+                                <button type="button" class="btn btn-soft-secondary shadow-none" (click)="cancel()">Annuler</button>
+                                <button type="submit" class="btn btn-success shadow-none" [disabled]="submitting">
+                                    @if (submitting) {
+                                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                    }
+                                    {{isEdit ? 'Mettre à jour' : 'Publier l\'Annonce'}}
+                                </button>
+                            </div>
+                        </div>
             </div>
         </form>
     </div>

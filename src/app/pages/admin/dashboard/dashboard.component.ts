@@ -12,6 +12,9 @@ import {
   ApexYAxis,
   ApexLegend
 } from 'ng-apexcharts';
+import { AdminDashboardService, AdminDashboardStats } from '../../../core/services/admin-dashboard.service';
+import { AdminDemandesAnnonceurService } from '../../../core/services/admin-demandes-annonceur.service';
+import { ApiResponse } from '../../../core/types/api.types';
 
 export type ChartOptions = {
   series?: ApexAxisChartSeries;
@@ -37,39 +40,12 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild('chart') chart!: ChartComponent;
 
-  stats = [
-    { label: 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.STATS.USERS',    value: '1,250', icon: 'ri-user-line',           color: 'primary', trend: '15',  trendUp: true  },
-    { label: 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.STATS.ADS',      value: '4,320', icon: 'ri-stack-line',          color: 'success', trend: '22',  trendUp: true  },
-    { label: 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.STATS.REVENUE',  value: '$28.4K',icon: 'ri-money-dollar-circle-line', color: 'info', trend: '8', trendUp: true  },
-    { label: 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.STATS.FLAGGED',  value: '6',     icon: 'ri-flag-line',           color: 'danger',  trend: '2',   trendUp: false }
-  ];
-
-  announcerRequests = [
-    { avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100', userName: 'Marc Lavoine', storeName: 'ElectroPlus', date: '25 Mar, 2024' },
-    { avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=100', userName: 'Sophie Durand', storeName: 'Bijoux Chic', date: '24 Mar, 2024' },
-    { avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=100', userName: 'Kevin Dupont', storeName: 'Gaming Store', date: '22 Mar, 2024' }
-  ];
-
-  topSellers = [
-    { name: 'ElectroPlus',   category: 'Electronics', ads: 48, revenue: '$12,400', rating: 4.9 },
-    { name: 'ModeCity',      category: 'Fashion',      ads: 35, revenue: '$8,200',  rating: 4.7 },
-    { name: 'AutoMarket',    category: 'Automotive',   ads: 29, revenue: '$6,850',  rating: 4.5 },
-    { name: 'ImmoPro',       category: 'Real Estate',  ads: 22, revenue: '$5,300',  rating: 4.6 },
-    { name: 'GameZone',      category: 'Electronics',  ads: 18, revenue: '$3,950',  rating: 4.3 }
-  ];
-
-  recentCustomers = [
-    { name: 'Alexandre Roux', email: 'alex.roux@example.com', date: '14 Apr, 2024', status: 'Pending' },
-    { name: 'Marie Leroy', email: 'marie.leroy@example.com', date: '13 Apr, 2024', status: 'Pending' },
-    { name: 'Thomas Vidal', email: 'thomas.v@example.com', date: '13 Apr, 2024', status: 'Pending' },
-    { name: 'Emma Blanc', email: 'emma.blanc@example.com', date: '12 Apr, 2024', status: 'Pending' }
-  ];
-
-  activities = [
-    { title: 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.ACTIVITY.NEW_AD',     desc: 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.ACTIVITY.NEW_AD_DESC',     time: 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.ACTIVITY.TIME.MIN',      icon: 'ri-stack-line',         color: 'primary' },
-    { title: 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.ACTIVITY.PURCHASE',   desc: 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.ACTIVITY.PURCHASE_DESC',   time: 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.ACTIVITY.TIME.MIN_LONG', icon: 'ri-shopping-cart-line', color: 'success' },
-    { title: 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.ACTIVITY.NEW_USER',   desc: 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.ACTIVITY.NEW_USER_DESC',   time: 'MENUITEMS.BIGDEALS.ADMIN_DASHBOARD.ACTIVITY.TIME.HOUR',     icon: 'ri-user-add-line',      color: 'info'    }
-  ];
+  stats: any[] = [];
+  announcerRequests: any[] = [];
+  topSellers: any[] = [];
+  recentCustomers: any[] = [];
+  activities: any[] = [];
+  loading = true;
 
   revenueChartOptions: ChartOptions = {
     series: [
@@ -93,28 +69,85 @@ export class DashboardComponent implements OnInit {
     tooltip: { shared: true, intersect: false }
   };
 
-  constructor() { }
-  ngOnInit(): void { }
+  constructor(
+    private dashboardService: AdminDashboardService,
+    private demandesService: AdminDemandesAnnonceurService
+  ) { }
+
+  ngOnInit(): void {
+    this.loadData();
+  }
+
+  loadData() {
+    this.loading = true;
+    
+    // Fetch stats
+    this.dashboardService.getStats().subscribe({
+      next: (data: AdminDashboardStats) => {
+        this.stats = data.stats;
+        this.activities = data.recentActivities;
+        this.topSellers = data.topSellers;
+      },
+      error: (err) => console.error('Error fetching dashboard stats', err)
+    });
+
+    this.demandesService.getAllRequests().subscribe({
+      next: (res: ApiResponse<any[]>) => {
+        if (res.success && res.data) {
+          // Filter only pending requests for the dashboard summary
+          this.announcerRequests = res.data
+            .filter((r: any) => r.statut === 'EN_ATTENTE' || r.statut === 0)
+            .map((r: any) => ({
+              id: r.idDemandeAnnonceur || r.id,
+              avatar: r.photoProfilUrl || 'assets/images/users/user-dummy-img.jpg',
+              userName: r.nomUtilisateur || 'Utilisateur',
+              storeName: r.nomBoutique || 'Boutique',
+              date: new Date(r.dateDemande).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
+            }))
+            .slice(0, 5); // Show only top 5
+        }
+        this.loading = false;
+      },
+      error: (err: any) => {
+        console.error('Error fetching demandes', err);
+        this.loading = false;
+      }
+    });
+  }
 
   approveRequest(req: any) {
-    alert('Demande de ' + req.storeName + ' acceptée !');
-    this.announcerRequests = this.announcerRequests.filter(r => r !== req);
+    if (confirm(`Approuver la demande de ${req.userName} ?`)) {
+      this.demandesService.approveRequest(req.id).subscribe({
+        next: () => {
+          this.announcerRequests = this.announcerRequests.filter(r => r.id !== req.id);
+          // Refresh stats
+          this.loadData();
+        },
+        error: (err: any) => alert('Erreur lors de l\'approbation')
+      });
+    }
   }
 
   rejectRequest(req: any) {
-    alert('Demande de ' + req.storeName + ' refusée.');
-    this.announcerRequests = this.announcerRequests.filter(r => r !== req);
+    const reason = prompt('Motif du rejet :');
+    if (reason) {
+      this.demandesService.rejectRequest(req.id, reason).subscribe({
+        next: () => {
+          this.announcerRequests = this.announcerRequests.filter(r => r.id !== req.id);
+          this.loadData();
+        },
+        error: (err: any) => alert('Erreur lors du rejet')
+      });
+    }
   }
 
   validateCustomer(customer: any) {
     customer.status = 'Validated';
-    alert('Client ' + customer.name + ' validé.');
     this.recentCustomers = this.recentCustomers.filter(c => c !== customer);
   }
 
   blockCustomer(customer: any) {
     customer.status = 'Blocked';
-    alert('Client ' + customer.name + ' bloqué.');
     this.recentCustomers = this.recentCustomers.filter(c => c !== customer);
   }
 }

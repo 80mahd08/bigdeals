@@ -3,7 +3,7 @@
   <!-- LOGO -->
   <div class="navbar-brand-box">
 
-    <a routerLink="/" >
+    <a [routerLink]="dashboardHome" >
       <span>
         <img src="assets/images/logo.png"  height="30" class="sidebar-logo-small">
       </span>
@@ -22,7 +22,7 @@
           
           @for(item of menuItems; track $index) {
             @if(item.isTitle) {
-              <li class="menu-title"><span>{{ item.label | translate }}</span></li>
+              <li class="menu-title"><span>{{ item.label }}</span></li>
             } @else {
               <li class="nav-item">
                 @if(hasItems(item)) {
@@ -33,7 +33,7 @@
                      [attr.aria-expanded]="!item.isCollapsed" 
                      (click)="toggleItem(item)">
                     <i class="{{ item.icon }} icon nav-icon"></i>
-                    <span> {{ item.label | translate }}</span>
+                    <span> {{ item.label }}</span>
                     @if(item.badge){<span class="badge {{item.badge.variant}} float-end ms-1">{{item.badge.text}}</span>}
                   </a>
 
@@ -41,8 +41,12 @@
                     <ul class="nav nav-sm flex-column" aria-expanded="false">
                       @for(subitem of item.subItems; track $index) {
                         <li class="nav-item">
-                          <a [routerLink]="subitem.link" class="nav-link" (click)="updateActive($event)">
-                            {{ subitem.label | translate }}
+                          <a [routerLink]="subitem.link" 
+                             routerLinkActive="active" 
+                             [routerLinkActiveOptions]="{ exact: true }"
+                             class="nav-link" 
+                             (click)="updateActive($event)">
+                            {{ subitem.label }}
                             @if(subitem.badge){<span class="badge {{subitem.badge.variant}} float-end ms-1">{{subitem.badge.text}}</span>}
                           </a>
                         </li>
@@ -50,9 +54,12 @@
                     </ul>
                   </div>
                 } @else {
-                  <a [routerLink]="item.link" routerLinkActive="active" class="side-nav-link-ref nav-link menu-link">
+                  <a [routerLink]="item.link" 
+                     routerLinkActive="active" 
+                     [routerLinkActiveOptions]="{ exact: true }"
+                     class="side-nav-link-ref nav-link menu-link">
                     @if(item.icon){<i class="{{ item.icon }} icon nav-icon"></i>}
-                    <span> {{ item.label | translate }} </span>
+                    <span> {{ item.label }} </span>
                     @if(item.badge){<span class="badge {{item.badge.variant}} float-end ms-1">{{item.badge.text}}</span>}
                   </a>
                 }

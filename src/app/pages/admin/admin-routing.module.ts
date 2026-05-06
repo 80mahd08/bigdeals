@@ -33,6 +33,10 @@ const routes: Routes = [
     component: CategoriesComponent
   },
   {
+    path: 'settings',
+    redirectTo: 'dashboard'
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full'

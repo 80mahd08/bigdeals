@@ -1,183 +1,226 @@
-<div class="container py-5 mt-4">
+<div class="marketplace-container container py-5">
     <div class="row">
         <!-- Sidebar Filters -->
         <div class="col-xl-3 col-lg-4">
-            <div class="card shadow-none border">
-                <div class="card-header bg-light-subtle border-bottom">
-                <div class="d-flex align-items-center">
-                    <div class="flex-grow-1">
-                        <h5 class="fs-16 mb-0">Filtres</h5>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <a href="javascript:void(0);" class="text-decoration-underline text-success">Réinitialiser</a>
+            <div class="card card-marketplace border">
+                <div class="card-header border-bottom">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="fs-16 mb-0">Filtres</h5>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <a href="javascript:void(0);" class="text-decoration-underline text-success" (click)="resetFilters()">Réinitialiser</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-body">
-                <!-- Categories -->
-                <div class="mb-4">
-                    <h6 class="text-uppercase fs-12 mb-3">Catégories</h6>
-                    <div class="list-group list-group-flush">
-                    @for (cat of categories; track $index) {
-                        <a [routerLink]="['/ads']" [queryParams]="{category: cat.name}" 
-                           class="list-group-item list-group-item-action d-flex align-items-center px-0 border-0"
-                           [ngClass]="{'active-category': selectedCategory === cat.name}">
-                            <i class="{{cat.icon}} mx-2" [ngClass]="selectedCategory === cat.name ? 'text-success' : 'text-muted'"></i>
-                            <span class="flex-grow-1">{{cat.name}}</span>
-                            <span class="badge bg-light text-muted">{{cat.count}}</span>
-                        </a>
+                <div class="card-body">
+                    <!-- Categories -->
+                    <div class="mb-4">
+                        <h6 class="text-uppercase fs-12 mb-3">Catégories</h6>
+                        <div class="list-group list-group-flush">
+                            <a href="javascript:void(0);" (click)="onCategorySelect(null)" 
+                               class="list-group-item list-group-item-action d-flex align-items-center px-0 border-0"
+                               [ngClass]="{'active-category': selectedCategoryId === null}">
+                                <i class="ri-apps-2-line mx-2" [ngClass]="selectedCategoryId === null ? 'text-success' : 'text-muted'"></i>
+                                <span class="flex-grow-1">Toutes les catégories</span>
+                            </a>
+                            @for (cat of categories; track cat.idCategorie) {
+                            <a href="javascript:void(0);" (click)="onCategorySelect(cat.idCategorie)" 
+                               class="list-group-item list-group-item-action d-flex align-items-center px-0 border-0"
+                               [ngClass]="{'active-category': selectedCategoryId === cat.idCategorie}">
+                                <i class="{{cat.iconKey || 'ri-price-tag-3-line'}} mx-2" [ngClass]="selectedCategoryId === cat.idCategorie ? 'text-success' : 'text-muted'"></i>
+                                <span class="flex-grow-1">{{cat.nom}}</span>
+                            </a>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="mb-4 border-top pt-3">
+                        <h6 class="text-uppercase fs-12 mb-3">Localisation</h6>
+                        <div ngbDropdown class="d-inline-block w-100">
+                            <button type="button" class="btn btn-outline-light border text-start w-100 d-flex align-items-center justify-content-between bg-body-secondary text-body shadow-none" id="locationDropdown" ngbDropdownToggle>
+                                <span class="text-truncate">{{selectedLocation || 'Toute la Tunisie'}}</span>
+                            </button>
+                            <div ngbDropdownMenu aria-labelledby="locationDropdown" class="w-100 shadow-lg border-0 mt-1" style="max-height: 300px; overflow-y: auto;">
+                                <button ngbDropdownItem (click)="onLocationSelect('')" [class.active]="selectedLocation === ''">Toute la Tunisie</button>
+                                @for (gov of governorates; track gov) {
+                                    <button ngbDropdownItem (click)="onLocationSelect(gov)" [class.active]="selectedLocation === gov">{{gov}}</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Price Range -->
+                    <div class="mb-4 border-top pt-3">
+                        <h6 class="text-uppercase fs-12 mb-3">Prix (TND)</h6>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <input type="number" class="form-control form-control-sm" placeholder="Min" [(ngModel)]="minPrice" (input)="onFilterChange()" min="0">
+                            </div>
+                            <div class="col-6">
+                                <input type="number" class="form-control form-control-sm" placeholder="Max" [(ngModel)]="maxPrice" (input)="onFilterChange()" min="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Filters -->
+                    @if (categorySchema && categorySchema.attributs.length > 0) {
+                        <div class="border-top pt-3">
+                            <h6 class="text-uppercase fs-12 mb-3">Filtres Spécifiques</h6>
+                            @for (attr of categorySchema.attributs; track attr.idAttributCategorie) {
+                                <div class="mb-3">
+                                    <label class="form-label fs-11 text-muted">{{attr.nom}}</label>
+                                    
+                                    @if (attr.typeDonnee === 'LISTE') {
+                                        <select class="form-select form-select-sm" [(ngModel)]="dynamicFilters[attr.idAttributCategorie]" (change)="onFilterChange()">
+                                            <option [value]="undefined">Tous</option>
+                                            @for (opt of attr.options; track opt.idOptionAttributCategorie) {
+                                                <option [value]="opt.idOptionAttributCategorie">{{opt.valeur}}</option>
+                                            }
+                                        </select>
+                                    } @else if (attr.typeDonnee === 'NOMBRE') {
+                                        @if (attr.estPlage) {
+                                            <div class="row g-2">
+                                                <div class="col-6">
+                                                    <input type="number" class="form-control form-control-sm" placeholder="Min" 
+                                                           (input)="onFilterChange()" [(ngModel)]="dynamicFilters[attr.idAttributCategorie].min" min="0">
+                                                </div>
+                                                <div class="col-6">
+                                                    <input type="number" class="form-control form-control-sm" placeholder="Max" 
+                                                           (input)="onFilterChange()" [(ngModel)]="dynamicFilters[attr.idAttributCategorie].max" min="0">
+                                                </div>
+                                            </div>
+                                        } @else {
+                                            <input type="number" class="form-control form-control-sm" [placeholder]="attr.placeholder || ''"
+                                                   (input)="onFilterChange()" [(ngModel)]="dynamicFilters[attr.idAttributCategorie]" min="0">
+                                        }
+                                    } @else if (attr.typeDonnee === 'DATE') {
+                                        @if (attr.estPlage) {
+                                            <div class="row g-2">
+                                                <div class="col-6">
+                                                    <input type="date" class="form-control form-control-sm" placeholder="Min"
+                                                           (change)="onFilterChange()" [(ngModel)]="dynamicFilters[attr.idAttributCategorie].min">
+                                                </div>
+                                                <div class="col-6">
+                                                    <input type="date" class="form-control form-control-sm" placeholder="Max"
+                                                           (change)="onFilterChange()" [(ngModel)]="dynamicFilters[attr.idAttributCategorie].max">
+                                                </div>
+                                            </div>
+                                        } @else {
+                                            <input type="date" class="form-control form-control-sm"
+                                                   (change)="onFilterChange()" [(ngModel)]="dynamicFilters[attr.idAttributCategorie]">
+                                        }
+                                    } @else if (attr.typeDonnee === 'BOOLEAN') {
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" 
+                                                   [id]="'switch-' + attr.idAttributCategorie"
+                                                   [(ngModel)]="dynamicFilters[attr.idAttributCategorie]"
+                                                   (change)="onFilterChange()">
+                                            <label class="form-check-label fs-11 text-muted" [for]="'switch-' + attr.idAttributCategorie">
+                                                {{dynamicFilters[attr.idAttributCategorie] ? 'Oui' : 'Indifférent'}}
+                                            </label>
+                                        </div>
+                                    } @else {
+                                        <input type="text" class="form-control form-control-sm" 
+                                               [(ngModel)]="dynamicFilters[attr.idAttributCategorie]" (input)="onFilterChange()">
+                                    }
+                                </div>
+                            }
+                        </div>
                     }
                 </div>
             </div>
+        </div>
 
-            <!-- Price Range -->
-            <div class="mb-4 border-top pt-3">
-                <h6 class="text-uppercase fs-12 mb-3">Prix</h6>
-                <div class="row g-2">
-                    <div class="col-6">
-                        <input type="number" class="form-control form-control-sm" placeholder="Min">
+        <!-- Main Content -->
+        <div class="col-xl-9 col-lg-8">
+            <div class="card shadow-none bg-transparent">
+                <div class="card-body p-0">
+                    <div class="row align-items-center mb-4">
+                        <div class="col-sm">
+                            <div class="d-flex align-items-center gap-2">
+                                <h5 class="mb-0 text-success fw-bold">{{totalItems}}</h5>
+                                <span class="text-muted fs-14">{{textResultsFound}}</span>
+                            </div>
+                            <div class="search-box mt-2">
+                                <input type="text" class="form-control bg-light-subtle border-light" [placeholder]="textSearchPlaceholder" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()">
+                                <i class="ri-search-line search-icon"></i>
+                            </div>
+                        </div>
+                        <div class="col-sm-auto mt-3 mt-sm-0 align-self-end">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="text-muted text-nowrap">{{textSortBy}}</span>
+                                <select class="form-select form-select-sm" style="width: 160px;" [(ngModel)]="sortBy" (change)="onFilterChange()">
+                                    <option value="newest">{{textLatest}}</option>
+                                    <option value="price_asc">{{textPriceLowHigh}}</option>
+                                    <option value="price_desc">{{textPriceHighLow}}</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-6">
-                        <input type="number" class="form-control form-control-sm" placeholder="Max">
-                    </div>
-                </div>
-            </div>
 
-            <!-- Location -->
-            <div class="mb-4 border-top pt-3">
-                <h6 class="text-uppercase fs-12 mb-3">Localisation</h6>
-                <select class="form-select form-select-sm">
-                    <option selected>Toute la France</option>
-                    <option>Paris</option>
-                    <option>Lyon</option>
-                    <option>Marseille</option>
-                </select>
-            </div>
+                    @if(isLoading) {
+                        <!-- Loading State -->
+                        <div class="py-5 text-center">
+                            <div class="spinner-border text-success" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    } @else if (hasError) {
+                        <!-- Error State -->
+                        <div class="py-5 text-center">
+                            <i class="ri-error-warning-line text-warning display-4"></i>
+                            <h5 class="mt-4">Oups ! Quelque chose s'est mal passé</h5>
+                            <p class="text-muted">Nous n'avons pas pu charger les annonces. Veuillez réessayer dans quelques instants.</p>
+                            <button class="btn btn-outline-success mt-2" (click)="fetchAds()">
+                                <i class="ri-refresh-line align-bottom me-1"></i> Réessayer
+                            </button>
+                        </div>
+                    } @else if (adsList.length === 0) {
+                        <!-- Empty State -->
+                        <div class="py-5 text-center">
+                            <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop" colors="primary:#405189,secondary:#0ab39c" style="width:72px;height:72px"></lord-icon>
+                            <h5 class="mt-4">Aucun résultat trouvé</h5>
+                            <p class="text-muted">Essayez de modifier vos filtres pour trouver ce que vous cherchez.</p>
+                            <button class="btn btn-success mt-2" (click)="resetFilters()">Effacer tous les filtres</button>
+                        </div>
+                    } @else {
+                        <!-- Ads Grid -->
+                        <div class="row">
+                            @for (ad of adsList; track ad.idAnnonce) {
+                            <div class="col-xl-4 col-sm-6 mb-4">
+                                <app-ad-card [ad]="ad"></app-ad-card>
+                            </div>
+                            }
+                        </div>
 
-            <!-- Condition -->
-            <div class="mb-4 border-top pt-3">
-                <h6 class="text-uppercase fs-12 mb-3">État</h6>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" id="cond-new" checked>
-                    <label class="form-check-label" for="cond-new">Neuf</label>
-                </div>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" id="cond-used">
-                    <label class="form-check-label" for="cond-used">D'occasion</label>
+                        <!-- Pagination -->
+                        <div class="row align-items-center mb-4 text-center text-sm-start">
+                            <div class="col-sm">
+                                <div class="text-muted">{{textShowingResults}} <span class="fw-semibold">{{adsList.length}}</span> {{textResultsLabel}}</div>
+                            </div>
+                            <div class="col-sm-auto mt-3 mt-sm-0">
+                                <ul class="pagination pagination-separated pagination-sm mb-0 justify-content-center">
+                                    <li class="page-item" [class.disabled]="currentPage === 1">
+                                        <a href="javascript:void(0);" class="page-link" (click)="onPageChange(currentPage - 1)">Précédent</a>
+                                    </li>
+                                    
+                                    @for (page of pages; track page) {
+                                        <li class="page-item" [class.active]="currentPage === page">
+                                            <a href="javascript:void(0);" class="page-link" (click)="onPageChange(page)">{{page}}</a>
+                                        </li>
+                                    }
+
+                                    <li class="page-item" [class.disabled]="currentPage === totalPages || totalPages === 0">
+                                        <a href="javascript:void(0);" class="page-link" (click)="onPageChange(currentPage + 1)">Suivant</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-<!-- Main Content -->
-<div class="col-xl-9 col-lg-8">
-    <div class="card shadow-none bg-transparent">
-        <div class="card-body p-0">
-            <div class="row align-items-center mb-4">
-                <div class="col-sm">
-                        <div class="d-flex align-items-center gap-2">
-                            <h5 class="mb-0 text-success fw-bold">{{filteredAds.length}}</h5>
-                            <span class="text-muted fs-14">{{textResultsFound}}</span>
-                        </div>
-                        <div class="search-box">
-                            <input type="text" class="form-control bg-light border-light" [placeholder]="textSearchPlaceholder">
-                            <i class="ri-search-line search-icon"></i>
-                        </div>
-                    </div>
-                <div class="col-sm-auto mt-3 mt-sm-0">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="text-muted text-nowrap">{{textSortBy}}</span>
-                        <select class="form-select form-select-sm" style="width: 160px;">
-                            <option selected>{{textLatest}}</option>
-                            <option>{{textPriceLowHigh}}</option>
-                            <option>{{textPriceHighLow}}</option>
-                            <option>{{textTopRated}}</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Ads Grid -->
-            <div class="row">
-                @for (ad of filteredAds; track $index) {
-                    <div class="col-xl-4 col-sm-6 mb-4">
-                        <div class="card explore-box card-animate border-0 shadow-sm position-relative h-100">
-                            <!-- Card Content remains same, but card-body uses currency dynamic loc -->
-                            <div class="position-relative">
-                                <img src="{{ad.image}}" alt="" class="card-img-top explore-img rounded-top" style="height: 180px; object-fit: cover;">
-                                <div class="bookmark-icon position-absolute top-0 end-0 m-2" style="z-index: 2;">
-                                    <button type="button" class="btn btn-icon btn-soft-danger rounded-circle btn-sm shadow-none" [ngClass]="{'active': ad.isFavorite}" (click)="$event.stopPropagation(); ad.isFavorite = !ad.isFavorite">
-                                        <i class="ri-heart-fill"></i>
-                                    </button>
-                                </div>
-                                @if(ad.isPremium){
-                                    <div class="position-absolute bottom-0 start-0 m-2">
-                                        <span class="badge bg-warning text-dark"><i class="ri-vip-crown-fill me-1"></i>Premium</span>
-                                    </div>
-                                }
-                            </div>
-                            <div class="card-body">
-                                <p class="text-muted mb-2 fs-12">{{ad.category}} • {{ad.date}}</p>
-                                <h5 class="mb-2 text-truncate fs-15">
-                                    <a [routerLink]="['/ads', $index + 1]" class="text-body fw-semibold stretched-link">{{ad.title}}</a>
-                                </h5>
-                                <div class="d-flex align-items-center mb-0">
-                                    <div class="flex-grow-1">
-                                        <h5 class="text-success fw-bold mb-0 fs-16">{{ad.price | currency:'EUR':'symbol':'1.0-0'}}</h5>
-                                    </div>
-                                    <div class="flex-shrink-0">
-                                        <span class="text-muted fs-12"><i class="ri-map-pin-2-line align-bottom"></i> {{ad.location}}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer bg-transparent border-top-dashed py-2" style="z-index: 2;">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-grow-1 text-truncate">
-                                        <div class="d-flex align-items-center">
-                                            <img src="{{ad.sellerAvatar}}" alt="" class="avatar-xxs rounded-circle me-1">
-                                            <span class="text-muted fs-12 text-truncate">{{ad.sellerName}}</span>
-                                        </div>
-                                    </div>
-                                    <div class="flex-shrink-0">
-                                        <div class="text-warning fs-12">
-                                            <i class="ri-star-fill"></i> {{ad.rating}}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-
-                <!-- Pagination -->
-                <div class="row align-items-center mb-4 text-center text-sm-start">
-                    <div class="col-sm">
-                        <div class="text-muted">{{textShowingResults}} <span class="fw-semibold">{{filteredAds.length}}</span> {{textResultsLabel}}</div>
-                    </div>
-                    <div class="col-sm-auto mt-3 mt-sm-0">
-                        <ul class="pagination pagination-separated pagination-sm mb-0 justify-content-center">
-                            <li class="page-item disabled">
-                                <a href="javascript:void(0);" class="page-link">{{textPrev}}</a>
-                            </li>
-                            <li class="page-item active">
-                                <a href="javascript:void(0);" class="page-link">1</a>
-                            </li>
-                            <li class="page-item">
-                                <a href="javascript:void(0);" class="page-link">2</a>
-                            </li>
-                            <li class="page-item">
-                                <a href="javascript:void(0);" class="page-link">3</a>
-                            </li>
-                            <li class="page-item">
-                                <a href="javascript:void(0);" class="page-link">{{textNext}}</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 </div>

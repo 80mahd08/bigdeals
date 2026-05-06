@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
 import { AuthenticationService } from './core/services/auth.service';
 
@@ -18,62 +17,82 @@ export class AppComponent implements OnInit {
   showTopbar = true;
 
   constructor(
-    public translate: TranslateService, 
     private router: Router,
     private authService: AuthenticationService
   ) {
-    // Configure the translation service
-    this.translate.addLangs(['en', 'fr', 'ar']);
-    this.translate.setDefaultLang('en');
-
-    // Subscribe to translation language changes to update page layout direction (LTR/RTL)
-    this.translate.onLangChange.subscribe((event) => {
-      this.updateDirection(event.lang);
-    });
-    
-    // Choose initial language
-    const browserLang = this.translate.getBrowserLang();
-    const useLang = browserLang?.match(/en|fr|ar/) ? browserLang : 'en';
-    this.translate.use(useLang);
-
-    // Monitor routing events to hide the topbar on authentication pages (e.g. login, signup)
+    // Monitor routing events to hide the topbar on authentication pages and update layout
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       this.showTopbar = !event.url.startsWith('/auth');
+      this.refreshLayout();
     });
 
-    // Check the current route on initial load to set the topbar state immediately
     this.showTopbar = !this.router.url.startsWith('/auth');
   }
 
   /**
    * Called when the component initializes.
-   * We use it here to set default global layout attributes on the document body.
    */
   ngOnInit(): void {
+    // Debug: Monitor storage
+    setInterval(() => {
+        console.log('--- STORAGE MONITOR ---');
+        console.log('currentUser:', localStorage.getItem('currentUser'));
+        console.log('token:', localStorage.getItem('token'));
+        console.log('sessionStorage currentUser:', sessionStorage.getItem('currentUser'));
+    }, 5000);
+
     // Subscribe to current user to toggle layout dynamically
     this.authService.currentUser$.subscribe(user => {
-      const isAdmin = !!(user && user.role === 'ADMIN');
-      this.updateLayout(isAdmin);
+      this.refreshLayout();
     });
 
-    // Set light theme globally
+    // Set default theme and direction
     document.body.setAttribute('data-topbar', 'light');
     document.documentElement.setAttribute('data-bs-theme', 'light');
+    document.documentElement.setAttribute('dir', 'ltr');
+    document.documentElement.setAttribute('lang', 'fr');
+    document.body.setAttribute('data-layout-direction', 'ltr');
+    this.loadLTRStyles();
   }
 
   /**
-   * Switches between horizontal (Visitor/Client) and vertical (Admin) layouts.
+   * Evaluates the current state (User + Route) to set the correct layout attributes.
    */
-  updateLayout(isAdmin: boolean) {
-    const layout = isAdmin ? 'vertical' : 'horizontal';
+  refreshLayout() {
+    const user = this.authService.currentUserValue;
+    const url = this.router.url;
+    
+    let isVertical = false;
+
+    if (user) {
+      if (user.role === 'ADMIN') {
+        isVertical = true; // Admin is always vertical
+      } else if (user.role === 'ANNONCEUR') {
+        // Announcer is vertical ONLY when in the announcer dashboard area
+        isVertical = url.startsWith('/announcer');
+      }
+    }
+
+    this.applyLayout(isVertical);
+  }
+
+  /**
+   * Applies the layout attributes to the DOM.
+   */
+  applyLayout(isVertical: boolean) {
+    const layout = isVertical ? 'vertical' : 'horizontal';
     document.documentElement.setAttribute('data-layout', layout);
     document.body.setAttribute('data-layout', layout);
     
-    if (isAdmin) {
+    if (isVertical) {
       document.documentElement.setAttribute('data-sidebar', 'dark');
       document.documentElement.setAttribute('data-sidebar-size', 'lg');
+    } else {
+      // Cleanup sidebar attributes for horizontal mode
+      document.documentElement.removeAttribute('data-sidebar');
+      document.documentElement.removeAttribute('data-sidebar-size');
     }
   }
 
@@ -97,37 +116,12 @@ export class AppComponent implements OnInit {
     return this.authService.currentUserValue?.role === 'ADMIN';
   }
 
-  /**
-   * Updates the HTML direction and styling tags to support Left-to-Right (LTR) 
-   * and Right-to-Left (RTL) views based on the selected language.
-   * 
-   * @param lang The currently selected language code ('ar', 'en', 'fr', etc.)
-   */
-  updateDirection(lang: string) {
-    const html = document.documentElement;
-    const body = document.body;
-
-    if (lang === 'ar') {
-      // Configuration for Arabic language (RTL)
-      html.setAttribute('dir', 'rtl');
-      html.setAttribute('lang', 'ar');
-      body.setAttribute('data-layout-direction', 'rtl');
-      this.loadRTLStyles();
-    } else {
-      // Default to Left-To-Right for English, French, etc.
-      html.setAttribute('dir', 'ltr');
-      html.setAttribute('lang', 'en');
-      body.setAttribute('data-layout-direction', 'ltr');
-      this.loadLTRStyles();
-    }
-  }
-
-  /**
-   * Loads the Right-To-Left specific CSS files.
-   */
-  loadRTLStyles() {
-    this.replaceCSS('bootstrap', 'assets/css/bootstrap-rtl.min.css');
-    this.replaceCSS('app', 'assets/css/app-rtl.min.css');
+  get shouldShowSidebar(): boolean {
+    const user = this.authService.currentUserValue;
+    if (!user) return false;
+    if (user.role === 'ADMIN') return true;
+    if (user.role === 'ANNONCEUR' && this.router.url.startsWith('/announcer')) return true;
+    return false;
   }
 
   /**

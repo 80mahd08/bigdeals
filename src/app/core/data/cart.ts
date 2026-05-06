@@ -1,7 +1,7 @@
 export const cartData = [
   {
     id: '1',
-    img: 'assets/images/products/img-1.png',
+    img: '',
     product: 'Premium Wireless Headphones',
     price: '199.99',
     quantity: 1,

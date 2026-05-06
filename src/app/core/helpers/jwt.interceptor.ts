@@ -11,7 +11,7 @@ import { AuthenticationService } from '../services/auth.service';
  * Automatically attaches the Firebase user's session token to every outgoing HTTP request.
  * This is useful if your backend API requires a Bearer token for protected endpoints.
  *
- * The token is read from sessionStorage where AuthenticationService stores it after login.
+ * The token is read from localStorage where AuthenticationService stores it after login.
  * If the server returns a 401 (Unauthorized), the user is redirected to the sign-in page.
  */
 @Injectable()
@@ -24,8 +24,8 @@ export class JwtInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    // Read the stored token from sessionStorage
-    const token = sessionStorage.getItem('token');
+    // Read the stored token from localStorage
+    const token = localStorage.getItem('token');
 
     // If a token exists, clone the request and add the Authorization header
     if (token) {

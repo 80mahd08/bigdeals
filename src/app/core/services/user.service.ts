@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { User } from 'src/app/store/Authentication/auth.models';
 
+/**
+ * @deprecated THIS SERVICE IS LEGACY/ORPHANED. 
+ * Kept only for reference. New code should use UtilisateursService.
+ */
 @Injectable({ providedIn: 'root' })
 export class UserProfileService {
     constructor(private http: HttpClient) { }

@@ -10,8 +10,18 @@
             <div class="card-body p-4 text-center">
                 <div class="position-relative d-inline-block mx-auto mb-4">
                     <div class="avatar-lg">
-                        <img [src]="currentUser?.profilePhoto || 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&fit=crop&q=80&w=100'" class="img-fluid rounded-circle img-thumbnail shadow">
+                        @if (imagePreview) {
+                            <img [src]="imagePreview" class="rounded-circle img-thumbnail shadow" style="width: 100%; height: 100%; object-fit: cover;">
+                        } @else if (currentUser?.photoProfilUrl) {
+                            <img [src]="photoUrl" class="rounded-circle img-thumbnail shadow" style="width: 100%; height: 100%; object-fit: cover;">
+                        } @else {
+                            <div class="rounded-circle img-thumbnail shadow d-flex align-items-center justify-content-center bg-info text-white fw-bold fs-24 h-100">
+                                {{ avatarLetter }}
+                            </div>
+                        }
                     </div>
+
+
                     <div class="avatar-xs p-0 rounded-circle profile-photo-edit">
                         <input id="profile-img-file-input" type="file" class="profile-img-file-input" (change)="onFileSelected($event)">
                         <label for="profile-img-file-input" class="profile-photo-edit avatar-xs">
@@ -21,8 +31,8 @@
                         </label>
                     </div>
                 </div>
-                <h5 class="fs-16 mb-1">{{currentUser?.firstName}} {{currentUser?.lastName}}</h5>
-                <p class="text-muted mb-0">Client BigDeals</p>
+                <h5 class="fs-16 mb-1">{{currentUser?.prenom}} {{currentUser?.nom}}</h5>
+                <p class="text-muted mb-0">{{currentUser?.role === 'ANNONCEUR' ? 'Vendeur BigDeals' : 'Client BigDeals'}}</p>
             </div>
         </div>
     </div>
@@ -34,30 +44,47 @@
                     <li [ngbNavItem]="1" class="nav-item">
                         <a ngbNavLink class="nav-link" role="tab">Détails Personnels</a>
                         <ng-template ngbNavContent>
-                            <form (ngSubmit)="updateProfile()">
+                            <form (ngSubmit)="updateProfile()" #pf="ngForm">
                                 <div class="row g-3">
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label for="firstnameInput" class="form-label">Prénom</label>
-                                            <input type="text" class="form-control" id="firstnameInput" placeholder="Entrez votre prénom" [value]="currentUser?.firstName">
+                                            <input type="text" class="form-control" id="firstnameInput" name="prenom" placeholder="Entrez votre prénom" [(ngModel)]="editForm.prenom">
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label for="lastnameInput" class="form-label">Nom</label>
-                                            <input type="text" class="form-control" id="lastnameInput" placeholder="Entrez votre nom" [value]="currentUser?.lastName">
+                                            <input type="text" class="form-control" id="lastnameInput" name="nom" placeholder="Entrez votre nom" [(ngModel)]="editForm.nom">
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label for="phonenumberInput" class="form-label">Numéro de Téléphone</label>
-                                            <input type="text" class="form-control" id="phonenumberInput" placeholder="Ex: 06 12 34 56 78">
+                                            <input type="text" class="form-control" id="phonenumberInput" name="telephone" placeholder="Ex: 216 22 333 444" [(ngModel)]="editForm.telephone">
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label for="emailInput" class="form-label">Adresse Email</label>
-                                            <input type="email" class="form-control" id="emailInput" placeholder="Ex: email@example.com" [value]="currentUser?.email" disabled>
+                                            <input type="email" class="form-control" id="emailInput" name="email" placeholder="Ex: email@example.com" [value]="currentUser?.email" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label for="cityInput" class="form-label">Ville</label>
+                                            <select class="form-select shadow-none" id="cityInput" name="ville" [(ngModel)]="editForm.ville">
+                                                <option value="0">Sélectionnez votre ville</option>
+                                                @for (city of cities; track city) {
+                                                    <option [value]="city">{{city}}</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label for="addressInput" class="form-label">Adresse</label>
+                                            <input type="text" class="form-control" id="addressInput" name="adresse" placeholder="Entrez votre adresse" [(ngModel)]="editForm.adresse">
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -73,24 +100,24 @@
                     <li [ngbNavItem]="2" class="nav-item">
                         <a ngbNavLink class="nav-link" role="tab">Changer le Mot de Passe</a>
                         <ng-template ngbNavContent>
-                            <form>
+                            <form (ngSubmit)="updatePassword()">
                                 <div class="row g-2 justify-content-center">
                                     <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label for="oldpasswordInput" class="form-label">Ancien Mot de Passe*</label>
-                                            <input type="password" class="form-control" id="oldpasswordInput" placeholder="Entrez l'ancien mot de passe">
+                                            <input type="password" class="form-control" id="oldpasswordInput" name="oldPassword" placeholder="Entrez l'ancien mot de passe" [(ngModel)]="passwordForm.oldPassword">
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label for="newpasswordInput" class="form-label">Nouveau Mot de Passe*</label>
-                                            <input type="password" class="form-control" id="newpasswordInput" placeholder="Entrez le nouveau mot de passe">
+                                            <input type="password" class="form-control" id="newpasswordInput" name="newPassword" placeholder="Entrez le nouveau mot de passe" [(ngModel)]="passwordForm.newPassword">
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="mb-3">
                                             <label for="confirmpasswordInput" class="form-label">Confirmer le Mot de Passe*</label>
-                                            <input type="password" class="form-control" id="confirmpasswordInput" placeholder="Confirmez le nouveau mot de passe">
+                                            <input type="password" class="form-control" id="confirmpasswordInput" name="confirmPassword" placeholder="Confirmez le nouveau mot de passe" [(ngModel)]="passwordForm.confirmPassword">
                                         </div>
                                     </div>
                                     <div class="col-lg-12">

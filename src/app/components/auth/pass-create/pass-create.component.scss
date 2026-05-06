@@ -1,0 +1,47 @@
+:host ::ng-deep {
+  .auth-pass-inputgroup {
+    position: relative !important;
+    display: block !important; // Restore block layout to keep error messages below
+
+    .form-control {
+      padding-right: 4.5rem !important;
+    }
+
+    .password-addon {
+      position: absolute !important;
+      right: 38px !important; // Inside the input, to the left of the error icon
+      top: 20px !important;   // Manually set to the center of a standard 40px input
+      transform: translateY(-50%) !important;
+      height: 24px !important;
+      width: 24px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 10 !important;
+      border: none !important;
+      background: transparent !important;
+      cursor: pointer;
+      color: #adb5bd !important; // Restore professional grey
+
+      i {
+        font-size: 18px !important;
+        line-height: 1 !important;
+        margin: 0 !important;
+        display: block !important;
+        color: #adb5bd !important;
+      }
+
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
+    }
+
+    // Keep validation icon in standard position
+    .form-control.is-invalid {
+      background-position: right 10px center !important;
+    }
+  }
+}

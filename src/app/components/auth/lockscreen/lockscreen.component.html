@@ -20,7 +20,7 @@
                                 <img src="assets/images/logo.png" alt="BigDeals Logo" height="20">
                             </a>
                         </div>
-                        <p class="mt-3 fs-15 fw-medium">Bienvenue sur BigDeals</p>
+                        <p class="mt-3 fs-15 fw-medium">Votre marketplace tunisienne pour acheter et vendre en toute confiance</p>
                     </div>
                 </div>
             </div>
@@ -36,14 +36,14 @@
 
                             <!-- Display the current user -->
                             <div class="user-thumb text-center mt-4 mb-4">
-                                @if (currentUser?.profilePhoto) {
-                                    <img [src]="currentUser?.profilePhoto" class="rounded-circle img-thumbnail avatar-lg" alt="Avatar">
+                                @if (currentUser?.photoProfilUrl) {
+                                    <img [src]="currentUser?.photoProfilUrl" class="rounded-circle img-thumbnail avatar-lg" alt="Avatar" style="object-fit: cover;">
                                 } @else {
                                     <div class="rounded-circle img-thumbnail avatar-lg d-flex align-items-center justify-content-center bg-info text-white fw-bold fs-24 h-100 mx-auto">
                                         {{ avatarLetter }}
                                     </div>
                                 }
-                                <h5 class="font-size-15 mt-3 fw-semibold text-dark">{{ currentUser?.username || currentUser?.email || 'Utilisateur' }}</h5>
+                                <h5 class="font-size-15 mt-3 fw-semibold text-dark">{{ (currentUser?.prenom + ' ' + currentUser?.nom) || currentUser?.email || 'Utilisateur' }}</h5>
                             </div>
 
                             <div class="p-2">
@@ -90,7 +90,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="text-center">
-                        <p class="mb-0 text-muted">&copy; {{year}} BigDeals.</p>
+                        <p class="mb-0 text-muted">&copy; {{year}} BigDeals. Tous droits réservés.</p>
                     </div>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 export const Products = [
   {
     _id: '1',
-    image: 'assets/images/products/img-1.png',
+    image: '',
     name: 'Branded T-Shirts',
     category: 'Fashion',
     stock: '510',

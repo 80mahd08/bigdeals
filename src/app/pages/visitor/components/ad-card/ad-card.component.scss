@@ -1,0 +1,49 @@
+.explore-box {
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+    
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        
+        .explore-img {
+            transform: scale(1.05);
+        }
+    }
+}
+
+.explore-img {
+    transition: transform 0.5s ease;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.bookmark-icon {
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.card-footer {
+    background-color: transparent !important;
+}
+
+.text-price {
+    letter-spacing: -0.5px;
+}
+
+.card-marketplace {
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.12) !important;
+    }
+}
+
+.badge {
+    backdrop-filter: blur(4px);
+}
