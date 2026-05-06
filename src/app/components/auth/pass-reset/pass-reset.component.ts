@@ -15,38 +15,27 @@ import { AuthenticationService } from 'src/app/core/services/auth.service';
  */
 export class PassResetComponent implements OnInit {
 
-  // Login Form
+  // Form
   passresetForm!: UntypedFormGroup;
   submitted = false;
-  fieldTextType!: boolean;
   error = '';
-  returnUrl!: string;
-  // set the current year
   year: number = new Date().getFullYear();
   success = '';
   loading = false;
-  token: string | null = null;
 
   constructor(
     private formBuilder: UntypedFormBuilder,
     private authService: AuthenticationService,
-    private route: ActivatedRoute,
     private router: Router
   ) { }
 
   ngOnInit(): void {
     /**
-     * Form Validatyion
+     * Form Validation
      */
      this.passresetForm = this.formBuilder.group({
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      cpassword: ['', [Validators.required]]
+      email: ['', [Validators.required, Validators.email]]
     });
-
-    this.token = this.route.snapshot.queryParamMap.get('token');
-    if (!this.token) {
-      this.error = "Jeton de réinitialisation manquant dans l'URL.";
-    }
   }
 
   // convenience getter for easy access to form fields
@@ -63,32 +52,18 @@ export class PassResetComponent implements OnInit {
       return;
     }
 
-    if (this.f['password'].value !== this.f['cpassword'].value) {
-      this.error = "Les mots de passe ne correspondent pas.";
-      return;
-    }
-
-    if (!this.token) {
-      this.error = "Jeton invalide.";
-      return;
-    }
-
     this.loading = true;
     this.error = '';
     this.success = '';
 
-    this.authService.resetPasswordConfirm(this.token, this.f['password'].value).subscribe({
+    this.authService.resetPassword(this.f['email'].value).subscribe({
       next: (res) => {
         this.loading = false;
-        if (res.success) {
-          this.success = res.message || 'Mot de passe réinitialisé avec succès.';
-        } else {
-          this.error = res.message || 'Une erreur est survenue.';
-        }
+        this.success = "Si un compte est associé à cette adresse, vous recevrez un email pour réinitialiser votre mot de passe.";
       },
       error: (err) => {
         this.loading = false;
-        this.error = err.error?.message || 'Erreur lors de la demande. Veuillez réessayer.';
+        this.error = err.error?.message || 'Une erreur est survenue. Veuillez réessayer.';
       }
     });
   }
