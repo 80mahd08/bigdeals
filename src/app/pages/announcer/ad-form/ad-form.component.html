@@ -49,11 +49,11 @@
                                         @for (attr of selectedCategorySchema.attributs; track attr.idAttributCategorie) {
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">{{attr.nom}} {{attr.obligatoire ? '*' : ''}}</label>
+                                                    <label class="form-label">{{attr.nom}}</label>
                                                     
                                                     @switch (attr.typeDonnee) {
                                                         @case ('LISTE') {
-                                                            <select class="form-select" [name]="'attr_' + attr.idAttributCategorie" [(ngModel)]="dynamicValues[attr.idAttributCategorie]" [required]="attr.obligatoire">
+                                                            <select class="form-select" [name]="'attr_' + attr.idAttributCategorie" [(ngModel)]="dynamicValues[attr.idAttributCategorie]">
                                                                 <option [value]="null">Sélectionner...</option>
                                                                 @for (opt of attr.options; track opt.idOptionAttributCategorie) {
                                                                     <option [value]="opt.idOptionAttributCategorie">{{opt.valeur}}</option>
@@ -63,23 +63,23 @@
                                                         @case ('BOOLEAN') {
                                                             <div class="d-flex gap-3 pt-2">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" [name]="'attr_' + attr.idAttributCategorie" [id]="'attr_y_' + attr.idAttributCategorie" [value]="true" [(ngModel)]="dynamicValues[attr.idAttributCategorie]" [required]="attr.obligatoire">
+                                                                    <input class="form-check-input" type="radio" [name]="'attr_' + attr.idAttributCategorie" [id]="'attr_y_' + attr.idAttributCategorie" [value]="true" [(ngModel)]="dynamicValues[attr.idAttributCategorie]">
                                                                     <label class="form-check-label" [for]="'attr_y_' + attr.idAttributCategorie">Oui</label>
                                                                 </div>
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" [name]="'attr_' + attr.idAttributCategorie" [id]="'attr_n_' + attr.idAttributCategorie" [value]="false" [(ngModel)]="dynamicValues[attr.idAttributCategorie]" [required]="attr.obligatoire">
+                                                                    <input class="form-check-input" type="radio" [name]="'attr_' + attr.idAttributCategorie" [id]="'attr_n_' + attr.idAttributCategorie" [value]="false" [(ngModel)]="dynamicValues[attr.idAttributCategorie]">
                                                                     <label class="form-check-label" [for]="'attr_n_' + attr.idAttributCategorie">Non</label>
                                                                 </div>
                                                             </div>
                                                         }
                                                         @case ('NOMBRE') {
-                                                            <input type="number" class="form-control" [name]="'attr_' + attr.idAttributCategorie" [(ngModel)]="dynamicValues[attr.idAttributCategorie]" [required]="attr.obligatoire" min="0">
+                                                            <input type="number" class="form-control" [name]="'attr_' + attr.idAttributCategorie" [(ngModel)]="dynamicValues[attr.idAttributCategorie]" [placeholder]="attr.placeholder || ''" min="0">
                                                         }
                                                         @case ('DATE') {
-                                                            <input type="date" class="form-control" [name]="'attr_' + attr.idAttributCategorie" [(ngModel)]="dynamicValues[attr.idAttributCategorie]" [required]="attr.obligatoire">
+                                                            <input type="date" class="form-control" [name]="'attr_' + attr.idAttributCategorie" [(ngModel)]="dynamicValues[attr.idAttributCategorie]" [placeholder]="attr.placeholder || ''">
                                                         }
                                                         @default {
-                                                            <input type="text" class="form-control" [name]="'attr_' + attr.idAttributCategorie" [(ngModel)]="dynamicValues[attr.idAttributCategorie]" [required]="attr.obligatoire">
+                                                            <input type="text" class="form-control" [name]="'attr_' + attr.idAttributCategorie" [(ngModel)]="dynamicValues[attr.idAttributCategorie]" [placeholder]="attr.placeholder || ''">
                                                         }
                                                     }
                                                 </div>
