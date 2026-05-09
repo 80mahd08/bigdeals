@@ -1,49 +1,37 @@
 .bigdeals-footer {
-    background-color: #1a1d21 !important;
-    color: #878a99 !important;
-    position: relative;
-    z-index: 10;
+  background-color: #1a1d21 !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  position: relative;
+  z-index: 10;
 
-    .text-white {
+  .text-white {
+    color: #ffffff !important;
+  }
+
+  .text-white-50 {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  .text-success {
+    color: #0ab39c !important;
+  }
+
+  .footer-link {
+    a {
+      text-decoration: none;
+      transition: color 0.25s ease;
+
+      &:hover {
         color: #ffffff !important;
+      }
     }
+  }
 
-    .text-white-50 {
-        color: rgba(255, 255, 255, 0.6) !important;
-    }
+  .hover-white:hover {
+    color: #ffffff !important;
+  }
 
-    .hover-white:hover {
-        color: #ffffff !important;
-        transition: all 0.3s ease;
-    }
-
-    .border-secondary {
-        border-color: rgba(255, 255, 255, 0.1) !important;
-    }
-
-    .btn-success {
-        background-color: #0ab39c;
-        border-color: #0ab39c;
-        &:hover {
-            background-color: #089d88;
-            border-color: #089d88;
-        }
-    }
-
-    .form-control {
-        background-color: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: #ffffff;
-        
-        &::placeholder {
-            color: rgba(255, 255, 255, 0.3);
-        }
-
-        &:focus {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: none;
-            color: #ffffff;
-        }
-    }
+  .border-secondary {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
 }

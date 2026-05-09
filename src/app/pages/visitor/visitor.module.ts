@@ -9,6 +9,8 @@ import { AdsListingComponent } from './ads-listing/ads-listing.component';
 import { AdDetailComponent } from './ad-detail/ad-detail.component';
 import { SellerProfileComponent } from './seller-profile/seller-profile.component';
 import { AdCardComponent } from './components/ad-card/ad-card.component';
+import { AboutComponent } from './about/about.component';
+import { TermsComponent } from './terms/terms.component';
 import { LayoutsModule } from '../../components/layouts.module';
 
 @NgModule({
@@ -17,7 +19,9 @@ import { LayoutsModule } from '../../components/layouts.module';
     AdsListingComponent,
     AdDetailComponent,
     SellerProfileComponent,
-    AdCardComponent
+    AdCardComponent,
+    AboutComponent,
+    TermsComponent
   ],
   exports: [
     AdCardComponent

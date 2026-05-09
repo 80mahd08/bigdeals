@@ -19,13 +19,23 @@ export class RoleGuard {
             return false;
         }
 
-        // If user is authenticated, check roles
-        if (currentUser.role && expectedRoles.includes(currentUser.role)) {
+        // Defensive check: If no expected roles defined for this route, allow access
+        if (!expectedRoles || expectedRoles.length === 0) {
+            return true;
+        }
+
+        // Case-insensitive role check
+        const userRole = (currentUser.role || '').toUpperCase();
+        const hasRole = expectedRoles.some(role => role.toUpperCase() === userRole);
+
+        if (hasRole) {
             return true;
         }
 
         // Authenticated but unauthorized
-        if (currentUser.role === 'ADMIN') {
+        console.warn(`User with role ${userRole} attempted to access ${state.url} but required roles are: ${expectedRoles.join(', ')}`);
+        
+        if (userRole === 'ADMIN') {
             this.router.navigate(['/admin']);
         } else {
             this.router.navigate(['/']);

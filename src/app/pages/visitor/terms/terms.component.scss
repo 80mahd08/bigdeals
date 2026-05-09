@@ -1,0 +1,12 @@
+.marketplace-container {
+    min-height: calc(100vh - 400px);
+}
+
+section {
+    border-bottom: 1px dashed #eff2f7;
+    padding-bottom: 1rem;
+    
+    &:last-of-type {
+        border-bottom: none;
+    }
+}
