@@ -27,7 +27,7 @@
         .navbar-nav {
             height: calc(100vh - #{$header-height});
 
-            @media (max-width: 767.98px) {
+            @media (max-width: 849.98px) {
                 padding-top: 16px;
             }
 
@@ -71,7 +71,7 @@
     .main-content {
         margin-left: calc(#{$twocolumn-menu-width} + #{$twocolumn-menu-iconview-width});
 
-        @media (max-width:767.98px) {
+        @media (max-width:849.98px) {
             margin-left: $twocolumn-menu-iconview-width;
         }
     }
@@ -233,7 +233,7 @@
 
     #page-topbar,
     .footer {
-        @media (max-width: 767.98px) {
+        @media (max-width: 849.98px) {
             left: $twocolumn-menu-iconview-width;
         }
     }
@@ -251,7 +251,7 @@
 }
 
 [data-layout="twocolumn"] {
-    @media (max-width: 767.98px) {
+    @media (max-width: 849.98px) {
         .app-menu {
             left: 0;
             margin-left: 100%;

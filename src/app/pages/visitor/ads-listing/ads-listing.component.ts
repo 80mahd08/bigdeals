@@ -47,7 +47,7 @@ export class AdsListingComponent implements OnInit, OnDestroy {
 
   // Translation strings
   textResultsFound = 'annonces trouvées';
-  textSearchPlaceholder = 'Rechercher...';
+  textSearchPlaceholder = 'Rechercher une annonce, un vendeur...';
   textSortBy = 'Trier par :';
   textLatest = 'Plus récents';
   textPriceLowHigh = 'Prix : Croissant';

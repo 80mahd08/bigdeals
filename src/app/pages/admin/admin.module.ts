@@ -5,20 +5,24 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { OrdersComponent as TransactionsComponent } from './transactions/orders.component';
 import { CustomersComponent as UsersComponent } from './users/customers.component';
 import { SellersComponent as AnnouncersComponent } from './announcers/sellers.component';
 import { ProductsComponent as AdsComponent } from './ads/products.component';
-import { CategoriesComponent } from './categories/categories.component';
+import { PaymentsComponent } from './payments/payments.component';
+import { ReportsComponent } from './reports/reports.component';
+import { AdminOrdersComponent } from './orders/admin-orders.component';
+
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
   declarations: [
     DashboardComponent,
-    TransactionsComponent,
     UsersComponent,
     AnnouncersComponent,
     AdsComponent,
-    CategoriesComponent
+    PaymentsComponent,
+    ReportsComponent,
+    AdminOrdersComponent
   ],
   imports: [
     CommonModule,
@@ -29,7 +33,8 @@ import { CategoriesComponent } from './categories/categories.component';
     NgbTooltipModule,
     NgbNavModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgApexchartsModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

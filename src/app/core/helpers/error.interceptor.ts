@@ -35,7 +35,13 @@ export class ErrorInterceptor implements HttpInterceptor {
         }
 
         // Extract the most meaningful error message from the response
-        const errorMessage = err?.error?.message ?? err?.statusText ?? 'Une erreur est survenue.';
+        let errorMessage = 'Une erreur est survenue.';
+        if (err?.error) {
+          errorMessage = err.error.message || err.error.Message || err.statusText || errorMessage;
+        } else {
+          errorMessage = err.statusText || errorMessage;
+        }
+        
         return throwError(() => new Error(errorMessage));
       })
     );

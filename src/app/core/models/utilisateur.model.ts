@@ -11,6 +11,7 @@ export interface Utilisateur {
   photoProfilUrl?: string;
   role: string | UserRole;
   statutCompte?: string;
+  statutLabel?: string;
   dateCreation?: Date | string;
 }
 

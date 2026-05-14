@@ -6,11 +6,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClientRoutingModule } from './client-routing.module';
 import { ProfileComponent } from './profile/profile.component';
 import { FavoritesComponent } from './favorites/favorites.component';
+import { BecomeAnnouncerComponent } from './become-announcer/become-announcer.component';
 import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
+import { ProductCheckoutComponent } from './product-checkout/product-checkout.component';
 import { OrdersComponent } from './orders/orders.component';
-import { DetailsComponent as InvoiceDetailsComponent } from './invoices/details/details.component';
-import { BecomeAnnouncerComponent } from './become-announcer/become-announcer.component';
 import { LayoutsModule } from '../../components/layouts.module';
 import { VisitorModule } from '../visitor/visitor.module';
 
@@ -18,11 +18,11 @@ import { VisitorModule } from '../visitor/visitor.module';
   declarations: [
     ProfileComponent,
     FavoritesComponent,
+    BecomeAnnouncerComponent,
     CartComponent,
     CheckoutComponent,
-    OrdersComponent,
-    InvoiceDetailsComponent,
-    BecomeAnnouncerComponent
+    ProductCheckoutComponent,
+    OrdersComponent
   ],
   imports: [
     CommonModule,

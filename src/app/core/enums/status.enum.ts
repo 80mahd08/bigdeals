@@ -3,12 +3,25 @@ export enum StatutAnnonce {
   SUSPENDUE = 'SUSPENDUE'
 }
 
+export enum StatutCompte {
+  ACTIF = 1,
+  BLOQUE = 2
+}
+
 export enum StatutCommande {
-  EN_ATTENTE = 'EN_ATTENTE',
-  VALIDEE = 'VALIDEE',
-  EXPEDIEE = 'EXPEDIEE',
-  LIVREE = 'LIVREE',
-  ANNULEE = 'ANNULEE'
+  EN_ATTENTE_PAIEMENT = 1,
+  PAYEE = 2,
+  ANNULEE = 3
+}
+
+export enum StatutLivraison {
+  EN_ATTENTE_PREPARATION = 1,
+  EN_PREPARATION = 2,
+  EXPEDIEE = 3,
+  LIVREE = 4,
+  ECHEC_LIVRAISON = 5,
+  RETOURNEE = 6,
+  ANNULEE = 7
 }
 
 export enum StatutPaiement {
@@ -65,5 +78,6 @@ export enum MethodePaiement {
   E_DINAR = 'E_DINAR',
   D17 = 'D17',
   WALLET_LOCAL = 'WALLET_LOCAL',
+  CARTE_BANCAIRE = 'CARTE_BANCAIRE',
   AUTRE = 'AUTRE'
 }

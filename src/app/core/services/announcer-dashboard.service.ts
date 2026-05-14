@@ -62,18 +62,13 @@ export class AnnouncerDashboardService {
         const total = ads.length;
         return [
           { label: 'Annonces Totales', value: total, icon: 'ri-stack-line', color: 'primary' },
-          { label: 'Annonces Actives', value: active, icon: 'ri-checkbox-circle-line', color: 'success' },
-          { label: 'Commandes Reçues', value: 0, icon: 'ri-shopping-bag-line', color: 'info' }
+          { label: 'Annonces Actives', value: active, icon: 'ri-checkbox-circle-line', color: 'success' }
         ];
       })
     );
   }
 
-  getAnnouncerOrders(): Observable<any[]> {
-    return this.http.get<ApiResponse<any[]>>(`${environment.apiUrl}/annonceurs/me/orders`).pipe(
-        map(res => res.data || [])
-    );
-  }
+
 
   getAnnouncerReviews(): Observable<any[]> {
     return this.http.get<ApiResponse<any[]>>(`${environment.apiUrl}/annonceurs/me/reviews`).pipe(

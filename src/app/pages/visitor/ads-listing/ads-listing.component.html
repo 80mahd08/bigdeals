@@ -2,7 +2,7 @@
     <div class="row">
         <!-- Sidebar Filters -->
         <div class="col-xl-3 col-lg-4">
-            <div class="card card-marketplace border">
+            <div class="card card-marketplace">
                 <div class="card-header border-bottom">
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
@@ -136,15 +136,15 @@
         <!-- Main Content -->
         <div class="col-xl-9 col-lg-8">
             <div class="card shadow-none bg-transparent">
-                <div class="card-body p-0">
-                    <div class="row align-items-center mb-4">
+                <div class="card-body p-0 px-4 pt-3">
+                    <div class="row align-items-center mb-4 pb-2">
                         <div class="col-sm">
                             <div class="d-flex align-items-center gap-2">
                                 <h5 class="mb-0 text-success fw-bold">{{totalItems}}</h5>
                                 <span class="text-muted fs-14">{{textResultsFound}}</span>
                             </div>
                             <div class="search-box mt-2">
-                                <input type="text" class="form-control bg-light-subtle border-light" [placeholder]="textSearchPlaceholder" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()">
+                                <input type="text" class="form-control" [placeholder]="textSearchPlaceholder" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()">
                                 <i class="ri-search-line search-icon"></i>
                             </div>
                         </div>
@@ -162,7 +162,7 @@
 
                     @if(isLoading) {
                         <!-- Loading State -->
-                        <div class="py-5 text-center">
+                        <div class="py-5 my-5 text-center">
                             <div class="spinner-border text-success" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
@@ -179,7 +179,7 @@
                         </div>
                     } @else if (adsList.length === 0) {
                         <!-- Empty State -->
-                        <div class="py-5 text-center">
+                        <div class="py-5 my-4 text-center">
                             <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop" colors="primary:#405189,secondary:#0ab39c" style="width:72px;height:72px"></lord-icon>
                             <h5 class="mt-4">Aucun résultat trouvé</h5>
                             <p class="text-muted">Essayez de modifier vos filtres pour trouver ce que vous cherchez.</p>

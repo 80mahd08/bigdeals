@@ -127,3 +127,29 @@
     font-size: 14px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.1);
 }
+
+.topbar-badge {
+    left: 5px !important;
+    right: auto !important;
+    top: 5px !important;
+}
+
+/* --- Cart Scrollbar Customization --- */
+.cart-items-container {
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: rgba(var(--vz-light-rgb), 0.5);
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: rgba(var(--vz-secondary-rgb), 0.3);
+        border-radius: 10px;
+        
+        &:hover {
+            background: rgba(var(--vz-secondary-rgb), 0.5);
+        }
+    }
+}

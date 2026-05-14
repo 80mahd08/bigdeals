@@ -3,7 +3,7 @@
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
             <h4 class="mb-sm-0">Tableau de bord Administrateur</h4>
             <div class="text-muted fs-13">
-                <i class="ri-calendar-line me-1"></i> April 2024
+                <i class="ri-calendar-line me-1"></i> {{ currentMonthYear }}
             </div>
         </div>
     </div>
@@ -13,7 +13,9 @@
 <div class="row">
     @for (stat of stats; track $index) {
         <div class="col-xl-3 col-md-6">
-            <div class="card card-animate border-0 shadow-sm">
+            <div class="card card-animate border-0 shadow-sm" 
+                 [class.active-card]="selectedMetric === stat.metricKey"
+                 (click)="onMetricSelect(stat.metricKey)">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="avatar-sm flex-shrink-0">
@@ -25,17 +27,6 @@
                             <p class="text-uppercase fw-medium text-muted mb-1 fs-12">{{ stat.label }}</p>
                             <h4 class="fs-22 fw-semibold mb-0">{{stat.value}}</h4>
                         </div>
-                        <div class="flex-shrink-0 align-self-start">
-                            @if (stat.trendUp) {
-                                <span class="badge bg-success-subtle text-success">
-                                    <i class="ri-arrow-up-line align-middle me-1"></i>{{stat.trend}}%
-                                </span>
-                            } @else {
-                                <span class="badge bg-danger-subtle text-danger">
-                                    <i class="ri-arrow-down-line align-middle me-1"></i>{{stat.trend}}%
-                                </span>
-                            }
-                        </div>
                     </div>
                 </div>
             </div>
@@ -43,81 +34,70 @@
     }
 </div>
 
-<!-- ── REVENUE CHART + ACTIVITY ── -->
+<!-- ── GROWTH CHART ROW ── -->
 <div class="row">
-    <div class="col-xl-8">
+    <div class="col-xl-12">
         <div class="card border-0 shadow-sm">
-            <div class="card-header d-flex align-items-center">
-                <h5 class="card-title mb-0 flex-grow-1">
-                    Graphique des revenus
-                </h5>
-                <span class="badge bg-success-subtle text-success fs-11">2024</span>
+            <div class="card-header align-items-center d-flex">
+                <h5 class="card-title mb-0 flex-grow-1">{{ growthData?.title || 'Évolution' }}</h5>
+                <div class="flex-shrink-0">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-soft-secondary" [class.active]="selectedPeriod === '7d'" (click)="onPeriodSelect('7d')">7 jours</button>
+                        <button type="button" class="btn btn-sm btn-soft-secondary" [class.active]="selectedPeriod === '30d'" (click)="onPeriodSelect('30d')">30 jours</button>
+                        <button type="button" class="btn btn-sm btn-soft-secondary" [class.active]="selectedPeriod === '12m'" (click)="onPeriodSelect('12m')">12 mois</button>
+                    </div>
+                </div>
             </div>
             <div class="card-body pb-0">
-                <apx-chart
-                    [series]="revenueChartOptions.series!"
-                    [chart]="revenueChartOptions.chart!"
-                    [xaxis]="revenueChartOptions.xaxis!"
-                    [fill]="revenueChartOptions.fill!"
-                    [stroke]="revenueChartOptions.stroke!"
-                    [dataLabels]="revenueChartOptions.dataLabels!"
-                    [grid]="revenueChartOptions.grid!"
-                    [colors]="revenueChartOptions.colors!"
-                    [legend]="revenueChartOptions.legend!"
-                    [tooltip]="revenueChartOptions.tooltip!">
-                </apx-chart>
-            </div>
-        </div>
-    </div>
-
-    <!-- Recent Activity -->
-    <div class="col-xl-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Activité Récente</h5>
-            </div>
-            <div class="card-body">
-                <div class="acitivity-timeline acitivity-main">
-                    @for (activity of activities; track $index) {
-                        <div class="acitivity-item d-flex mb-3">
-                            <div class="flex-shrink-0">
-                                <div class="avatar-xs acitivity-avatar">
-                                    <div class="avatar-title rounded-circle bg-{{activity.color}}-subtle text-{{activity.color}}">
-                                        <i class="{{activity.icon}}"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-1 fs-13">{{ activity.title }}</h6>
-                                <p class="text-muted mb-0 fs-12">{{ activity.desc }}</p>
-                                <small class="text-muted">{{ activity.time }}</small>
-                            </div>
+                @if (loadingGrowth) {
+                    <div class="d-flex justify-content-center align-items-center" style="height: 350px;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Chargement...</span>
                         </div>
-                    }
-                </div>
+                    </div>
+                } @else if (growthData?.points?.length === 0) {
+                    <div class="d-flex justify-content-center align-items-center text-muted" style="height: 350px;">
+                        <div class="text-center">
+                            <i class="ri-bar-chart-line fs-24 mb-2 d-block"></i>
+                            Aucun signalement disponible pour le moment.
+                        </div>
+                    </div>
+                } @else if (chartOptions && chartOptions.series) {
+                    <apx-chart 
+                        [series]="chartOptions.series" 
+                        [chart]="chartOptions.chart" 
+                        [xaxis]="chartOptions.xaxis" 
+                        [yaxis]="chartOptions.yaxis" 
+                        [dataLabels]="chartOptions.dataLabels" 
+                        [stroke]="chartOptions.stroke" 
+                        [fill]="chartOptions.fill" 
+                        [colors]="chartOptions.colors" 
+                        [tooltip]="chartOptions.tooltip"
+                        dir="ltr">
+                    </apx-chart>
+                }
             </div>
         </div>
     </div>
 </div>
 
-<!-- ── PENDING REQUESTS + TOP SELLERS ── -->
 <div class="row">
     <!-- Seller Requests -->
-    <div class="col-xl-7">
+    <div class="col-xl-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header align-items-center d-flex">
-                <h5 class="card-title mb-0 flex-grow-1">Examiner les demandes d'annonceurs</h5>
-                <span class="badge bg-warning-subtle text-warning fs-12">{{ announcerRequests.length }} En attente</span>
+                <h5 class="card-title mb-0 flex-grow-1">Demandes d'annonceurs en attente</h5>
+                <span class="badge bg-warning-subtle text-warning fs-12">{{ pendingCount }} à traiter</span>
             </div>
             <div class="card-body">
                 <div class="table-responsive table-card">
-                    <table class="table table-borderless table-centered align-middle table-nowrap mb-0">
+                    <table class="table table-centered align-middle table-nowrap mb-0">
                         <thead class="text-muted table-light">
                             <tr>
-                                <th>Annonceur</th>
-                                <th>Boutique</th>
-                                <th>Date</th>
-                                <th>Actions</th>
+                                <th scope="col">Annonceur</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Statut</th>
+                                <th scope="col" class="text-end" style="width: 100px;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -125,111 +105,23 @@
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img src="{{req.avatar}}" alt="" class="avatar-xs rounded-circle me-2">
-                                            <span>{{req.userName}}</span>
+                                            <span class="fw-medium">{{req.userName}}</span>
                                         </div>
                                     </td>
-                                    <td>{{req.storeName}}</td>
                                     <td>{{req.date}}</td>
                                     <td>
-                                        <div class="hstack gap-2">
-                                            <button class="btn btn-sm btn-success shadow-none" (click)="approveRequest(req)">
-                                                Approuver
-                                            </button>
-                                            <button class="btn btn-sm btn-soft-danger shadow-none" (click)="rejectRequest(req)">
-                                                Rejeter
-                                            </button>
-                                        </div>
+                                        <span class="badge bg-info-subtle text-info">À vérifier</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a routerLink="/admin/announcers" class="btn btn-sm btn-soft-primary shadow-none">
+                                            Voir
+                                        </a>
                                     </td>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Top Sellers -->
-    <div class="col-xl-5">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header d-flex align-items-center">
-                <h5 class="card-title mb-0 flex-grow-1">
-                    Meilleurs Vendeurs
-                </h5>
-                <i class="ri-trophy-line text-warning fs-18"></i>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-borderless table-sm align-middle mb-0">
-                        <thead class="table-light text-muted">
-                            <tr>
-                                <th>#</th>
-                                <th>Boutique</th>
-                                <th>Ads</th>
-                                <th>Revenue</th>
-                                <th>⭐</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for (seller of topSellers; track $index) {
+                            } @empty {
                                 <tr>
-                                    <td><span class="fw-semibold text-muted">{{$index + 1}}</span></td>
-                                    <td>
-                                        <div class="fw-semibold">{{seller.name}}</div>
-                                        <small class="text-muted">{{seller.category}}</small>
-                                    </td>
-                                    <td><span class="badge bg-primary-subtle text-primary">{{seller.ads}}</span></td>
-                                    <td class="text-success fw-medium">{{seller.revenue}}</td>
-                                    <td><span class="text-warning fw-semibold">{{seller.rating}}</span></td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ── CUSTOMERS TO VALIDATE ── -->
-<div class="row">
-    <div class="col-xl-12">
-        <div class="card border-0 shadow-sm mt-3">
-            <div class="card-header align-items-center d-flex">
-                <h5 class="card-title mb-0 flex-grow-1">Nouveaux clients à valider</h5>
-                <span class="badge bg-danger-subtle text-danger fs-12">{{ recentCustomers.length }} En attente</span>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive table-card">
-                    <table class="table table-borderless table-centered align-middle table-nowrap mb-0">
-                        <thead class="text-muted table-light">
-                            <tr>
-                                <th>Nom du client</th>
-                                <th>Email</th>
-                                <th>Date d'inscription</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for (customer of recentCustomers; track $index) {
-                                <tr>
-                                    <td>
-                                        <div class="fw-semibold">{{customer.name}}</div>
-                                    </td>
-                                    <td>{{customer.email}}</td>
-                                    <td>{{customer.date}}</td>
-                                    <td><span class="badge bg-warning-subtle text-warning">{{customer.status}}</span></td>
-                                    <td>
-                                        <div class="hstack gap-2">
-                                            <button class="btn btn-sm btn-soft-success shadow-none" (click)="validateCustomer(customer)">
-                                                <i class="ri-check-line align-middle me-1"></i> Valider
-                                            </button>
-                                            <button class="btn btn-sm btn-soft-danger shadow-none" (click)="blockCustomer(customer)">
-                                                <i class="ri-forbid-2-line align-middle me-1"></i> Bloquer
-                                            </button>
-                                        </div>
+                                    <td colspan="4" class="text-center py-4 text-muted">
+                                        Aucune demande en attente.
                                     </td>
                                 </tr>
                             }

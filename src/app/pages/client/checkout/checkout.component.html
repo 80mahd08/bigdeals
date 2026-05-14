@@ -1,165 +1,388 @@
-<div class="marketplace-container">
-    <div class="row align-items-center mb-4">
-        <div class="col-sm">
-            <div>
-                <h3 class="fw-bold mb-0">Validation de la commande</h3>
-                <p class="text-muted mb-0">Veuillez vérifier vos informations et choisir un mode de paiement.</p>
-            </div>
+<div class="checkout-wizard">
+
+    <!-- ═══════════════════════════════════════════════════
+         STEPPER HEADER
+         ═══════════════════════════════════════════════════ -->
+    <div class="step-header mb-4">
+        <div class="d-flex justify-content-center">
+            @for (step of steps; track step.number) {
+                <div class="step-item" [class.active]="currentStep === step.number"
+                     [class.completed]="currentStep > step.number"
+                     (click)="goToStep(step.number)">
+                    <div class="step-circle">
+                        @if (currentStep > step.number) {
+                            <i class="ri-check-line"></i>
+                        } @else {
+                            <i [class]="step.icon"></i>
+                        }
+                    </div>
+                    <span class="step-label">{{ step.title }}</span>
+                </div>
+                @if (step.number < steps.length) {
+                    <div class="step-connector" [class.completed]="currentStep > step.number"></div>
+                }
+            }
         </div>
     </div>
 
-    @if (cart$ | async; as cart) {
-        @if (cart.lignes && cart.lignes.length > 0) {
-            <div class="row">
-                <div class="col-xl-8">
-                    <!-- Shipping / Info Card (Placeholder for now) -->
-                    <div class="card shadow-sm border-0 mb-4">
-                        <div class="card-header bg-white border-bottom-dashed">
-                            <h5 class="card-title mb-0 fw-bold"><i class="ri-map-pin-line align-bottom me-1 text-primary"></i> Informations de livraison</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <p class="text-muted mb-2">Les articles seront livrés à l'adresse enregistrée dans votre profil.</p>
-                                    <div class="p-3 border rounded bg-light-subtle">
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-grow-1">
-                                                <h6 class="fw-bold mb-1">Adresse de livraison par défaut</h6>
-                                                <p class="mb-0 text-muted">Vérifiez vos coordonnées dans les paramètres du profil si nécessaire.</p>
-                                            </div>
-                                            <div class="flex-shrink-0">
-                                                <a routerLink="/client/profile" class="btn btn-sm btn-soft-primary">Modifier</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <!-- ═══════════════════════════════════════════════════
+         STEP 1 — PANIER (Quantities)
+         ═══════════════════════════════════════════════════ -->
+    @if (currentStep === 1) {
+        <div class="row">
+            <div class="col-xl-8">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header border-bottom-dashed">
+                        <h5 class="card-title mb-0">
+                            <i class="ri-shopping-cart-2-line me-2 text-success"></i>Vérifiez votre panier
+                        </h5>
                     </div>
-
-                    <!-- Payment Methods -->
-                    <div class="card shadow-sm border-0 mb-4">
-                        <div class="card-header bg-white border-bottom-dashed">
-                            <h5 class="card-title mb-0 fw-bold"><i class="ri-bank-card-line align-bottom me-1 text-primary"></i> Mode de paiement</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                @for (method of paymentMethods; track method.id) {
-                                    <div class="col-md-6">
-                                        <div class="form-check card-radio p-0">
-                                            <input id="paymentMethod{{method.id}}" name="paymentMethod" type="radio" 
-                                                   class="form-check-input d-none" [value]="method.id" [(ngModel)]="selectedMethod">
-                                            <label class="form-check-label border rounded p-3 d-block cursor-pointer" 
-                                                   [class.border-primary]="selectedMethod === method.id" 
-                                                   for="paymentMethod{{method.id}}">
-                                                <span class="d-flex align-items-center">
-                                                    <span class="flex-shrink-0 avatar-xs">
-                                                        <span class="avatar-title bg-soft-primary text-primary rounded-circle fs-16">
-                                                            <i [class]="method.icon"></i>
-                                                        </span>
-                                                    </span>
-                                                    <span class="flex-grow-1 ms-3">
-                                                        <span class="d-block fw-bold fs-14 mb-1">{{method.label}}</span>
-                                                        <span class="text-muted fs-12">Disponible</span>
-                                                    </span>
-                                                    @if (selectedMethod === method.id) {
-                                                        <span class="flex-shrink-0 ms-2">
-                                                            <i class="ri-check-circle-fill text-primary fs-18"></i>
-                                                        </span>
-                                                    }
-                                                </span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <a routerLink="/client/cart" class="btn btn-link link-muted p-0">
-                            <i class="ri-arrow-left-line align-bottom me-1"></i> Retour au panier
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-xl-4">
-                    <div class="card shadow-sm border-0 sticky-side-div">
-                        <div class="card-header border-bottom-dashed">
-                            <h5 class="card-title mb-0 fw-bold">Résumé de la commande</h5>
-                        </div>
-                        <div class="card-body">
+                    <div class="card-body">
+                        @if (cart && cart.lignes && cart.lignes.length > 0) {
                             <div class="table-responsive">
-                                <table class="table table-borderless mb-0">
+                                <table class="table table-borderless align-middle mb-0">
+                                    <thead class="table-light text-muted">
+                                        <tr>
+                                            <th>Produit</th>
+                                            <th>Prix</th>
+                                            <th>Quantité</th>
+                                            <th class="text-end">Total</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
                                     <tbody>
-                                        @for (ligne of cart.lignes; track ligne.idLignePanier) {
+                                        @for (line of cart.lignes; track line.idAnnonce) {
                                             <tr>
-                                                <td class="px-0">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="flex-shrink-0 avatar-xs me-3">
-                                                            <img [src]="ligne.annonceImage" alt="" class="img-fluid rounded">
-                                                        </div>
-                                                        <div class="flex-grow-1">
-                                                            <h6 class="fs-13 mb-1 text-truncate" style="max-width: 150px;">{{ligne.annonceTitre}}</h6>
-                                                            <p class="text-muted mb-0">x {{ligne.quantite}}</p>
-                                                        </div>
+                                                <td>
+                                                    <h6 class="fs-14 mb-1">{{ line.annonceTitre || 'Produit #' + line.idAnnonce }}</h6>
+                                                    <span class="text-muted fs-12">ID: #{{ line.idAnnonce }}</span>
+                                                </td>
+                                                <td class="fw-medium">{{ line.prixUnitaire | number:'1.0-0' }} TND</td>
+                                                <td>
+                                                    <div class="qty-controls d-flex align-items-center">
+                                                        <button class="btn btn-soft-danger btn-sm btn-icon" (click)="decrement(line.idAnnonce, line.quantite)" [disabled]="line.quantite <= 1">
+                                                            <i class="ri-subtract-line"></i>
+                                                        </button>
+                                                        <span class="mx-3 fw-bold fs-14">{{ line.quantite }}</span>
+                                                        <button class="btn btn-soft-success btn-sm btn-icon" (click)="increment(line.idAnnonce, line.quantite)">
+                                                            <i class="ri-add-line"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
-                                                <td class="text-end px-0 fw-medium">
-                                                    {{((ligne.prixUnitaire || 0) * ligne.quantite) | number:'1.0-0'}} TND
+                                                <td class="text-end fw-bold">{{ (line.prixUnitaire * line.quantite) | number:'1.0-0' }} TND</td>
+                                                <td class="text-end">
+                                                    <button class="btn btn-ghost-danger btn-sm btn-icon" (click)="removeItem(line.idAnnonce)">
+                                                        <i class="ri-delete-bin-5-line"></i>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         }
-                                        <tr class="border-top border-top-dashed mt-2">
-                                            <td class="px-0 pt-3">Sous-total :</td>
-                                            <td class="text-end px-0 pt-3 fw-medium">{{calculateSubtotal(cart) | number:'1.0-0'}} TND</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-0">Frais de livraison :</td>
-                                            <td class="text-end px-0 fw-medium text-success">
-                                                @if (shippingRate === 0) {
-                                                    Gratuit
-                                                } @else {
-                                                    {{shippingRate | number:'1.0-0'}} TND
-                                                }
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-0">TVA (12.5%) :</td>
-                                            <td class="text-end px-0 fw-medium">{{calculateTax(calculateSubtotal(cart)) | number:'1.0-0'}} TND</td>
-                                        </tr>
-                                        <tr class="table-active">
-                                            <th class="px-0 fs-16">Total :</th>
-                                            <td class="text-end px-0">
-                                                <span class="fw-bold fs-18 text-success">
-                                                    {{calculateTotal(calculateSubtotal(cart)) | number:'1.0-0'}} TND
-                                                </span>
-                                            </td>
-                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
-
-                            <div class="d-grid mt-4">
-                                <button class="btn btn-success btn-lg py-3 fw-bold shadow-none" (click)="onPlaceOrder(cart)">
-                                    Confirmer la commande
-                                </button>
+                        } @else {
+                            <div class="text-center py-5">
+                                <div class="avatar-lg mx-auto mb-4">
+                                    <div class="avatar-title bg-info-subtle text-info rounded-circle fs-36">
+                                        <i class="ri-shopping-cart-2-line"></i>
+                                    </div>
+                                </div>
+                                <h5>Votre panier est vide</h5>
+                                <p class="text-muted">Ajoutez des articles depuis les annonces.</p>
+                                <button class="btn btn-success" (click)="goToAds()">Parcourir les annonces</button>
                             </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary sidebar -->
+            <div class="col-xl-4">
+                <div class="card shadow-sm border-0 sticky-side-div">
+                    <div class="card-header border-bottom-dashed">
+                        <h5 class="card-title mb-0">Récapitulatif</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Sous-total :</span>
+                            <span class="fw-medium">{{ subtotal | number:'1.0-0' }} TND</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Livraison :</span>
+                            <span class="fw-medium">{{ hasItems ? (shippingRate | number:'1.0-0') : 0 }} TND</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-4">
+                            <span class="fs-16 fw-bold">Total :</span>
+                            <span class="fs-18 fw-bold text-success">{{ total | number:'1.0-0' }} TND</span>
+                        </div>
+                        <button class="btn btn-success btn-lg w-100 py-3 fw-bold" [disabled]="!hasItems" (click)="nextStep()">
+                            Continuer <i class="ri-arrow-right-line ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- ═══════════════════════════════════════════════════
+         STEP 2 — ADRESSE DE LIVRAISON (from DB)
+         ═══════════════════════════════════════════════════ -->
+    @if (currentStep === 2) {
+        <div class="row justify-content-center">
+            <div class="col-xl-8">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header border-bottom-dashed">
+                        <h5 class="card-title mb-0">
+                            <i class="ri-map-pin-line me-2 text-success"></i>Adresse de livraison
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+
+                        <!-- Pre-filled banner when user has saved address -->
+                        @if (hasSavedAddress) {
+                            <div class="alert alert-success border-success-subtle d-flex align-items-center mb-4">
+                                <i class="ri-checkbox-circle-fill fs-20 me-2"></i>
+                                <div>
+                                    <strong>Adresse enregistrée trouvée.</strong>
+                                    Vous pouvez la modifier ou cliquer "Continuer" pour garder cette adresse.
+                                </div>
+                            </div>
+                        }
+
+                        <form [formGroup]="addressForm">
+                            <div class="row">
+                                <!-- Ville dropdown -->
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold">Ville (Gouvernorat) <span class="text-danger">*</span></label>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="ri-building-line text-muted"></i>
+                                        </span>
+                                        <select class="form-select border-start-0" formControlName="ville"
+                                                [ngClass]="{'is-invalid': fa['ville'].touched && fa['ville'].invalid}">
+                                            <option value="" disabled>Sélectionnez une ville...</option>
+                                            @for (v of villes; track v) {
+                                                <option [value]="v">{{ v }}</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    @if (fa['ville'].touched && fa['ville'].errors) {
+                                        <div class="text-danger mt-1 fs-12">
+                                            @if (fa['ville'].errors['required']) { La ville est obligatoire. }
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- Adresse input -->
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold">Adresse complète <span class="text-danger">*</span></label>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="ri-home-4-line text-muted"></i>
+                                        </span>
+                                        <input type="text" class="form-control border-start-0" formControlName="adresse"
+                                               placeholder="Rue, Numéro, Code postal..."
+                                               [ngClass]="{'is-invalid': fa['adresse'].touched && fa['adresse'].invalid}">
+                                    </div>
+                                    @if (fa['adresse'].touched && fa['adresse'].errors) {
+                                        <div class="text-danger mt-1 fs-12">
+                                            @if (fa['adresse'].errors['required']) { L'adresse est obligatoire. }
+                                            @if (fa['adresse'].errors['minlength']) { Minimum 5 caractères. }
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- Téléphone input -->
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold">Téléphone <span class="text-danger">*</span></label>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="ri-phone-line text-muted"></i>
+                                        </span>
+                                        <input type="tel" class="form-control border-start-0" formControlName="telephone"
+                                               placeholder="98 123 456" maxlength="8"
+                                               [ngClass]="{'is-invalid': fa['telephone'].touched && fa['telephone'].invalid}">
+                                    </div>
+                                    @if (fa['telephone'].touched && fa['telephone'].errors) {
+                                        <div class="text-danger mt-1 fs-12">
+                                            @if (fa['telephone'].errors['required']) { Le téléphone est obligatoire. }
+                                            @if (fa['telephone'].errors['pattern']) { 8 chiffres (commençant par 2, 5, 7, 9) requis. }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-3 mt-2">
+                            <button class="btn btn-light btn-lg px-4" (click)="prevStep()" [disabled]="isSavingAddress">
+                                <i class="ri-arrow-left-line me-1"></i> Retour
+                            </button>
+                            <button class="btn btn-success btn-lg flex-grow-1 fw-bold" (click)="nextStep()" [disabled]="isSavingAddress">
+                                @if (isSavingAddress) {
+                                    <span class="spinner-border spinner-border-sm me-2"></span> Enregistrement...
+                                } @else {
+                                    Continuer vers le paiement <i class="ri-arrow-right-line ms-1"></i>
+                                }
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-        } @else {
-            <div class="text-center py-5">
-                <div class="avatar-lg mx-auto mb-4">
-                    <div class="avatar-title bg-light text-muted rounded-circle fs-36">
-                        <i class="ri-shopping-cart-2-line"></i>
+        </div>
+    }
+
+    <!-- ═══════════════════════════════════════════════════
+         STEP 3 — PAIEMENT (MOCK)
+         ═══════════════════════════════════════════════════ -->
+    @if (currentStep === 3) {
+        <div class="row justify-content-center">
+            <div class="col-xl-7">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-success bg-gradient text-white">
+                        <h5 class="card-title mb-0 text-white fw-bold">
+                            <i class="ri-secure-payment-line me-2"></i>Paiement sécurisé
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <form [formGroup]="paymentForm">
+                            <!-- Card Number -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Numéro de carte <span class="text-danger">*</span></label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="ri-bank-card-line text-muted"></i>
+                                    </span>
+                                    <input type="text" class="form-control border-start-0" formControlName="cardNumber"
+                                           placeholder="0000 0000 0000 0000" (input)="formatCardNumber($event)" maxlength="16"
+                                           [ngClass]="{'is-invalid': fp['cardNumber'].touched && fp['cardNumber'].invalid}">
+                                </div>
+                                @if (fp['cardNumber'].touched && fp['cardNumber'].errors) {
+                                    <div class="text-danger mt-1 fs-12">
+                                        @if (fp['cardNumber'].errors['required']) { Le numéro de carte est obligatoire. }
+                                        @if (fp['cardNumber'].errors['pattern']) { 16 chiffres requis. }
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="row">
+                                <!-- Expiry -->
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold">Date d'expiration <span class="text-danger">*</span></label>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="ri-calendar-line text-muted"></i>
+                                        </span>
+                                        <input type="text" class="form-control border-start-0" formControlName="expiry"
+                                               placeholder="MM/AA" (input)="formatExpiry($event)" maxlength="5"
+                                               [ngClass]="{'is-invalid': fp['expiry'].touched && fp['expiry'].invalid}">
+                                    </div>
+                                    @if (fp['expiry'].touched && fp['expiry'].errors) {
+                                        <div class="text-danger mt-1 fs-12">
+                                            @if (fp['expiry'].errors['required']) { Obligatoire. }
+                                            @if (fp['expiry'].errors['pattern']) { Format : MM/AA }
+                                            @if (fp['expiry'].errors['expired']) { Carte expirée. }
+                                        </div>
+                                    }
+                                </div>
+                                <!-- CVV -->
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold">CVV <span class="text-danger">*</span></label>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="ri-lock-2-line text-muted"></i>
+                                        </span>
+                                        <input type="password" class="form-control border-start-0" formControlName="cvv"
+                                               placeholder="•••" (input)="formatCvv($event)" maxlength="3"
+                                               [ngClass]="{'is-invalid': fp['cvv'].touched && fp['cvv'].invalid}">
+                                    </div>
+                                    @if (fp['cvv'].touched && fp['cvv'].errors) {
+                                        <div class="text-danger mt-1 fs-12">
+                                            @if (fp['cvv'].errors['required']) { Obligatoire. }
+                                            @if (fp['cvv'].errors['pattern']) { 3 chiffres requis. }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Security badge -->
+                            <div class="d-flex align-items-center gap-3 text-muted fs-12 mb-4 p-3 bg-light rounded-3">
+                                <i class="ri-shield-check-fill text-success fs-20"></i>
+                                <div>
+                                    <strong class="text-body">Paiement 100% sécurisé</strong><br>
+                                    Vos informations sont protégées. Aucune donnée bancaire n'est stockée.
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Order summary mini -->
+                        <div class="p-3 bg-light rounded-3 mb-4">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted">Livraison à :</span>
+                                <span class="fw-medium">{{ addressForm.value.ville }}, {{ addressForm.value.adresse }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Total à payer :</span>
+                                <span class="fw-bold text-success fs-16">{{ total | number:'1.0-0' }} TND</span>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-3">
+                            <button class="btn btn-light btn-lg px-4" (click)="prevStep()" [disabled]="isProcessing">
+                                <i class="ri-arrow-left-line me-1"></i> Retour
+                            </button>
+                            <button class="btn btn-success btn-lg flex-grow-1 fw-bold py-3" (click)="nextStep()" [disabled]="isProcessing">
+                                @if (isProcessing) {
+                                    <span class="spinner-border spinner-border-sm me-2"></span> Traitement en cours...
+                                } @else {
+                                    <i class="ri-lock-fill me-2"></i> Payer {{ total | number:'1.0-0' }} TND
+                                }
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <h3>Rien à valider</h3>
-                <p class="text-muted">Votre panier est vide. Veuillez ajouter des articles avant de passer à la caisse.</p>
-                <a routerLink="/ads" class="btn btn-success shadow-none">Parcourir les annonces</a>
             </div>
-        }
+        </div>
+    }
+
+    <!-- ═══════════════════════════════════════════════════
+         STEP 4 — CONFIRMATION (Success)
+         ═══════════════════════════════════════════════════ -->
+    @if (currentStep === 4) {
+        <div class="row justify-content-center">
+            <div class="col-xl-6">
+                <div class="card shadow-sm border-0 text-center">
+                    <div class="card-body py-5 px-4">
+                        <div class="avatar-lg mx-auto mb-4">
+                            <div class="avatar-title bg-success-subtle text-success rounded-circle fs-36">
+                                <i class="ri-checkbox-circle-fill"></i>
+                            </div>
+                        </div>
+
+                        <h3 class="fw-bold text-success mb-2">Paiement réussi !</h3>
+                        <p class="text-muted fs-15 mb-1">Votre commande a été confirmée et enregistrée.</p>
+                        <p class="text-muted fs-13 mb-4">
+                            Livraison à : <strong>{{ addressForm.value.ville }}</strong> — {{ addressForm.value.adresse }}
+                        </p>
+
+                        <div class="bg-light rounded-3 p-3 d-inline-block mb-4">
+                            <span class="text-muted">Montant payé :</span>
+                            <span class="fw-bold text-success fs-20 ms-2">{{ finalTotal | number:'1.0-0' }} TND</span>
+                        </div>
+
+                        <div class="d-flex gap-3 justify-content-center mt-3">
+                            <button class="btn btn-success btn-lg px-4" (click)="goToOrders()">
+                                <i class="ri-file-list-3-line me-1"></i> Mes commandes
+                            </button>
+                            <button class="btn btn-soft-primary btn-lg px-4" (click)="goToAds()">
+                                <i class="ri-shopping-bag-line me-1"></i> Continuer mes achats
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 </div>

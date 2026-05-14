@@ -8,8 +8,8 @@ import { ApplicationComponent } from './application/application.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdFormComponent } from './ad-form/ad-form.component';
 import { AnnouncementsComponent } from './announcements/announcements.component';
-import { OrdersComponent } from './orders/orders.component';
 import { ReviewsComponent } from './reviews/reviews.component';
+import { AnnouncerOrdersComponent } from './orders/announcer-orders.component';
 import { LayoutsModule } from '../../components/layouts.module';
 
 @NgModule({
@@ -18,8 +18,8 @@ import { LayoutsModule } from '../../components/layouts.module';
     DashboardComponent,
     AdFormComponent,
     AnnouncementsComponent,
-    OrdersComponent,
-    ReviewsComponent
+    ReviewsComponent,
+    AnnouncerOrdersComponent
   ],
   imports: [
     CommonModule,

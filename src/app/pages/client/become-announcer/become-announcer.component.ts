@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ClientActionsService } from '../../../core/services/client-actions.service';
 import { DemandeAnnonceur } from '../../../core/models';
-import { Observable, BehaviorSubject, switchMap } from 'rxjs';
+import { Observable, BehaviorSubject, switchMap, of, catchError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import { AuthenticationService } from 'src/app/core/services/auth.service';
@@ -19,18 +19,32 @@ export class BecomeAnnouncerComponent implements OnInit {
   
   selectedFile: File | null = null;
   uploading = false;
+  showForm = false;
+  loading = true;
 
   constructor(
     private clientActions: ClientActionsService,
     private authService: AuthenticationService
   ) {
     this.existingRequest$ = this.refresh$.pipe(
-      switchMap(() => this.clientActions.getAdvertiserRequests()),
+      switchMap(() => {
+        this.loading = true;
+        return this.clientActions.getAdvertiserRequests().pipe(
+          catchError(err => {
+            this.loading = false;
+            console.error('Error fetching advertiser requests', err);
+            return of({ success: false, data: [] as DemandeAnnonceur[] });
+          })
+        );
+      }),
       map(res => {
+        this.loading = false;
         if (res.success && res.data && res.data.length > 0) {
-          // Get the most recent request
-          return res.data.sort((a, b) => new Date(b.dateDemande).getTime() - new Date(a.dateDemande).getTime())[0];
+          const latest = [...res.data].sort((a, b) => new Date(b.dateDemande).getTime() - new Date(a.dateDemande).getTime())[0];
+          this.showForm = false;
+          return latest;
         }
+        this.showForm = true;
         return null;
       })
     );
@@ -88,6 +102,30 @@ export class BecomeAnnouncerComponent implements OnInit {
     });
   }
 
+  initiatePayment(demandeId: number) {
+    this.uploading = true;
+    this.clientActions.initiatePayment(demandeId).subscribe({
+      next: (res) => {
+        this.uploading = false;
+        if (res.success && res.data?.paymentUrl) {
+          window.location.href = res.data.paymentUrl;
+        } else if (res.success) {
+          Swal.fire('Paiement', 'Redirection vers la page de paiement...', 'info');
+        } else {
+          Swal.fire('Erreur', res.message || 'Impossible d\'initier le paiement.', 'error');
+        }
+      },
+      error: (err) => {
+        this.uploading = false;
+        Swal.fire('Erreur', 'Une erreur est survenue lors de l\'initialisation du paiement.', 'error');
+      }
+    });
+  }
+
+  resubmit() {
+    this.showForm = true;
+  }
+
   downloadDocument() {
     this.clientActions.getMyLatestAdvertiserDocument().subscribe(blob => {
       const url = window.URL.createObjectURL(blob);
@@ -96,6 +134,68 @@ export class BecomeAnnouncerComponent implements OnInit {
       link.download = 'justificatif_annonceur';
       link.click();
     });
+  }
+
+  // --- STATUS HELPERS ---
+
+  getStatusLabel(statut: number | string): string {
+    const s = statut?.toString();
+    switch (s) {
+      case '1':
+      case 'EN_ATTENTE_VERIFICATION':
+        return 'En cours de vérification';
+      case '2':
+      case 'APPROUVEE':
+        return 'Approuvée';
+      case '3':
+      case 'REJETEE':
+        return 'Rejetée';
+      case '4':
+      case 'EN_ATTENTE_PAIEMENT':
+        return 'En attente de paiement';
+      default:
+        return 'Inconnu';
+    }
+  }
+
+  getStatusClass(statut: number | string): string {
+    const s = statut?.toString();
+    switch (s) {
+      case '1':
+      case 'EN_ATTENTE_VERIFICATION':
+        return 'bg-info';
+      case '2':
+      case 'APPROUVEE':
+        return 'bg-success';
+      case '3':
+      case 'REJETEE':
+        return 'bg-danger';
+      case '4':
+      case 'EN_ATTENTE_PAIEMENT':
+        return 'bg-warning';
+      default:
+        return 'bg-secondary';
+    }
+  }
+
+  isWaitingVerification(statut: number | string): boolean {
+    const s = statut?.toString();
+    return s === '1' || s === 'EN_ATTENTE_VERIFICATION';
+  }
+
+  isApproved(statut: number | string): boolean {
+    const s = statut?.toString();
+    return s === '2' || s === 'APPROUVEE';
+  }
+
+  isRejected(statut: number | string): boolean {
+    const s = statut?.toString();
+    return s === '3' || s === 'REJETEE';
+  }
+
+  isWaitingPayment(statut: number | string): boolean {
+    const s = statut?.toString();
+    return s === '4' || s === 'EN_ATTENTE_PAIEMENT';
   }
 }
 

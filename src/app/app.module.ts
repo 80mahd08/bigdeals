@@ -24,7 +24,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { rootReducer } from './store';
 import { AuthenticationEffects } from './store/Authentication/authentication.effects';
-import { EcommerceEffects } from './store/Ecommerce/ecommerce_effect';
 
 // UI Modules
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
@@ -61,7 +60,7 @@ import { LayoutsModule } from './components/layouts.module';
         }),
 
         // NgRx Effects: Handles async side-effects like Firebase API calls
-        EffectsModule.forRoot([AuthenticationEffects, EcommerceEffects]),
+        EffectsModule.forRoot([AuthenticationEffects]),
     ],
 
     // Global providers: services and interceptors available throughout the app

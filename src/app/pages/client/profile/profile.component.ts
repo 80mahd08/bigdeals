@@ -30,6 +30,7 @@ export class ProfileComponent implements OnInit {
 
   selectedFile: File | null = null;
   imagePreview: string | null = null;
+  imageError = false;
   cities = TUNISIA_CITIES;
 
   constructor(private authService: AuthenticationService) { }
@@ -61,6 +62,16 @@ export class ProfileComponent implements OnInit {
   }
 
   updateProfile() {
+    // Validate Phone Number if provided
+    if (this.editForm.telephone && this.editForm.telephone.trim() !== '') {
+      const phone = this.editForm.telephone.trim();
+      const phoneRegex = /^[2579][0-9]{7}$/;
+      if (!phoneRegex.test(phone)) {
+        Swal.fire('Format Invalide', 'Le numéro de téléphone doit contenir 8 chiffres et commencer par 2, 5, 7 ou 9.', 'error');
+        return;
+      }
+    }
+
     const formData = new FormData();
     formData.append('Prenom', this.editForm.prenom);
     formData.append('Nom', this.editForm.nom);
@@ -121,6 +132,10 @@ export class ProfileComponent implements OnInit {
     if (!this.currentUser) return '?';
     const name = this.currentUser.prenom || this.currentUser.nom || this.currentUser.email || '?';
     return name.charAt(0).toUpperCase();
+  }
+
+  onImageError() {
+    this.imageError = true;
   }
 }
 

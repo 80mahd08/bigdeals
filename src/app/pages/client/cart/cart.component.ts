@@ -5,17 +5,17 @@ import { Panier, LignePanier } from '../../../core/models';
 import { Observable } from 'rxjs';
 
 @Component({
-    selector: 'app-cart',
-    templateUrl: './cart.component.html',
-    styleUrls: ['./cart.component.scss'],
-    standalone: false
+  selector: 'app-cart',
+  templateUrl: './cart.component.html',
+  styleUrls: ['./cart.component.scss'],
+  standalone: false
 })
 export class CartComponent implements OnInit {
   breadCrumbItems!: Array<{}>;
   cart$: Observable<Panier | null>;
   
-  taxRate = 0.125;
-  shippingRate = 7.0; // 7 TND delivery
+  taxRate = 0;
+  shippingRate = 7.0;
 
   constructor(
     private cartService: CartService,
@@ -31,18 +31,18 @@ export class CartComponent implements OnInit {
     ];
   }
 
-  increment(idAnnonce: number, currentQty: number) {
-    this.cartService.updateQuantity(idAnnonce, currentQty + 1);
+  increment(annonceId: number, currentQty: number) {
+    this.cartService.updateQuantity(annonceId, currentQty + 1);
   }
 
-  decrement(idAnnonce: number, currentQty: number) {
+  decrement(annonceId: number, currentQty: number) {
     if (currentQty > 1) {
-      this.cartService.updateQuantity(idAnnonce, currentQty - 1);
+      this.cartService.updateQuantity(annonceId, currentQty - 1);
     }
   }
 
-  remove(idAnnonce: number) {
-    this.cartService.removeFromCart(idAnnonce);
+  remove(annonceId: number) {
+    this.cartService.removeFromCart(annonceId);
   }
 
   calculateSubtotal(cart: Panier): number {
@@ -59,10 +59,10 @@ export class CartComponent implements OnInit {
     return subtotal + tax + shipping;
   }
 
-  confirmDelete(content: any, idAnnonce: number) {
+  confirmDelete(content: any, annonceId: number) {
     this.modalService.open(content, { centered: true }).result.then((result) => {
       if (result === 'delete') {
-        this.remove(idAnnonce);
+        this.remove(annonceId);
       }
     }, () => {});
   }

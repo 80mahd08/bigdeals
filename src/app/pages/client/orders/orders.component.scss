@@ -1,0 +1,53 @@
+/* Orders Styles */
+
+/* Delivery Timeline */
+.delivery-timeline {
+  padding: 0 8px;
+}
+
+.timeline-step {
+  position: relative;
+}
+
+.timeline-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  border: 2px solid #dee2e6;
+  background: #fff;
+  color: #adb5bd;
+  transition: all 0.3s ease;
+
+  &.completed {
+    background: #0ab39c;
+    border-color: #0ab39c;
+    color: #fff;
+  }
+
+  &.active {
+    background: #fff;
+    border-color: #3577f1;
+    box-shadow: 0 0 0 3px rgba(53, 119, 241, 0.2);
+  }
+
+  &.pending {
+    background: #f3f6f9;
+    border-color: #dee2e6;
+  }
+}
+
+.timeline-connector {
+  height: 2px;
+  background: #dee2e6;
+  margin: 0 -4px;
+  margin-bottom: 18px;
+  transition: background 0.3s ease;
+
+  &.completed {
+    background: #0ab39c;
+  }
+}

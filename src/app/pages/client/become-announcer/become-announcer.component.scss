@@ -1,12 +1,20 @@
 /* Become Announcer Styles */
 .card {
     transition: all 0.3s ease;
+    border-radius: 0.75rem;
 }
 
 .bg-primary-subtle {
     background-color: rgba(64, 81, 137, 0.1) !important;
 }
 
-label {
-    margin-bottom: 0.5rem;
+@media (max-width: 576px) {
+    .p-5 {
+        padding: 2rem 1.5rem !important;
+    }
+}
+
+.lord-icon {
+    display: block;
+    margin: 0 auto;
 }

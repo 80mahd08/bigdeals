@@ -30,14 +30,14 @@
     &[data-sidebar-size="sm-hover"],
     &[data-sidebar-size="sm"] {
         &[data-layout="vertical"] {
-            @media (min-width: 768px) {
+            @media (min-width: 850px) {
                 #layout-wrapper {
                     min-height: 1400px;
                 }
             }
 
             .main-content {
-                @media (max-width: 767.98px) {
+                @media (max-width: 849.98px) {
                     margin-left: 0;
                 }
             }
@@ -48,7 +48,7 @@
             left: 0 !important;
             max-width: calc(var(--#{$prefix}boxed-layout-width) - var(--#{$prefix}vertical-menu-width-sm));
 
-            @media (min-width: 768px) {
+            @media (min-width: 850px) {
                 left: var(--#{$prefix}vertical-menu-width-sm) !important;
             }
         }
@@ -61,7 +61,7 @@
         .footer {
             max-width: calc(var(--#{$prefix}boxed-layout-width) - var(--#{$prefix}vertical-menu-width));
 
-            @media (min-width: 768px) {
+            @media (min-width: 850px) {
                 left: var(--#{$prefix}vertical-menu-width) !important;
             }
         }
@@ -73,7 +73,7 @@
         .footer {
             max-width: calc(var(--#{$prefix}boxed-layout-width) - var(--#{$prefix}vertical-menu-width-md));
 
-            @media (min-width: 768px) {
+            @media (min-width: 850px) {
                 left: var(--#{$prefix}vertical-menu-width-md) !important;
             }
         }
@@ -167,7 +167,7 @@
 
 [data-layout="semibox"][data-sidebar-visibility="hidden"] {
 
-    @media (min-width: 768px) {
+    @media (min-width: 850px) {
         .navbar-menu {
             display: none;
         }

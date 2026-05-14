@@ -1,0 +1,120 @@
+<app-breadcrumbs title="Paiements annonceurs" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header border-0">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-4">
+                        <h5 class="card-title mb-0">Historique des paiements d'accès Annonceur</h5>
+                    </div>
+                    <div class="col-md-auto ms-auto">
+                        <div class="d-flex flex-wrap gap-2">
+                            <div class="search-box">
+                                <input type="text" class="form-control" placeholder="Rechercher..." [(ngModel)]="searchTerm" (input)="performSearch()">
+                                <i class="ri-search-line search-icon"></i>
+                            </div>
+                            <button class="btn btn-soft-info shadow-none" (click)="loadPayments()" ngbTooltip="Actualiser">
+                                <i class="ri-refresh-line"></i>
+                            </button>
+                            <button class="btn btn-soft-secondary shadow-none" (click)="resetFilters()" ngbTooltip="Réinitialiser">
+                                <i class="ri-filter-off-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive table-card">
+                    <table class="table align-middle table-nowrap mb-0">
+                        <thead class="table-light text-muted text-uppercase fs-12">
+                            <tr>
+                                <th scope="col">ID Paiement</th>
+                                <th scope="col">Utilisateur</th>
+                                <th scope="col">Demande #</th>
+                                <th scope="col">Provider</th>
+                                <th scope="col">Montant</th>
+                                <th scope="col">Statut</th>
+                                <th scope="col">Date Création</th>
+                                <th scope="col">Confirmation</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (loading) {
+                                <tr>
+                                    <td colspan="9" class="text-center py-5">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Chargement...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            } @else {
+                                @for (payment of payments; track payment.annonceurPaymentId) {
+                                    <tr>
+                                        <td><span class="fw-medium">#{{ payment.annonceurPaymentId }}</span></td>
+                                        <td>
+                                            @if (payment.nomUtilisateur) {
+                                                <div class="fs-13 fw-semibold">{{ payment.prenomUtilisateur }} {{ payment.nomUtilisateur }}</div>
+                                                <small class="text-muted">{{ payment.emailUtilisateur }}</small>
+                                            } @else {
+                                                <div class="fs-13 fw-semibold">Utilisateur #{{ payment.userId }}</div>
+                                            }
+                                        </td>
+                                        <td>#{{ payment.demandeAnnonceurId }}</td>
+                                        <td><span class="badge bg-info-subtle text-info">{{ payment.provider }}</span></td>
+                                        <td class="fw-bold">{{ payment.amount }} DT</td>
+                                        <td>
+                                            @if (payment.paymentStatus === 'Paid') {
+                                                <span class="badge bg-success-subtle text-success">Complété</span>
+                                            } @else if (payment.paymentStatus === 'Pending') {
+                                                <span class="badge bg-warning-subtle text-warning">En attente</span>
+                                            } @else if (payment.paymentStatus === 'Failed') {
+                                                <span class="badge bg-danger-subtle text-danger">Échoué</span>
+                                            } @else {
+                                                <span class="badge bg-secondary-subtle text-secondary">{{ payment.paymentStatus }}</span>
+                                            }
+                                        </td>
+                                        <td>{{ payment.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                                        <td>
+                                            @if (payment.confirmedAt) {
+                                                {{ payment.confirmedAt | date:'dd/MM/yyyy HH:mm' }}
+                                            } @else {
+                                                <span class="text-muted italic fs-12">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (payment.paymentStatus === 'Pending') {
+                                                <button class="btn btn-sm btn-success shadow-none" (click)="markAsPaid(payment.annonceurPaymentId)">
+                                                    <i class="ri-check-double-line"></i> Encaisser (Mock)
+                                                </button>
+                                            } @else {
+                                                <button class="btn btn-sm btn-light shadow-none" disabled>Terminé</button>
+                                            }
+                                        </td>
+                                    </tr>
+                                } @empty {
+                                    <tr>
+                                        <td colspan="9" class="text-center py-5">
+                                            <div class="text-muted">Aucun paiement trouvé.</div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3 g-2" *ngIf="totalItems > 0">
+                    <div class="text-muted mb-2 mb-sm-0 fs-13">
+                        Affichage de {{ (page-1) * pageSize + 1 }} à {{ Math.min(page * pageSize, totalItems) }} sur {{ totalItems }} entrées
+                    </div>
+                    <div class="pagination-wrap hstack gap-2 ms-sm-auto">
+                        <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="pageSize" (pageChange)="onPageChange($event)" class="pagination-separated mb-0">
+                        </ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -108,8 +108,66 @@
                     <button class="btn btn-soft-info py-2 shadow-none" routerLink="/announcer/announcements">
                         <i class="ri-list-check align-bottom me-1"></i> Gérer mes annonces
                     </button>
+                    <button class="btn btn-soft-warning py-2 shadow-none" routerLink="/announcer/orders">
+                        <i class="ri-shopping-bag-3-line align-bottom me-1"></i> Voir mes ventes
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Recent Orders -->
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Dernières Ventes</h4>
+                <div class="flex-shrink-0">
+                    <button type="button" class="btn btn-soft-info btn-sm shadow-none" routerLink="/announcer/orders">Voir toutes</button>
+                </div>
+            </div>
+            <div class="card-body">
+                @if (recentOrders.length === 0) {
+                    <div class="text-center py-4">
+                        <p class="text-muted">Aucune vente pour le moment.</p>
+                    </div>
+                } @else {
+                    <div class="table-responsive table-card">
+                        <table class="table table-borderless table-centered align-middle table-nowrap mb-0">
+                            <thead class="text-muted table-light">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Montant</th>
+                                    <th scope="col">Paiement</th>
+                                    <th scope="col">Livraison</th>
+                                    <th scope="col">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (order of recentOrders; track order.idCommande) {
+                                    <tr>
+                                        <td class="fw-bold">#BD-{{ order.idCommande }}</td>
+                                        <td class="text-success fw-medium">{{ order.montant | number:'1.0-0' }} TND</td>
+                                        <td>
+                                            <span [className]="getOrderStatusBadgeClass(order.statutCommande)">
+                                                {{ getOrderStatusLabel(order.statutCommande) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span [className]="getDeliveryBadgeClass(order.statutLivraison)">
+                                                {{ getDeliveryLabel(order.statutLivraison) }}
+                                            </span>
+                                        </td>
+                                        <td>{{ order.dateCreation | date:'short' }}</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

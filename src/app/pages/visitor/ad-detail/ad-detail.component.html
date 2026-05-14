@@ -306,17 +306,19 @@
                         <!-- CTA Buttons -->
                         @if (canSeeBuyerActions) {
                             <div class="d-grid gap-3 mb-4 mt-2">
-                                <button
-                                    class="btn btn-success btn-lg py-3 fw-bold shadow-none"
-                                    (click)="addToCart()">
-                                    <i class="ri-shopping-cart-2-line align-bottom me-1"></i>
-                                    Ajouter au panier
-                                </button>
+                                @if (ad && ad.supportePaiement) {
+                                    <button
+                                        class="btn btn-soft-success btn-lg py-3 fw-bold shadow-none"
+                                        (click)="addToCart()">
+                                        <i class="ri-shopping-cart-2-line align-bottom me-1"></i>
+                                        Ajouter au panier
+                                    </button>
+                                }
                             </div>
                         } @else if (!isLoggedIn) {
                             <div class="alert alert-info border-info-subtle mb-4 mt-2 text-center fs-13">
                                 <i class="ri-information-line align-bottom me-1"></i>
-                                <a routerLink="/auth/signin" class="fw-bold text-decoration-underline text-info">Connectez-vous</a> pour contacter l’annonceur ou ajouter au panier.
+                                <a routerLink="/auth/signin" class="fw-bold text-decoration-underline text-info">Connectez-vous</a> pour contacter l’annonceur ou ajouter aux favoris.
                             </div>
                         }
 

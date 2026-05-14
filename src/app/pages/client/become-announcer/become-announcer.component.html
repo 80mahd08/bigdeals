@@ -2,76 +2,150 @@
 
 <div class="row justify-content-center">
     <div class="col-xxl-8">
-        @if (existingRequest$ | async; as request) {
-            <div class="card shadow-sm border-0">
+        <!-- Loading State -->
+        @if (loading) {
+            <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body p-5 text-center">
-                    @if (request.statut === 'EN_ATTENTE') {
-                        <lord-icon src="https://cdn.lordicon.com/lupuorrc.json" trigger="loop" colors="primary:#405189,secondary:#0ab39c" style="width:120px;height:120px"></lord-icon>
-                        <h3 class="fw-bold mt-4">Demande en cours</h3>
-                        <p class="text-muted fs-16">
-                            Votre demande de passage au statut annonceur est en cours de traitement. 
-                            Notre équipe l'examine et vous contactera très bientôt.
-                        </p>
-                    } @else if (request.statut === 'APPROUVEE') {
-                        <lord-icon src="https://cdn.lordicon.com/lupuorrc.json" trigger="loop" colors="primary:#0ab39c,secondary:#405189" style="width:120px;height:120px"></lord-icon>
-                        <h3 class="fw-bold mt-4 text-success">Félicitations !</h3>
-                        <p class="text-muted fs-16">
-                            Votre demande a été approuvée. Vous êtes maintenant un annonceur BigDeals.
-                            <br><small class="text-info">Si vous ne voyez pas encore vos outils annonceur, veuillez vous déconnecter et vous reconnecter.</small>
-                        </p>
-                    } @else if (request.statut === 'REJETEE') {
-                        <lord-icon src="https://cdn.lordicon.com/hrqwmuhr.json" trigger="loop" colors="primary:#f06548,secondary:#405189" style="width:120px;height:120px"></lord-icon>
-                        <h3 class="fw-bold mt-4 text-danger">Demande Rejetée</h3>
-                        <p class="text-muted fs-16">
-                            Malheureusement, votre demande n'a pas pu être acceptée pour le moment.
-                        </p>
-                        @if (request.motifRejet) {
-                            <div class="alert alert-danger mt-3">
-                                <strong>Motif du rejet :</strong> {{ request.motifRejet }}
-                            </div>
-                        }
-                        <button class="btn btn-outline-primary mt-3" (click)="refresh$.next()">Ressoumettre une demande</button>
-                    }
-                    
-                    <div class="alert d-inline-block px-4 py-3 mt-3" [ngClass]="{
-                        'alert-warning': request.statut === 'EN_ATTENTE',
-                        'alert-success': request.statut === 'APPROUVEE',
-                        'alert-danger': request.statut === 'REJETEE'
-                    }">
-                        <span class="fw-bold">Statut actuel : </span>
-                        <span class="badge px-3 py-2 ms-2" [ngClass]="{
-                            'bg-warning': request.statut === 'EN_ATTENTE',
-                            'bg-success': request.statut === 'APPROUVEE',
-                            'bg-danger': request.statut === 'REJETEE'
-                        }">{{ request.statut }}</span>
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement...</span>
                     </div>
-                    
-                    <div class="mt-4 border-top pt-4">
-                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Détails de la demande</h6>
-                        <div class="row text-start justify-content-center">
-                            <div class="col-sm-6">
-                                <p class="mb-1 text-muted">Document : <span class="text-dark fw-medium">{{ request.documentNomOriginal }}</span></p>
-                                <button class="btn btn-sm btn-link p-0" (click)="downloadDocument()">Télécharger le document</button>
+                    <p class="text-muted mt-3 mb-0">Chargement de votre dossier...</p>
+                </div>
+            </div>
+        }
+
+        <!-- Data Display -->
+        <ng-container *ngIf="existingRequest$ | async as request; else noRequestTemplate">
+            @if (!showForm) {
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-5 text-center">
+                        
+                        <!-- ─── STATE 1: WAITING VERIFICATION ─── -->
+                        @if (isWaitingVerification(request.statut)) {
+                            <lord-icon src="https://cdn.lordicon.com/lupuorrc.json" trigger="loop" colors="primary:#405189,secondary:#0ab39c" style="width:120px;height:120px"></lord-icon>
+                            <h3 class="fw-bold mt-4">Demande envoyée</h3>
+                            <div class="mb-3">
+                                <span class="badge px-3 py-2" [ngClass]="getStatusClass(request.statut)">
+                                    {{ getStatusLabel(request.statut) }}
+                                </span>
                             </div>
-                            <div class="col-sm-6">
-                                <p class="mb-1 text-muted">Date de demande : <span class="text-dark fw-medium">{{ request.dateDemande | date:'medium' }}</span></p>
-                                @if (request.dateTraitement) {
-                                    <p class="mb-1 text-muted">Date de traitement : <span class="text-dark fw-medium">{{ request.dateTraitement | date:'medium' }}</span></p>
+                            <p class="text-muted fs-16 mb-4">
+                                Votre demande a bien été envoyée. Notre équipe va vérifier votre document avant de vous donner accès au paiement.
+                            </p>
+                        }
+
+                        <!-- ─── STATE 4: WAITING PAYMENT ─── -->
+                        @else if (isWaitingPayment(request.statut)) {
+                            <lord-icon src="https://cdn.lordicon.com/lupuorrc.json" trigger="loop" colors="primary:#f7b84b,secondary:#405189" style="width:120px;height:120px"></lord-icon>
+                            <h3 class="fw-bold mt-4">Document accepté</h3>
+                            <div class="mb-3">
+                                <span class="badge px-3 py-2" [ngClass]="getStatusClass(request.statut)">
+                                    {{ getStatusLabel(request.statut) }}
+                                </span>
+                            </div>
+                            <p class="text-muted fs-16 mb-4">
+                                Votre document a été accepté. Pour activer votre compte annonceur, veuillez régler les frais d’accès de 200 DT.
+                            </p>
+                            <button class="btn btn-primary btn-lg px-5 shadow-none fw-bold" (click)="initiatePayment(request.idDemandeAnnonceur)" [disabled]="uploading">
+                                @if (uploading) {
+                                    <span class="spinner-border spinner-border-sm me-2"></span>
                                 }
+                                Payer les frais d’accès annonceur (200 DT)
+                            </button>
+                        }
+
+                        <!-- ─── STATE 2: APPROVED ─── -->
+                        @else if (isApproved(request.statut)) {
+                            <lord-icon src="https://cdn.lordicon.com/lupuorrc.json" trigger="loop" colors="primary:#0ab39c,secondary:#405189" style="width:120px;height:120px"></lord-icon>
+                            <h3 class="fw-bold mt-4 text-success">Compte annonceur activé</h3>
+                            <div class="mb-3">
+                                <span class="badge px-3 py-2" [ngClass]="getStatusClass(request.statut)">
+                                    {{ getStatusLabel(request.statut) }}
+                                </span>
+                            </div>
+                            <p class="text-muted fs-16 mb-4">
+                                Votre compte annonceur est activé. Vous pouvez maintenant publier et gérer vos annonces.
+                                <br><small class="text-info mt-2 d-block">Si l’accès annonceur ne fonctionne pas encore, déconnectez-vous puis reconnectez-vous.</small>
+                            </p>
+                            <a routerLink="/announcer/dashboard" class="btn btn-success btn-lg px-5 shadow-none fw-bold">
+                                Accéder au tableau de bord annonceur
+                            </a>
+                        }
+
+                        <!-- ─── STATE 3: REJECTED ─── -->
+                        @else if (isRejected(request.statut)) {
+                            <lord-icon src="https://cdn.lordicon.com/hrqwmuhr.json" trigger="loop" colors="primary:#f06548,secondary:#405189" style="width:120px;height:120px"></lord-icon>
+                            <h3 class="fw-bold mt-4 text-danger">Demande rejetée</h3>
+                            <div class="mb-3">
+                                <span class="badge px-3 py-2" [ngClass]="getStatusClass(request.statut)">
+                                    {{ getStatusLabel(request.statut) }}
+                                </span>
+                            </div>
+                            <p class="text-muted fs-16 mb-2">
+                                Votre demande a été rejetée. Vous pouvez corriger les informations et envoyer une nouvelle demande.
+                            </p>
+                            @if (request.motifRejet) {
+                                <div class="alert alert-danger bg-danger-subtle border-0 mb-4 mx-auto" style="max-width: 500px;">
+                                    <i class="ri-error-warning-line me-2 align-middle"></i>
+                                    <strong>Motif:</strong> {{ request.motifRejet }}
+                                </div>
+                            }
+                            <button class="btn btn-outline-primary btn-lg px-5 shadow-none fw-bold" (click)="resubmit()">
+                                Envoyer une nouvelle demande
+                            </button>
+                        }
+                        
+                        <!-- ─── COMMON DETAILS FOOTER ─── -->
+                        <div class="mt-5 pt-4 border-top">
+                            <h6 class="text-muted text-uppercase fw-semibold mb-3 fs-12">Détails de la demande</h6>
+                            <div class="row text-start justify-content-center">
+                                <div class="col-sm-5 border-end">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <i class="ri-file-text-line fs-24 text-primary opacity-75"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <p class="mb-0 text-muted fs-12">Document</p>
+                                            <p class="mb-0 fw-medium">{{ request.documentNomOriginal }}</p>
+                                            <button class="btn btn-sm btn-link p-0 text-decoration-none" (click)="downloadDocument()">Télécharger</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-5 ms-sm-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <i class="ri-calendar-event-line fs-24 text-primary opacity-75"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <p class="mb-0 text-muted fs-12">Date de demande</p>
+                                            <p class="mb-0 fw-medium">{{ request.dateDemande | date:'medium' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        } @else {
+            } @else {
+                <ng-container *ngTemplateOutlet="formTemplate"></ng-container>
+            }
+        </ng-container>
+
+        <ng-template #noRequestTemplate>
+            @if (!loading) {
+                <ng-container *ngTemplateOutlet="formTemplate"></ng-container>
+            }
+        </ng-template>
+
+        <ng-template #formTemplate>
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary-subtle py-4">
+                <div class="card-header bg-primary-subtle py-4 border-0">
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <h4 class="fw-bold mb-1">Devenez Annonceur sur BigDeals !</h4>
                             <p class="text-muted mb-0">Veuillez fournir un document justificatif (Patente, Registre de Commerce, ou pièce d'identité) pour validation.</p>
                         </div>
-                        <div class="flex-shrink-0">
+                        <div class="flex-shrink-0 d-none d-sm-block">
                             <i class="ri-shield-user-line fs-1 display-5 text-primary opacity-50"></i>
                         </div>
                     </div>
@@ -102,7 +176,7 @@
                             </div>
                             
                             <div class="col-12 mt-4">
-                                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold fs-15" [disabled]="!becomeForm.valid || !selectedFile || uploading">
+                                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold fs-15 shadow-none" [disabled]="!becomeForm.valid || !selectedFile || uploading">
                                     @if (uploading) {
                                         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                                         Envoi en cours...
@@ -115,7 +189,6 @@
                     </form>
                 </div>
             </div>
-        }
-
+        </ng-template>
     </div>
 </div>

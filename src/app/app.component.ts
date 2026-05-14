@@ -103,7 +103,7 @@ export class AppComponent implements OnInit {
    */
   onToggleMobileMenu() {
     const width = window.innerWidth;
-    if (width > 768) {
+    if (width > 850) {
       const currentSize = document.documentElement.getAttribute('data-sidebar-size');
       const newSize = currentSize === 'sm' ? 'lg' : 'sm';
       document.documentElement.setAttribute('data-sidebar-size', newSize);
@@ -122,6 +122,11 @@ export class AppComponent implements OnInit {
     if (user.role === 'ADMIN') return true;
     if (user.role === 'ANNONCEUR' && this.router.url.startsWith('/announcer')) return true;
     return false;
+  }
+
+  get shouldShowPublicFooter(): boolean {
+    const url = this.router.url;
+    return !url.startsWith('/admin') && !url.startsWith('/announcer');
   }
 
   /**

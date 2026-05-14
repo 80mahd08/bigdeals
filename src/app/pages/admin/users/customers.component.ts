@@ -1,23 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { UntypedFormBuilder, UntypedFormGroup, FormArray, Validators } from '@angular/forms';
-// Date Format
-import { DatePipe } from '@angular/common';
-
-// Sweet Alert
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
-
-// Csv File Export
-import { ngxCsv } from 'ngx-csv/ngx-csv';
-
-// Rest Api Service
-import { restApiService } from "../../../core/services/rest-api.service";
-import { Store } from '@ngrx/store';
-import { RootReducerState } from 'src/app/store';
-import { addCustomer, deleteCustomer, fetchCustomerListData, updateCustomer } from 'src/app/store/Ecommerce/ecommerce_action';
-import { selectCustomerData, selectDataLoading } from 'src/app/store/Ecommerce/ecommerce_selector';
-import { PaginationService } from 'src/app/core/services/pagination.service';
-import { cloneDeep } from 'lodash';
+import { AdminUsersService } from 'src/app/core/services/admin-users.service';
+import { AdminUserListItem } from 'src/app/core/models/admin-user.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Component({
     selector: 'app-customers',
@@ -25,273 +15,198 @@ import { cloneDeep } from 'lodash';
     styleUrls: ['./customers.component.scss'],
     standalone: false
 })
-
-/**
- * Customers Component
- */
-export class CustomersComponent {
+export class CustomersComponent implements OnInit {
 
   // bread crumb items
   breadCrumbItems!: Array<{}>;
   submitted = false;
-  customerForm!: UntypedFormGroup;
-  masterSelected!: boolean;
-  checkedList: any;
-  content?: any;
-  customers?: any;
-
+  
   // Table data
-  customerList: any;
-  searchTerm: any;
-  filterDate: any;
+  userList: AdminUserListItem[] = [];
+  totalCount = 0;
+  pageNumber = 1;
+  pageSize = 10;
+  totalPages = 0;
+  
+  // Filters
+  searchTerm = '';
   status: any = '';
-  searchResults: any;
+  role: any = '';
+  ville: any = '';
+  
+  villes: string[] = [
+    'Ariana', 'Béja', 'Ben Arous', 'Bizerte', 'Gabès', 'Gafsa', 'Jendouba', 
+    'Kairouan', 'Kasserine', 'Kébili', 'Kef', 'Mahdia', 'Manouba', 'Medenine', 
+    'Monastir', 'Nabeul', 'Sfax', 'Sidi Bouzid', 'Siliana', 'Sousse', 
+    'Tataouine', 'Tozeur', 'Tunis', 'Zaghouan'
+  ];
+  
+  loading = false;
+  imageBaseUrl = environment.imageBaseUrl;
+  imageErrors = new Set<number>();
+  private searchSubject = new Subject<string>();
 
-  constructor(private modalService: NgbModal, public service: PaginationService,
-    private formBuilder: UntypedFormBuilder,
-    private restApiService: restApiService, private store: Store<RootReducerState>) {
-  }
+  constructor(
+    private modalService: NgbModal,
+    private adminUsersService: AdminUsersService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
-    /**
-    * BreadCrumb
-    */
     this.breadCrumbItems = [
-      { label: 'Ecommerce' },
-      { label: 'Customers', active: true }
+      { label: 'Admin' },
+      { label: 'Gestion des utilisateurs', active: true }
     ];
 
-    /**
-    * Form Validation
-    */
-    this.customerForm = this.formBuilder.group({
-      _id: [''],
-      customer: ['', [Validators.required]],
-      email: ['', [Validators.required]],
-      phone: ['', [Validators.required]],
-      date: ['', [Validators.required]],
-      status: ['', [Validators.required]]
+    // Initialize from URL
+    this.route.queryParams.subscribe(params => {
+      this.pageNumber = params['page'] ? parseInt(params['page']) : 1;
+      this.searchTerm = params['q'] || '';
+      this.status = params['status'] || '';
+      this.role = params['role'] || '';
+      this.ville = params['ville'] || '';
+      this.loadUsers();
     });
 
-    // Fetch Data
-    this.store.dispatch(fetchCustomerListData());
-    this.store.select(selectDataLoading).subscribe((data) => {
-      if (data == false) {
-        document.getElementById('elmLoader')?.classList.add('d-none');
+    // Setup search debouncing
+    this.searchSubject.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      this.searchTerm = value;
+      this.pageNumber = 1;
+      this.updateUrl();
+    });
+  }
+
+  loadUsers() {
+    this.loading = true;
+    const params = {
+      pageNumber: this.pageNumber,
+      pageSize: this.pageSize,
+      search: this.searchTerm || undefined,
+      statutCompte: this.status !== '' ? parseInt(this.status) : undefined,
+      role: this.role !== '' ? parseInt(this.role) : undefined,
+      ville: this.ville || undefined
+    };
+
+    this.adminUsersService.getUsers(params).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.userList = response.data.items;
+          this.totalCount = response.data.totalCount;
+          this.totalPages = Math.ceil(this.totalCount / this.pageSize);
+        }
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+        // Swal.fire('Erreur', 'Impossible de charger les utilisateurs.', 'error');
       }
     });
+  }
 
-    this.store.select(selectCustomerData).subscribe((data) => {
-      this.customers = data;
-      this.customerList = cloneDeep(data);
-      this.customers = this.service.changePage(this.customerList)
+  updateUrl() {
+    const queryParams: any = {};
+    if (this.pageNumber > 1) queryParams.page = this.pageNumber;
+    if (this.searchTerm) queryParams.q = this.searchTerm;
+    if (this.status !== '') queryParams.status = this.status;
+    if (this.role !== '') queryParams.role = this.role;
+    if (this.ville !== '') queryParams.ville = this.ville;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: queryParams,
+      queryParamsHandling: null // Replace old params
     });
   }
 
-  changePage() {
-    this.customers = this.service.changePage(this.customerList)
+  onPageChange(page: number) {
+    this.pageNumber = page;
+    this.updateUrl();
   }
 
-  onSort(column: any) {
-    // resetting other headers
-    this.customers = this.service.onSort(column, this.customers)
-  }
-
-  // Search Data
   performSearch(): void {
-    this.searchResults = this.customerList.filter((item: any) => {
-      return (
-        item.customer.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.status.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-    });
-    this.customers = this.service.changePage(this.searchResults)
-  }
-
-  dateFilter() {
-    this.customers = this.customerList.filter((customer: any) => new Date(customer.date) >= new Date(Object.values(this.dateFilter)[0]) && new Date(customer.date) <= new Date(Object.values(this.dateFilter)[1]));
+    this.searchSubject.next(this.searchTerm);
   }
 
   statusFilter() {
-    if (this.status != '') {
-      this.customers = this.customerList.filter((customer: any) => customer.status == this.status);
-    } else {
-      this.customers = this.customerList
-    }
-
+    this.pageNumber = 1;
+    this.updateUrl();
   }
 
-  /**
-  * Confirmation mail model
-  */
-  deleteId: any;
-  confirm(content: any, id: any) {
-    this.deleteId = id;
-    this.modalService.open(content, { centered: true });
+  roleFilter() {
+    this.pageNumber = 1;
+    this.updateUrl();
   }
 
-  // Delete Data
-  deleteData(id: any) {
-    if (id) {
-      this.store.dispatch(deleteCustomer({ id: this.deleteId.toString() }));
-    } else {
-      this.store.dispatch(deleteCustomer({ id: this.checkedValGet.toString() }));
-    }
-    this.deleteId = ''
-    this.masterSelected = false
+  villeFilter() {
+    this.pageNumber = 1;
+    this.updateUrl();
   }
 
-  /**
-  * Multiple Delete
-  */
-  checkedValGet: any[] = [];
-  deleteMultiple(content: any) {
-    var checkboxes: any = document.getElementsByName('checkAll');
-    var result
-    var checkedVal: any[] = [];
-    for (var i = 0; i < checkboxes.length; i++) {
-      if (checkboxes[i].checked) {
-        result = checkboxes[i].value;
-        checkedVal.push(result);
-      }
-    }
-    if (checkedVal.length > 0) {
-      this.modalService.open(content, { centered: true });
-    }
-    else {
-      Swal.fire({ text: 'Please select at least one checkbox', confirmButtonColor: '#299cdb', });
-    }
-    this.checkedValGet = checkedVal;
+  resetFilters() {
+    this.searchTerm = '';
+    this.status = '';
+    this.role = '';
+    this.ville = '';
+    this.pageNumber = 1;
+    this.updateUrl();
   }
 
-  /**
-* Open modal
-* @param content modal content
-*/
-  openModal(content: any) {
-    this.submitted = false;
-    this.modalService.open(content, { size: 'md', centered: true });
-  }
+  toggleUserStatus(user: AdminUserListItem) {
+    const isBlocked = user.statutCompte === 2;
+    const action = isBlocked ? 'débloquer' : 'bloquer';
+    const confirmButtonText = isBlocked ? 'Débloquer' : 'Bloquer';
+    const confirmButtonColor = isBlocked ? '#34c38f' : '#f46a6a';
 
-  /**
-   * Form data get
-   */
-  get form() {
-    return this.customerForm.controls;
-  }
+    Swal.fire({
+      title: 'Confirmation',
+      text: `Voulez-vous vraiment ${action} cet utilisateur ?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: confirmButtonColor,
+      cancelButtonColor: '#74788d',
+      confirmButtonText: confirmButtonText,
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const obs = isBlocked ? 
+          this.adminUsersService.unblockUser(user.idUtilisateur) : 
+          this.adminUsersService.blockUser(user.idUtilisateur);
 
-  /**
- * Save user
- */
-  saveUser() {
-    if (this.customerForm.valid) {
-      if (this.customerForm.get('_id')?.value) {
-        const updatedData = this.customerForm.value;
-        this.store.dispatch(updateCustomer({ updatedData }));
-        this.modalService.dismissAll();
-      }
-      else {
-        const custId = (this.customerList.length + 1).toString();
-        this.customerForm.controls['_id'].setValue(custId);
-        const newData = this.customerForm.value;
-        this.store.dispatch(addCustomer({ newData }));
-        this.modalService.dismissAll();
-        let timerInterval: any;
-        Swal.fire({
-          title: 'Customers inserted successfully!',
-          icon: 'success',
-          timer: 2000,
-          timerProgressBar: true,
-          willClose: () => {
-            clearInterval(timerInterval);
+        obs.subscribe({
+          next: (res) => {
+            if (res.success) {
+              Swal.fire('Succès', `Utilisateur ${action} avec succès.`, 'success');
+              this.loadUsers();
+            }
           },
-        }).then((result) => {
-          /* Read more about handling dismissals below */
-          if (result.dismiss === Swal.DismissReason.timer) {
+          error: (err) => {
+            Swal.fire('Erreur', err.error?.message || `Une erreur est survenue lors de l'action.`, 'error');
           }
         });
       }
-    }
-    setTimeout(() => {
-      this.customerForm.reset();
-    }, 2000);
-    this.submitted = true
+    });
   }
 
-
-
-  // The master checkbox will check/ uncheck all items
-  checkUncheckAll(ev: any) {
-    this.customers.forEach((x: { state: any; }) => x.state = ev.target.checked)
-    var checkedVal: any[] = [];
-    var result
-    for (var i = 0; i < this.customers.length; i++) {
-      if (this.customers[i].state == true) {
-        result = this.customers[i];
-        checkedVal.push(result);
-      }
-    }
-    this.checkedValGet = checkedVal
-    checkedVal.length > 0 ? (document.getElementById("remove-actions") as HTMLElement).style.display = "block" : (document.getElementById("remove-actions") as HTMLElement).style.display = "none";
+  // Helper for pagination display
+  get startIndex(): number {
+    return (this.pageNumber - 1) * this.pageSize + 1;
   }
 
-  // Select Checkbox value Get
-  onCheckboxChange(e: any) {
-    var checkedVal: any[] = [];
-    var result
-    for (var i = 0; i < this.customers.length; i++) {
-      if (this.customers[i].state == true) {
-        result = this.customers[i];
-        checkedVal.push(result);
-      }
-    }
-    this.checkedValGet = checkedVal
-    checkedVal.length > 0 ? (document.getElementById("remove-actions") as HTMLElement).style.display = "block" : (document.getElementById("remove-actions") as HTMLElement).style.display = "none";
+  get endIndex(): number {
+    return Math.min(this.pageNumber * this.pageSize, this.totalCount);
   }
 
-  /**
-   * Open Edit modal
-   * @param content modal content
-   */
-  econtent?: any;
-  editDataGet(id: any, content: any) {
-    this.submitted = false;
-    this.modalService.open(content, { size: 'md', centered: true });
-
-    var modelTitle = document.querySelector('.modal-title') as HTMLAreaElement;
-    modelTitle.innerHTML = 'Edit Customer';
-    var updateBtn = document.getElementById('add-btn') as HTMLAreaElement;
-    updateBtn.innerHTML = "Update";
-    this.econtent = this.customerList[id];
-    this.customerForm.controls['customer'].setValue(this.econtent.customer);
-    this.customerForm.controls['email'].setValue(this.econtent.email);
-    this.customerForm.controls['phone'].setValue(this.econtent.phone);
-    this.customerForm.controls['date'].setValue(this.econtent.date);
-    this.customerForm.controls['status'].setValue(this.econtent.status);
-    this.customerForm.controls['_id'].setValue(this.econtent._id);
-
+  getPhotoUrl(path: string | null): string | null {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    return `${this.imageBaseUrl}${path}`;
   }
 
-  // Csv File Export
-  csvFileExport() {
-    var customer = {
-      fieldSeparator: ',',
-      quoteStrings: '"',
-      decimalseparator: '.',
-      showLabels: true,
-      showTitle: true,
-      title: 'Customer Data',
-      useBom: true,
-      noDownload: false,
-      headers: ["id", "customer Id", "customer", "email", "phone", "date", "status"]
-    };
-    new ngxCsv(this.content, "customers", customer);
+  onImageError(id: number) {
+    this.imageErrors.add(id);
   }
-  /**
-  * Sort table data
-  * @param param0 sort the column
-  *
-  */
-
 }

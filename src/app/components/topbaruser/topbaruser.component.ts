@@ -35,13 +35,13 @@ export class TopbarUserComponent implements OnInit, OnDestroy {
 
   // The currently logged-in user (null if visitor/not authenticated)
   currentUser: User | null = null;
-  
+
+  private destroy$ = new Subject<void>();
+  imageError = false;
+
   topbarCartItems: any[] = [];
   total = 0;
   cart_length = 0;
-
-  // Used to clean up subscriptions when the component is destroyed
-  private destroy$ = new Subject<void>();
 
   constructor(
     @Inject(DOCUMENT) private document: any,
@@ -54,18 +54,25 @@ export class TopbarUserComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.element = document.documentElement;
-    
-    // Subscribe to the cart observable to update the topbar UI reactively
+
+    // Subscribe to the current user observable to reactively toggle the topbar UI
+    this.authService.currentUser$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe((user: User | null) => {
+      this.currentUser = user;
+    });
+
+    // Subscribe to cart
     this.cartService.cart$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(cart => {
       if (cart) {
         this.topbarCartItems = (cart.lignes || []).map(ligne => {
           return {
-            id: ligne.idAnnonce,
-            annonceId: ligne.idAnnonce,
+            id: ligne.id,
+            idAnnonce: ligne.idAnnonce,
             product: ligne.annonceTitre || 'Produit inconnu',
-            img: ligne.annonceImage || '',
+            img: (ligne.annonceImage) ? (ligne.annonceImage.startsWith('http') ? ligne.annonceImage : 'http://localhost:5049' + (ligne.annonceImage.startsWith('/') ? '' : '/') + ligne.annonceImage) : 'assets/images/products/img-1.png',
             price: ligne.prixUnitaire,
             quantity: ligne.quantite
           };
@@ -77,13 +84,6 @@ export class TopbarUserComponent implements OnInit, OnDestroy {
         this.cart_length = 0;
         this.total = 0;
       }
-    });
-
-    // Subscribe to the current user observable to reactively toggle the topbar UI
-    this.authService.currentUser$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe((user: User | null) => {
-      this.currentUser = user;
     });
   }
 
@@ -138,7 +138,6 @@ export class TopbarUserComponent implements OnInit, OnDestroy {
   }
 
   toggleMobileMenu(event: any) {
-    document.querySelector('.hamburger-icon')?.classList.toggle('open');
     event.preventDefault();
     this.mobileMenuButtonClicked.emit();
   }
@@ -182,10 +181,15 @@ export class TopbarUserComponent implements OnInit, OnDestroy {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
+  onImageError() {
+    this.imageError = true;
+  }
+
+  // Delete Item
   deleteItem(event: any, id: any) {
     const item = this.topbarCartItems.find(i => i.id === id);
     if (item) {
-      this.cartService.removeFromCart(item.annonceId);
+      this.cartService.removeFromCart(item.idAnnonce);
     }
   }
 

@@ -9,7 +9,7 @@ export const MENU: MenuItem[] = [
   },
   {
     id: 5,
-    label: 'Gestion des clients',
+    label: 'Gestion des utilisateurs',
     icon: 'ri-group-line',
     link: '/admin/users',
   },
@@ -21,9 +21,27 @@ export const MENU: MenuItem[] = [
   },
   {
     id: 6,
-    label: 'Gérer catégories',
-    icon: 'ri-list-check',
-    link: '/admin/categories',
+    label: 'Gestion des annonces',
+    icon: 'ri-stack-line',
+    link: '/admin/ads',
+  },
+  {
+    id: 7,
+    label: 'Paiements annonceurs',
+    icon: 'ri-money-dollar-circle-line',
+    link: '/admin/annonceur-payments',
+  },
+  {
+    id: 8,
+    label: 'Signalements',
+    icon: 'ri-flag-line',
+    link: '/admin/reports',
+  },
+  {
+    id: 9,
+    label: 'Commandes',
+    icon: 'ri-shopping-cart-2-line',
+    link: '/admin/orders',
   },
   {
     id: 11,
@@ -62,6 +80,12 @@ export const SELLER_MENU: MenuItem[] = [
     label: 'Avis Clients',
     icon: 'ri-star-line',
     link: '/announcer/reviews',
+  },
+  {
+    id: 205,
+    label: 'Mes Ventes',
+    icon: 'ri-shopping-bag-3-line',
+    link: '/announcer/orders',
   },
   {
     id: 210,

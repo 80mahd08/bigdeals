@@ -18,94 +18,12 @@ import { GlobalComponent } from "../../global-component";
 export class restApiService {
   constructor(private http: HttpClient) { }
 
-  /**
-  * Product Rest Api
-  */
-  // Get
-  getData(): Observable<any> {
-    var headerToken = { 'Authorization': `Bearer ` + localStorage.getItem('token') };
-    return this.http.get(GlobalComponent.API_URL + GlobalComponent.product, { headers: headerToken, responseType: 'text' });
-  }
-
-  // Delete 
-  deleteData(id: any): Observable<any> {
-    return this.http.delete(GlobalComponent.API_URL + GlobalComponent.productDelete + id, { responseType: 'text' });
-  }
-
-  /**
-  * Order Rest Api
-  */
-
-  // Get
-  getOrderData(): Observable<any> {
-    var headerToken = { 'Authorization': `Bearer ` + localStorage.getItem('token') };
-    return this.http.get(GlobalComponent.API_URL + GlobalComponent.order, { headers: headerToken, responseType: 'text' });
-  }
-
-  // POST
-  postOrderData(employee: any): Observable<any> {
-    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` }) };
-    return this.http.post(GlobalComponent.API_URL + GlobalComponent.order, JSON.stringify(employee), options);
-  }
-
-  // Single
-  getSingleOrderData(id: any): Observable<any> {
-    var headerToken = { 'Authorization': `Bearer ` + localStorage.getItem('token') };
-    return this.http.get(GlobalComponent.API_URL + GlobalComponent.orderId + id, { headers: headerToken, responseType: 'text' });
-  }
-
-  //Order Patch
-  patchOrderData(employee: any): Observable<any> {
-    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` }) };
-    return this.http.patch(GlobalComponent.API_URL + GlobalComponent.orderId + employee.ids, JSON.stringify(employee), options);
-  }
-
-  // Order Delete
-  deleteOrder(id: any): Observable<any> {
-    var headerToken = { 'Authorization': `Bearer ` + localStorage.getItem('token') };
-    return this.http.delete(GlobalComponent.API_URL + GlobalComponent.orderId + id, { headers: headerToken, responseType: 'text' });
-  }
-
-
   getSellerData(): Observable<any[]> {
     return this.http.get<any[]>('/app/seller');
   }
 
   getProjectData(): Observable<any[]> {
     return this.http.get<any[]>('/app/project');
-  }
-
-  /**
-  * Customers Rest Api
-  */
-  // Get
-  getCustomerData(): Observable<any> {
-    var headerToken = { 'Authorization': `Bearer ` + localStorage.getItem('token') };
-    return this.http.get(GlobalComponent.API_URL + GlobalComponent.customer, { headers: headerToken, responseType: 'text' });
-  }
-
-  // POST
-  postCustomerData(customers: any): Observable<any> {
-    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` }) };
-    return this.http.post(GlobalComponent.API_URL + GlobalComponent.customer, JSON.stringify(customers), options);
-  }
-
-  // Single
-  getSingleCustomerData(id: any): Observable<any> {
-    var headerToken = { 'Authorization': `Bearer ` + localStorage.getItem('token') };
-    return this.http.get(GlobalComponent.API_URL + 'apps/customer/' + id, { headers: headerToken, responseType: 'text' });
-  }
-
-  // Patch
-  patchCustomerData(customers: any): Observable<any> {
-    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` }) };
-    return this.http.patch(GlobalComponent.API_URL + 'apps/customer/' + customers.ids, JSON.stringify(customers), options);
-  }
-
-  // Delete
-  deleteCustomer(id: any): Observable<any> {
-    var headerToken = { 'Authorization': `Bearer ` + localStorage.getItem('token') };
-    return this.http.delete(GlobalComponent.API_URL + 'apps/customer/' + id, { headers: headerToken, responseType: 'text' });
   }
 
   /**
@@ -349,20 +267,7 @@ export class restApiService {
     return this.http.delete(GlobalComponent.API_URL + 'apps/ticket/' + id, { headers: headerToken, responseType: 'text' });
   }
 
-  /**
-  * Support Ticket Rest Api
-  */
-  // Get
-  getInvoiceData(): Observable<any> {
-    var headerToken = { 'Authorization': `Bearer ` + localStorage.getItem('token') };
-    return this.http.get(GlobalComponent.API_URL + 'apps/invoice', { headers: headerToken, responseType: 'text' });
-  }
 
-  // Delete
-  deleteInvoice(id: any): Observable<any> {
-    var headerToken = { 'Authorization': `Bearer ` + localStorage.getItem('token') };
-    return this.http.delete(GlobalComponent.API_URL + 'apps/invoice/' + id, { headers: headerToken, responseType: 'text' });
-  }
 
   /**
   * Todo Rest Api

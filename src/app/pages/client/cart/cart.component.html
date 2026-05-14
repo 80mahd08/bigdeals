@@ -1,139 +1,117 @@
-<div class="marketplace-container">
-    <div class="row align-items-center mb-4">
-        <div class="col-sm">
-            <div>
-                <h3 class="fw-bold mb-0">Mon Panier</h3>
-                <p class="text-muted mb-0">Gérez les articles que vous souhaitez commander.</p>
+<div class="row">
+    <div class="col-xl-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header border-bottom-dashed">
+                <h5 class="card-title mb-0">Votre Panier</h5>
+            </div>
+            <div class="card-body">
+                @if (cart$ | async; as cart) {
+                    @if (cart.lignes && cart.lignes.length > 0) {
+                        <div class="table-responsive">
+                            <table class="table table-borderless align-middle mb-0">
+                                <thead class="table-light text-muted">
+                                    <tr>
+                                        <th scope="col">Produit</th>
+                                        <th scope="col">Prix</th>
+                                        <th scope="col">Quantité</th>
+                                        <th scope="col" class="text-end">Total</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (line of cart.lignes; track line.idAnnonce) {
+                                        <tr>
+                                            <td>
+                                                <h5 class="fs-14 text-truncate"><a [routerLink]="['/ads', line.idAnnonce]" class="text-reset">{{ line.annonceTitre }}</a></h5>
+                                                <p class="text-muted mb-0">ID: #{{ line.idAnnonce }}</p>
+                                            </td>
+                                            <td>{{ line.prixUnitaire | number:'1.0-0' }} TND</td>
+                                            <td>
+                                                <div class="input-step">
+                                                    <button type="button" class="minus" (click)="decrement(line.idAnnonce, line.quantite)">–</button>
+                                                    <input type="number" class="product-quantity" [value]="line.quantite" readonly>
+                                                    <button type="button" class="plus" (click)="increment(line.idAnnonce, line.quantite)">+</button>
+                                                </div>
+                                            </td>
+                                            <td class="text-end fw-bold">{{ (line.prixUnitaire * line.quantite) | number:'1.0-0' }} TND</td>
+                                            <td class="text-end">
+                                                <button class="btn btn-soft-danger btn-sm" (click)="confirmDelete(deleteModal, line.idAnnonce)">
+                                                    <i class="ri-delete-bin-fill"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    } @else {
+                        <div class="text-center py-5">
+                            <div class="avatar-lg mx-auto mb-4">
+                                <div class="avatar-title bg-info-subtle text-info rounded-circle fs-36">
+                                    <i class="ri-shopping-cart-2-line"></i>
+                                </div>
+                            </div>
+                            <h5>Votre panier est vide</h5>
+                            <p class="text-muted">Vous n'avez pas encore ajouté d'articles.</p>
+                            <a routerLink="/ads" class="btn btn-success">Continuer mes achats</a>
+                        </div>
+                    }
+                }
             </div>
         </div>
     </div>
 
-    @if (cart$ | async; as cart) {
-        @if (cart.lignes && cart.lignes.length > 0) {
-            <div class="row">
-                <div class="col-xl-8">
-                    <div class="row align-items-center gy-3 mb-3">
-                        <div class="col-sm">
-                            <h5 class="fs-14 mb-0">Votre panier ({{cart.lignes.length}} articles)</h5>
-                        </div>
-                        <div class="col-sm-auto">
-                            <a routerLink="/ads" class="link-primary text-decoration-underline">Continuer mes achats</a>
-                        </div>
-                    </div>
-                    @for (ligne of cart.lignes; track ligne.idLignePanier) {
-                        <div class="card product mb-3 shadow-sm border-0">
-                            <div class="card-body">
-                                <div class="row gy-3">
-                                    <div class="col-sm-auto">
-                                        <div class="avatar-lg bg-light rounded p-1">
-                                            <img [src]="ligne.annonceImage" alt="" class="img-fluid d-block rounded" style="height: 100%; width: 100%; object-fit: cover;">
-                                        </div>
-                                    </div>
-                                    <div class="col-sm">
-                                        <h5 class="fs-16 text-truncate mb-1"><a [routerLink]="['/ads', ligne.idAnnonce]" class="text-body fw-bold">{{ligne.annonceTitre}}</a></h5>
-                                        <p class="text-muted mb-3">Produit Marketplace</p>
-
-                                        <div class="input-step">
-                                            <button type="button" class="minus" (click)="decrement(ligne.idAnnonce, ligne.quantite)">–</button>
-                                            <input type="number" class="product-quantity" [value]="ligne.quantite" readonly>
-                                            <button type="button" class="plus" (click)="increment(ligne.idAnnonce, ligne.quantite)">+</button>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-auto">
-                                        <div class="text-lg-end">
-                                            <p class="text-muted mb-1">Prix Unitaire:</p>
-                                            <h5 class="fs-16 fw-bold text-success">{{ligne.prixUnitaire | number:'1.0-0'}} TND</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer bg-light-subtle border-top-dashed py-2">
-                                <div class="row align-items-center">
-                                    <div class="col-sm">
-                                        <a href="javascript:void(0);" class="text-danger fw-medium" (click)="confirmDelete(deleteModel, ligne.idAnnonce)">
-                                            <i class="ri-delete-bin-fill align-bottom me-1"></i> Retirer
-                                        </a>
-                                    </div>
-                                    <div class="col-sm-auto">
-                                        <div class="d-flex align-items-center gap-2 text-muted">
-                                            <div class="fw-medium">Total ligne :</div>
-                                            <h5 class="fs-16 mb-0 fw-bold">{{((ligne.prixUnitaire || 0) * ligne.quantite) | number:'1.0-0'}} TND</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    }
-
-                    <div class="text-end mb-4">
-                        <a routerLink="/client/checkout" class="btn btn-success btn-label right ms-auto">
-                            <i class="ri-arrow-right-line label-icon align-bottom fs-16 ms-2"></i> Passer la commande
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-xl-4">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-header border-bottom-dashed">
-                            <h5 class="card-title mb-0 fw-bold">Résumé de la commande</h5>
-                        </div>
-                        <div class="card-body pt-2">
-                            <div class="table-responsive">
-                                <table class="table table-borderless mb-0">
-                                    <tbody>
-                                        <tr>
-                                            <td>Sous-total :</td>
-                                            <td class="text-end fw-medium">{{calculateSubtotal(cart) | number:'1.0-0'}} TND</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Frais de livraison :</td>
-                                            <td class="text-end fw-medium">{{(calculateSubtotal(cart) > 0 ? shippingRate : 0) | number:'1.0-0'}} TND</td>
-                                        </tr>
-                                        <tr>
-                                            <td>TVA (12.5%) :</td>
-                                            <td class="text-end fw-medium">{{calculateTax(calculateSubtotal(cart)) | number:'1.0-0'}} TND</td>
-                                        </tr>
-                                        <tr class="table-active">
-                                            <th class="fs-16">Total :</th>
-                                            <td class="text-end">
-                                                <span class="fw-bold fs-18 text-success">
-                                                    {{calculateTotal(calculateSubtotal(cart)) | number:'1.0-0'}} TND
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="col-xl-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header border-bottom-dashed">
+                <h5 class="card-title mb-0">Récapitulatif</h5>
             </div>
-        } @else {
-            <div class="text-center py-5">
-                <div class="avatar-lg mx-auto mb-4">
-                    <div class="avatar-title bg-light text-success rounded-circle fs-36">
-                        <i class="ri-shopping-cart-2-line"></i>
+            <div class="card-body pt-2">
+                @if (cart$ | async; as cart) {
+                    <div class="table-responsive">
+                        <table class="table table-borderless mb-0">
+                            <tbody>
+                                <tr>
+                                    <td>Sous-total :</td>
+                                    <td class="text-end">{{ calculateSubtotal(cart) | number:'1.0-0' }} TND</td>
+                                </tr>
+                                <tr>
+                                    <td>Livraison :</td>
+                                    <td class="text-end">
+                                        {{ cart.lignes && cart.lignes.length > 0 ? (shippingRate | number:'1.0-0') : 0 }} TND
+                                    </td>
+                                </tr>
+                                <tr class="table-active">
+                                    <th class="fs-16">Total :</th>
+                                    <td class="text-end">
+                                        <span class="fw-bold fs-18 text-success">
+                                            {{ calculateTotal(calculateSubtotal(cart)) | number:'1.0-0' }} TND
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-                <h3>Votre panier est vide</h3>
-                <p class="text-muted">Vous n'avez pas encore ajouté d'articles à votre panier.</p>
-                <a routerLink="/ads" class="btn btn-success shadow-none">Parcourir les annonces</a>
+                    <div class="d-grid mt-4">
+                        <button class="btn btn-success btn-lg py-3 fw-bold" [disabled]="!cart.lignes || cart.lignes.length === 0" routerLink="/client/checkout">
+                            Passer la commande
+                        </button>
+                    </div>
+                }
             </div>
-        }
-    }
+        </div>
+    </div>
 </div>
 
-<ng-template #deleteModel let-modal>
-    <div class="modal-content">
-        <div class="modal-body text-center p-5">
-            <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
-            <div class="mt-4">
-                <h4 class="fw-bold">Êtes-vous sûr ?</h4>
-                <p class="text-muted mb-4">Voulez-vous vraiment retirer cet article de votre panier ?</p>
-                <div class="hstack gap-2 justify-content-center">
-                    <button type="button" class="btn btn-light" (click)="modal.dismiss()">Annuler</button>
-                    <button type="button" class="btn btn-danger" (click)="modal.close('delete')">Oui, retirer</button>
-                </div>
+<ng-template #deleteModal let-modal>
+    <div class="modal-body text-center p-5">
+        <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
+        <div class="mt-4">
+            <h4 class="mb-3">Supprimer l'article ?</h4>
+            <p class="text-muted mb-4">Êtes-vous sûr de vouloir retirer cet article de votre panier ?</p>
+            <div class="hstack gap-2 justify-content-center">
+                <button type="button" class="btn btn-light" (click)="modal.dismiss('cancel')">Annuler</button>
+                <button type="button" class="btn btn-danger" (click)="modal.close('delete')">Supprimer</button>
             </div>
         </div>
     </div>

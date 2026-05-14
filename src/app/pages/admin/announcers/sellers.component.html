@@ -3,26 +3,50 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
-            <div class="card-header border-0">
-                <div class="d-flex align-items-center">
-                    <h5 class="card-title mb-0 flex-grow-1">Liste des demandes de passage au statut Annonceur</h5>
-                    <div class="flex-shrink-0">
-                        <button class="btn btn-soft-primary" (click)="loadRequests()"><i class="ri-refresh-line align-bottom"></i> Actualiser</button>
+            @if (requests.length > 0 || searchQuery || statusFilter) {
+                <div class="card-header border-0">
+                    <div class="row align-items-center g-3">
+                        <div class="col-md-4">
+                            <h5 class="card-title mb-0">Demandes de passage au statut annonceur</h5>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="d-flex flex-wrap gap-2 justify-content-md-end">
+                                <div class="search-box flex-grow-1 flex-md-grow-0" style="min-width: 200px;">
+                                    <input type="text" class="form-control" placeholder="ID, Nom, Email..." [(ngModel)]="searchQuery" (input)="performSearch()">
+                                    <i class="ri-search-line search-icon"></i>
+                                </div>
+                                <select class="form-select flex-grow-1 flex-md-grow-0" style="width: auto; min-width: 160px;" [(ngModel)]="statusFilter" (change)="onStatusChange()">
+                                    <option value="">Tous les statuts</option>
+                                    <option value="1">À vérifier</option>
+                                    <option value="4">En attente paiement</option>
+                                    <option value="2">Approuvée</option>
+                                    <option value="3">Rejetée</option>
+                                </select>
+                                <div class="d-flex gap-1">
+                                    <button class="btn btn-soft-info shadow-none flex-grow-1" (click)="loadRequests()" ngbTooltip="Actualiser">
+                                        <i class="ri-refresh-line align-bottom"></i>
+                                    </button>
+                                    <button class="btn btn-soft-secondary shadow-none flex-grow-1" (click)="resetFilters()" ngbTooltip="Réinitialiser">
+                                        <i class="ri-filter-off-line align-bottom"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
             <div class="card-body">
                 <div class="table-responsive table-card">
-                    <table class="table align-middle table-nowrap mb-0">
-                        <thead class="table-light text-muted">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light text-muted text-uppercase fs-12">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">ID Utilisateur</th>
-                                <th scope="col">Date Demande</th>
-                                <th scope="col">Statut</th>
-                                <th scope="col">Document</th>
-                                <th scope="col">Traitement</th>
-                                <th scope="col">Action</th>
+                                <th scope="col" style="width: 80px;" class="text-nowrap">ID Demande</th>
+                                <th scope="col">Utilisateur</th>
+                                <th scope="col" class="text-nowrap">Date demande</th>
+                                <th scope="col" class="text-nowrap">Statut</th>
+                                <th scope="col" class="text-nowrap">Document</th>
+                                <th scope="col" class="text-nowrap">Traitement</th>
+                                <th scope="col" class="text-end text-nowrap">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,51 +58,80 @@
                                         </div>
                                     </td>
                                 </tr>
+                            } @else if (error) {
+                                <tr>
+                                    <td colspan="7" class="text-center py-5 text-danger">
+                                        <i class="ri-error-warning-line fs-24 mb-2 d-block"></i>
+                                        Impossible de charger les demandes.
+                                    </td>
+                                </tr>
                             } @else {
                                 @for (request of requests; track request.idDemandeAnnonceur) {
                                     <tr>
-                                        <td>#{{ request.idDemandeAnnonceur }}</td>
-                                        <td>{{ request.idUtilisateur }}</td>
-                                        <td>{{ request.dateDemande | date:'medium' }}</td>
+                                        <td class="text-nowrap"><span class="fw-medium">#{{ request.idDemandeAnnonceur }}</span></td>
                                         <td>
-                                            <span class="badge" [ngClass]="{
-                                                'bg-warning': request.statut === 'EN_ATTENTE',
-                                                'bg-success': request.statut === 'APPROUVEE',
-                                                'bg-danger': request.statut === 'REJETEE'
-                                            }">{{ request.statut }}</span>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-sm btn-soft-info" (click)="viewDocument(request.idDemandeAnnonceur)">
-                                                <i class="ri-file-search-line me-1"></i> Voir
-                                            </button>
-                                        </td>
-                                        <td>
-                                            @if (request.dateTraitement) {
-                                                <div class="text-muted fs-12">
-                                                    {{ request.dateTraitement | date:'short' }}
-                                                    @if (request.motifRejet) {
-                                                        <div class="text-danger mt-1" [title]="request.motifRejet">
-                                                            <i class="ri-error-warning-line"></i> {{ request.motifRejet | slice:0:20 }}...
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 me-3">
+                                                    @if (request.photoProfilUrl && !imageErrors.has(request.idDemandeAnnonceur)) {
+                                                        <div class="avatar-sm">
+                                                            <img [src]="getPhotoUrl(request.photoProfilUrl)" alt="" class="rounded-circle shadow" style="width: 100%; height: 100%; object-fit: cover;" (error)="onImageError(request.idDemandeAnnonceur)">
+                                                        </div>
+                                                    } @else {
+                                                        <div class="avatar-sm flex-shrink-0">
+                                                            <span class="avatar-title bg-info-subtle text-info rounded-circle fs-13">
+                                                                {{ request.nomCompletUtilisateur?.charAt(0) || 'U' }}
+                                                            </span>
                                                         </div>
                                                     }
                                                 </div>
-                                            } @else {
-                                                <span class="text-muted">En attente</span>
-                                            }
+                                                <div class="flex-grow-1">
+                                                    <h6 class="fs-14 mb-1">{{ request.nomCompletUtilisateur || 'Utilisateur #' + request.idUtilisateur }}</h6>
+                                                    <p class="text-muted mb-0 fs-12">{{ request.emailUtilisateur }}</p>
+                                                </div>
+                                            </div>
                                         </td>
+                                        <td>{{ request.dateDemande | date:'dd/MM/yyyy HH:mm' }}</td>
                                         <td>
-                                            @if (request.statut === 'EN_ATTENTE') {
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-success" (click)="approve(request.idDemandeAnnonceur)">
-                                                        <i class="ri-check-line"></i> Approuver
-                                                    </button>
-                                                    <button class="btn btn-sm btn-danger" (click)="reject(request.idDemandeAnnonceur)">
-                                                        <i class="ri-close-line"></i> Rejeter
-                                                    </button>
+                                            <span class="badge px-2 py-1 text-nowrap" [ngClass]="getStatusClass(request.statut)">
+                                                {{ getStatusLabel(request.statut) }}
+                                            </span>
+                                        </td>
+                                        <td class="text-nowrap">
+                                            <button class="btn btn-sm btn-soft-info shadow-none" (click)="viewDocument(request.idDemandeAnnonceur)">
+                                                <i class="ri-file-search-line me-1"></i> Document
+                                            </button>
+                                        </td>
+                                        <td class="text-nowrap">
+                                            @if (request.dateTraitement) {
+                                                <div class="d-flex flex-column">
+                                                    <span class="fs-12 fw-medium">{{ request.dateTraitement | date:'dd/MM/yyyy HH:mm' }}</span>
+                                                    @if (request.motifRejet) {
+                                                        <span class="text-danger fs-11 text-truncate" style="max-width: 120px;" [title]="request.motifRejet">
+                                                            <i class="ri-information-line me-1"></i>{{ request.motifRejet }}
+                                                        </span>
+                                                    }
                                                 </div>
                                             } @else {
-                                                <button class="btn btn-sm btn-light" disabled>Traité</button>
+                                                <span class="text-muted italic fs-12">Non traité</span>
                                             }
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="hstack gap-2 justify-content-end">
+                                                @if (isPendingVerification(request.statut)) {
+                                                    <button class="btn btn-sm btn-success shadow-none px-2" (click)="approve(request.idDemandeAnnonceur)" title="Approuver">
+                                                        <i class="ri-check-line"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-soft-danger shadow-none px-2" (click)="reject(request.idDemandeAnnonceur)" title="Rejeter">
+                                                        <i class="ri-close-line"></i>
+                                                    </button>
+                                                } @else if (isWaitingPayment(request.statut)) {
+                                                    <span class="text-warning fs-12 fw-medium text-nowrap">Attente paiement</span>
+                                                } @else if (isApproved(request.statut)) {
+                                                    <span class="text-success fs-12 fw-medium text-nowrap">Approuvée</span>
+                                                } @else if (isRejected(request.statut)) {
+                                                    <span class="text-danger fs-12 fw-medium text-nowrap">Rejetée</span>
+                                                }
+                                            </div>
                                         </td>
                                     </tr>
                                 } @empty {
@@ -92,6 +145,27 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Pagination -->
+                @if (totalCount > 0) {
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3 g-2">
+                        <div class="text-muted mb-2 mb-sm-0">
+                            Affichage de {{ (pageNumber-1) * pageSize + 1 }} à {{ Math.min(pageNumber * pageSize, totalCount) }} sur {{ totalCount }} demandes
+                        </div>
+                        <div class="pagination-wrap hstack gap-2 ms-sm-auto">
+                            <ngb-pagination
+                                [collectionSize]="totalCount"
+                                [(page)]="pageNumber"
+                                [pageSize]="pageSize"
+                                (pageChange)="onPageChange($event)"
+                                [maxSize]="3"
+                                [rotate]="true"
+                                [boundaryLinks]="false"
+                                class="pagination-separated mb-0"
+                            ></ngb-pagination>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>

@@ -9,11 +9,7 @@
 
                     <button type="button" class="btn btn-sm fs-16 header-item vertical-menu-btn topnav-hamburger" 
                             id="topnav-hamburger-icon" (click)="toggleMobileMenu($event)">
-                        <span class="hamburger-icon" id="hamburger-icon">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </span>
+                        <i class="ri-menu-2-line fs-22"></i>
                     </button>
                 }
 
@@ -26,7 +22,6 @@
 
             <!-- ===== RIGHT: Action buttons ===== -->
             <div class="d-flex align-items-center">
-
 
                 <!-- Cart Dropdown -->
                 @if (currentUser && currentUser.role !== 'ADMIN') {
@@ -46,43 +41,41 @@
                                 </div>
                             </div>
                         </div>
-                        <ngx-simplebar style="max-height: 300px;">
-                            <div class="p-2">
-                                <div class="text-center empty-cart" id="empty-cart" style="display: none;">
+                        <div class="p-2 cart-items-container" style="max-height: 250px; overflow-y: auto;">
+                            @if(topbarCartItems.length === 0) {
+                                <div class="text-center empty-cart py-4" id="empty-cart">
                                     <div class="avatar-md mx-auto my-3">
                                         <div class="avatar-title bg-info-subtle text-info fs-36 rounded-circle">
                                             <i class='bx bx-cart'></i>
                                         </div>
                                     </div>
                                     <h5 class="mb-3">Votre panier est vide !</h5>
-                                    <a routerLink="/client/products" class="btn btn-success w-md mb-3">Acheter maintenant</a>
+                                    <a routerLink="/ads" class="btn btn-success w-md mb-3">Acheter maintenant</a>
                                 </div>
-                                @for(data of topbarCartItems;track $index){
-                                <div class="d-block dropdown-item text-wrap px-3 py-2" id="item_{{data.id}}">
-                                    <div class="d-flex align-items-center">
-                                        <img [src]="data.img" class="me-3 rounded-circle avatar-sm p-2 bg-light" alt="user-pic">
-                                        <div class="flex-grow-1">
-                                            <h6 class="mt-0 mb-1 fs-14">
-                                                <a routerLink="/client/product-detail" class="text-reset">{{data.product}}</a>
-                                            </h6>
-                                            <p class="mb-0 fs-12 text-muted">
-                                                Quantité: <span>{{data.quantity}} x {{data.price}} TND</span>
-                                            </p>
-                                        </div>
-                                        <div class="px-2">
-                                            <h5 class="m-0 fw-normal"><span class="item_price">{{data.quantity *
-                                                    data.price}}</span> TND</h5>
-                                        </div>
-                                        <div class="ps-2">
-                                            <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary" (click)="deleteItem($event,data.id)">
-                                                <i class="ri-close-fill fs-16"></i>
-                                            </button>
-                                        </div>
+                            }
+                            @for(data of topbarCartItems;track $index){
+                            <div class="d-block dropdown-item text-wrap px-3 py-2" id="item_{{data.id}}">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{data.img}}" class="me-3 rounded-circle avatar-sm p-2 bg-light" alt="user-pic">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mt-0 mb-1 fs-14">
+                                            <a [routerLink]="['/ads', data.idAnnonce]" class="text-reset">{{data.product}}</a>
+                                        </h6>
+
+                                    </div>
+                                    <div class="px-2">
+                                        <h5 class="m-0 fw-normal"><span class="item_price">{{data.quantity *
+                                                data.price}}</span> TND</h5>
+                                    </div>
+                                    <div class="ps-2">
+                                        <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary" (click)="deleteItem($event,data.id)">
+                                            <i class="ri-close-fill fs-16"></i>
+                                        </button>
                                     </div>
                                 </div>
-                                }
                             </div>
-                        </ngx-simplebar>
+                            }
+                        </div>
                         <div class="p-3 border-bottom-0 border-start-0 border-end-0 border-dashed border d-grid">
                             <div class="d-flex justify-content-between align-items-center pb-3">
                                 <h5 class="m-0 text-muted">Total:</h5>
@@ -98,6 +91,9 @@
                     </div>
                 </div>
                 }
+
+
+
 
                 <!-- Fullscreen -->
                 <div class="ms-1 header-item d-flex">
@@ -138,11 +134,11 @@
                 @if (currentUser) {
                     <div class="dropdown ms-sm-3 header-item" ngbDropdown>
                         <button type="button" class="btn btn-ghost-secondary rounded-circle p-0" ngbDropdownToggle style="width: 40px; height: 40px;">
-                            <span class="d-flex align-items-center justify-content-center">
-                                @if (currentUser.photoProfilUrl) {
-                                    <img class="rounded-circle" [src]="photoUrl" alt="Avatar" style="width: 32px; height: 32px; object-fit: cover;">
+                            <span class="d-flex align-items-center justify-content-center h-100">
+                                @if (currentUser.photoProfilUrl && !imageError) {
+                                    <img class="rounded-circle" [src]="photoUrl" alt="Avatar" style="width: 32px; height: 32px; object-fit: cover;" (error)="onImageError()">
                                 } @else {
-                                    <div class="rounded-circle d-flex align-items-center justify-content-center bg-info text-white fw-bold" style="width: 32px; height: 32px;">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center bg-info-subtle text-info fw-bold" style="width: 32px; height: 32px;">
                                         {{ avatarLetter }}
                                     </div>
                                 }
@@ -157,6 +153,10 @@
 
                             @if (currentUser.role !== 'ADMIN') {
                                 @if (currentUser.role === 'ANNONCEUR') {
+                                    <a class="dropdown-item py-2" [routerLink]="['/seller', currentUser.idUtilisateur]">
+                                        <i class="ri-store-2-line text-success fs-16 align-middle me-2"></i> 
+                                        <span class="align-middle fw-bold">Ma Boutique</span>
+                                    </a>
                                     <a class="dropdown-item py-2" [routerLink]="dashboardLink">
                                         <i class="ri-dashboard-line text-muted fs-16 align-middle me-2"></i> 
                                         <span class="align-middle fw-bold">Tableau de bord</span>
@@ -166,18 +166,13 @@
                                     <i class="ri-user-settings-line text-muted fs-16 align-middle me-2"></i> 
                                     <span class="align-middle">Mon Compte</span>
                                 </a>
-                                <a class="dropdown-item py-2" routerLink="/client/favorites">
-                                    <i class="ri-heart-line text-muted fs-16 align-middle me-2"></i> 
-                                    <span class="align-middle">Mes Favoris</span>
-                                </a>
-                                <a class="dropdown-item py-2" routerLink="/client/cart">
-                                    <i class="ri-shopping-cart-line text-muted fs-16 align-middle me-2"></i> 
-                                    <span class="align-middle">Mon Panier</span>
-                                </a>
-
                                 <a class="dropdown-item py-2" routerLink="/client/orders">
                                     <i class="ri-file-list-3-line text-muted fs-16 align-middle me-2"></i> 
                                     <span class="align-middle">Mes Commandes</span>
+                                </a>
+                                <a class="dropdown-item py-2" routerLink="/client/favorites">
+                                    <i class="ri-heart-line text-muted fs-16 align-middle me-2"></i> 
+                                    <span class="align-middle">Mes Favoris</span>
                                 </a>
 
                                 @if (currentUser.role === 'CLIENT') {

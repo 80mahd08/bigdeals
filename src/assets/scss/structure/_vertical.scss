@@ -15,7 +15,7 @@
 .main-content {
     transition: all .1s ease-out;
 
-    @media (min-width: 768px) {
+    @media (min-width: 850px) {
         margin-left: var(--#{$prefix}vertical-menu-width);
     }
 }
@@ -195,7 +195,7 @@
     text-align: center;
     transition: all .1s ease-out;
 
-    @media (max-width: 767.98px) {
+    @media (max-width: 849.98px) {
         display: none;
     }
 }
@@ -300,7 +300,7 @@
             }
         }
 
-        @media (max-width: 767.98px) {
+        @media (max-width: 849.98px) {
             margin-left: -100%;
             padding: 10px 0 20px 0;
         }
@@ -314,7 +314,7 @@
     }
 
     .navbar-brand-box {
-        @media (max-width: 767.98px) {
+        @media (max-width: 849.98px) {
             display: none;
         }
     }
@@ -328,7 +328,7 @@
         .main-content {
             margin-left: var(--#{$prefix}vertical-menu-width-sm);
 
-            @media (max-width: 767.98px) {
+            @media (max-width: 849.98px) {
                 margin-left: 0;
             }
         }
@@ -347,7 +347,7 @@
             display: inline-block;
         }
 
-        @media (min-width: 768px) {
+        @media (min-width: 850px) {
             .topnav-hamburger {
                 display: none;
             }
@@ -509,7 +509,7 @@
     }
 
     &[data-sidebar-size="sm"] {
-        @media (min-width: 768px) {
+        @media (min-width: 850px) {
             min-height: 1400px;
 
             .main-content {
@@ -684,7 +684,7 @@
     }
 
     &[data-sidebar-size="md"] {
-        @media (min-width: 768px) {
+        @media (min-width: 850px) {
             .main-content {
                 margin-left: var(--#{$prefix}vertical-menu-width-md);
             }
@@ -832,7 +832,7 @@
         }
 
         &[data-sidebar-size="sm"] {
-            @media (min-width: 768px) {
+            @media (min-width: 850px) {
 
                 #layout-wrapper,
                 .main-content {
@@ -983,7 +983,7 @@
         margin: -15px 0 1.5rem 0;
     }
 
-    @media (min-width: 768px) {
+    @media (min-width: 850px) {
 
         &[data-sidebar-size="sm"],
         &[data-sidebar-size="sm-hover"] {

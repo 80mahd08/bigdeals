@@ -1,0 +1,142 @@
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">Mes Ventes</h4>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Row -->
+<div class="row">
+    <div class="col-xl-4 col-md-6">
+        <div class="card card-animate border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-success-subtle rounded-2 fs-2">
+                            <i class="ri-shopping-bag-3-line text-success"></i>
+                        </span>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <p class="text-uppercase fw-medium text-muted mb-1 fs-12">Total Ventes</p>
+                        <h4 class="fs-22 fw-semibold mb-0">{{ orders.length }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-md-6">
+        <div class="card card-animate border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-info-subtle rounded-2 fs-2">
+                            <i class="ri-money-dollar-circle-line text-info"></i>
+                        </span>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <p class="text-uppercase fw-medium text-muted mb-1 fs-12">Revenus Total</p>
+                        <h4 class="fs-22 fw-semibold mb-0">{{ totalRevenue | number:'1.0-0' }} TND</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Orders Table -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header border-bottom-dashed">
+                <h5 class="card-title mb-0">
+                    <i class="ri-shopping-bag-3-line me-2 text-success"></i>Commandes reçues
+                </h5>
+            </div>
+            <div class="card-body">
+                @if (isLoading) {
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-success" role="status"></div>
+                    </div>
+                } @else if (orders.length > 0) {
+                    <div class="table-responsive">
+                        <table class="table table-borderless align-middle mb-0">
+                            <thead class="table-light text-muted">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Date</th>
+                                    <th>Montant</th>
+                                    <th>Paiement</th>
+                                    <th>Livraison</th>
+                                    <th>Adresse</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (order of orders; track order.idCommande) {
+                                    <tr>
+                                        <td>
+                                            <div class="fw-bold mb-1">#BD-{{ order.idCommande }}</div>
+                                            <a [routerLink]="['/ads', order.idAnnonce]" class="text-primary fs-12 fw-medium">
+                                                <i class="ri-link me-1"></i>{{ order.annonceTitre || 'Voir l\'annonce' }}
+                                            </a>
+                                        </td>
+                                        <td>{{ order.dateCreation | date:'short' }}</td>
+                                        <td class="fw-bold text-success">{{ order.montant | number:'1.0-0' }} TND</td>
+                                        <td>
+                                            <span class="badge {{ getStatusBadgeClass(order.statutCommande) }}">
+                                                {{ getStatusLabel(order.statutCommande) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge {{ getDeliveryBadgeClass(order.statutLivraison ?? order.StatutLivraison) }}">
+                                                {{ getDeliveryLabel(order.statutLivraison ?? order.StatutLivraison) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="fs-12">
+                                                <div class="fw-medium text-dark">{{ order.adresseLivraison || '—' }}</div>
+                                                <div class="text-muted">{{ order.villeLivraison || '—' }}</div>
+                                                @if (order.telephoneLivraison) {
+                                                    <div class="text-muted"><i class="ri-phone-line me-1"></i>{{ order.telephoneLivraison }}</div>
+                                                }
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if (getNextTransitions(order.statutLivraison ?? order.StatutLivraison).length > 0 && (order.statutCommande == 2 || order.StatutCommande == 2)) {
+                                                <div class="dropdown" ngbDropdown>
+                                                    <button class="btn btn-soft-primary btn-sm" ngbDropdownToggle>
+                                                        <i class="ri-truck-line me-1"></i> Mettre à jour
+                                                    </button>
+                                                    <div ngbDropdownMenu>
+                                                        @for (t of getNextTransitions(order.statutLivraison); track t.value) {
+                                                            <button ngbDropdownItem (click)="updateDeliveryStatus(order, t.value)">
+                                                                {{ t.label }}
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            } @else {
+                                                <span class="text-muted fs-12">—</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                } @else {
+                    <div class="text-center py-5">
+                        <div class="avatar-lg mx-auto mb-4">
+                            <div class="avatar-title bg-info-subtle text-info rounded-circle fs-36">
+                                <i class="ri-shopping-bag-3-line"></i>
+                            </div>
+                        </div>
+                        <h5>Aucune vente trouvée</h5>
+                        <p class="text-muted">Vous n'avez pas encore reçu de commandes.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AnnoncesService } from '../../../core/services/annonces.service';
-import { CartService } from '../../../core/services/cart.service';
 import { FavoritesService } from '../../../core/services/favorites.service';
 import { ClientActionsService } from '../../../core/services/client-actions.service';
 import { AuthenticationService } from '../../../core/services/auth.service';
@@ -12,6 +11,7 @@ import { environment } from 'src/environments/environment';
 import { Subject, takeUntil } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { User } from 'src/app/store/Authentication/auth.models';
+import { CartService } from '../../../core/services/cart.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -47,12 +47,12 @@ export class AdDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private annoncesService: AnnoncesService,
-    private cartService: CartService,
     private favoritesService: FavoritesService,
     private clientActions: ClientActionsService,
     private authService: AuthenticationService,
     private categoriesService: CategoriesService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
@@ -140,27 +140,30 @@ export class AdDetailComponent implements OnInit, OnDestroy {
   }
 
   addToCart(): void {
+    if (this.ad) {
+      this.cartService.addToCart(this.ad);
+      Swal.fire({
+        title: 'Ajouté au panier !',
+        text: `${this.ad.titre} a été ajouté à votre panier.`,
+        icon: 'success',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+      });
+    }
+  }
+
+  buyNow(): void {
     if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/auth/signin']);
       return;
     }
     if (this.ad) {
-      this.cartService.addToCart(this.ad);
-      Swal.fire({
-        title: 'Ajouté !',
-        text: 'L\'article a été ajouté à votre panier.',
-        icon: 'success',
-        confirmButtonText: 'Continuer',
-        showCancelButton: true,
-        cancelButtonText: 'Voir le panier'
-      }).then(result => {
-        if (!result.isConfirmed) {
-          this.router.navigate(['/client/cart']);
-        }
-      });
+      this.router.navigate(['/client/product-checkout', this.ad.idAnnonce]);
     }
   }
-
 
   contactWhatsapp(): void {
     if (this.ad && this.ad.annonceurTelephone) {

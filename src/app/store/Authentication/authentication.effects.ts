@@ -84,6 +84,10 @@ export class AuthenticationEffects {
       return 'Impossible de se connecter au serveur. Vérifiez que l\'API est en cours d\'exécution.';
     }
 
+    if (error instanceof Error) {
+      return error.message;
+    }
+
     if (error.error) {
       if (typeof error.error === 'string') {
         return error.error;

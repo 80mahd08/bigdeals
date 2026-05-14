@@ -9,7 +9,7 @@
                     </h1>
 
                     <p class="lead text-white-50 lh-base mb-5 mx-auto" style="max-width: 700px;">
-                        La marketplace tunisienne qui simplifie l’achat et la vente en ligne grâce à des annonces claires, des catégories structurées et une recherche adaptée à chaque besoin.
+                        La marketplace tunisienne qui simplifie la recherche et la mise en relation en ligne grâce à des annonces claires, des catégories structurées et une recherche adaptée à chaque besoin.
                     </p>
 
                     <!-- Clean Search Bar: search input + button only -->
@@ -25,7 +25,7 @@
                                         #heroSearch
                                         type="text"
                                         class="form-control bg-transparent border-0 shadow-none fs-16"
-                                        placeholder="Que cherchez-vous aujourd'hui ?"
+                                        placeholder="Rechercher une annonce, un vendeur..."
                                         (keyup.enter)="heroSearch.value.trim() ? router.navigate(['/ads'], { queryParams: { q: heroSearch.value.trim() } }) : null">
                                 </div>
                             </div>

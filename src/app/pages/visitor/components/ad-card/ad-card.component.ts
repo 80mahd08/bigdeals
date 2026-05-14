@@ -16,6 +16,7 @@ export class AdCardComponent {
   @Input() compact: boolean = false;
 
   apiUrl = environment.apiUrl;
+  sellerImageError = false;
 
   constructor(
     private favoritesService: FavoritesService,
@@ -80,5 +81,9 @@ export class AdCardComponent {
       return this.ad.annonceurNom.charAt(0).toUpperCase();
     }
     return '?';
+  }
+
+  onSellerImageError() {
+    this.sellerImageError = true;
   }
 }

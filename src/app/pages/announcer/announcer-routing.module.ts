@@ -4,8 +4,8 @@ import { ApplicationComponent } from './application/application.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdFormComponent } from './ad-form/ad-form.component';
 import { AnnouncementsComponent } from './announcements/announcements.component';
-import { OrdersComponent } from './orders/orders.component';
 import { ReviewsComponent } from './reviews/reviews.component';
+import { AnnouncerOrdersComponent } from './orders/announcer-orders.component';
 import { RoleGuard } from '../../core/guards/role.guard';
 
 const routes: Routes = [
@@ -33,15 +33,16 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: { roles: ['ANNONCEUR'] }
   },
+
   {
-    path: 'orders',
-    component: OrdersComponent,
+    path: 'reviews',
+    component: ReviewsComponent,
     canActivate: [RoleGuard],
     data: { roles: ['ANNONCEUR'] }
   },
   {
-    path: 'reviews',
-    component: ReviewsComponent,
+    path: 'orders',
+    component: AnnouncerOrdersComponent,
     canActivate: [RoleGuard],
     data: { roles: ['ANNONCEUR'] }
   },

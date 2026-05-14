@@ -1,35 +1,30 @@
-export interface Panier {
-  idPanier: number;
-  idUtilisateur: number;
-  lignes?: LignePanier[];
-  total?: number;
-}
-
-export interface LignePanier {
-  idLignePanier: number;
-  idPanier: number;
-  idAnnonce: number;
-  annonceTitre?: string;
-  annonceImage?: string;
-  quantite: number;
-  prixUnitaire?: number;
-}
+import { StatutCommande, MethodePaiement } from '../enums';
 
 export interface Commande {
-  idCommande: number;
-  idUtilisateur: number;
-  statut: string;
-  total: number;
-  dateCommande?: string | Date;
-  lignes?: LigneCommande[];
+    idCommande: number;
+    idAnnonce: number;
+    idAcheteur: number;
+    idAnnonceur: number;
+    montant: number;
+    statutCommande: number; // Matches backend StatutCommande enum
+    dateCreation: string;
+    annonceTitre?: string;
+
+    // Delivery fields
+    statutLivraison: number;
+    adresseLivraison?: string;
+    villeLivraison?: string;
+    telephoneLivraison?: string;
+
+    dateExpedition?: string;
+    dateLivraison?: string;
+    dateDerniereMiseAJourLivraison?: string;
 }
 
 export interface LigneCommande {
-  idLigneCommande: number;
-  idCommande: number;
-  idAnnonce: number;
-  annonceTitre?: string;
-  quantite: number;
-  prixUnitaire: number;
-  totalLigne?: number;
+    id: number;
+    idAnnonce: number;
+    annonceTitre: string;
+    quantite: number;
+    prixUnitaire: number;
 }

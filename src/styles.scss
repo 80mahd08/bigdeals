@@ -145,3 +145,110 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #d1d4d7;
 }
+
+/* Sticky Footer Fix */
+#layout-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-content {
+    flex: 1 0 auto;
+}
+
+app-footer {
+    flex-shrink: 0;
+}
+
+/* Dark Mode Overrides for Marketplace */
+[data-bs-theme="dark"] {
+    .bg-body-alt {
+        background-color: #1a1d21 !important;
+    }
+
+    .card-marketplace {
+        background-color: #212529 !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+        border: 1px solid #2e3439 !important;
+    }
+
+    .list-group-item {
+        background-color: transparent !important;
+        color: #adb5bd !important;
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            color: #fff !important;
+        }
+        &.active-category {
+            background-color: rgba(10, 179, 156, 0.1) !important;
+            color: #0ab39c !important;
+        }
+    }
+
+    .form-control, .form-select {
+        background-color: #2a2f34 !important;
+        border-color: #32383e !important;
+        color: #fff !important;
+        &::placeholder {
+            color: #878a99 !important;
+            opacity: 0.7;
+        }
+    }
+
+    .page-link {
+        background-color: #212529 !important;
+        border-color: #32383e !important;
+        color: #adb5bd !important;
+        &:hover {
+            background-color: #2a2f34 !important;
+            color: #fff !important;
+        }
+    }
+
+    .text-muted {
+        color: #878a99 !important;
+    }
+
+    /* Fix for Ad Card Footer in Dark Mode */
+    .card-footer {
+        background-color: rgba(255, 255, 255, 0.02) !important;
+        border-top-color: #2e3439 !important;
+    }
+
+    /* Aggressive fix for Sidebar Filters */
+    .marketplace-container .card {
+        background-color: #212529 !important;
+        border-color: #2e3439 !important;
+        color: #fff !important;
+
+        .card-header {
+            background-color: rgba(255, 255, 255, 0.03) !important;
+            border-bottom-color: #2e3439 !important;
+            h5 { color: #fff !important; }
+        }
+
+        h6 { color: #adb5bd !important; }
+        label { color: #878a99 !important; }
+    }
+
+    .search-box {
+        .form-control {
+            background-color: #2a2f34 !important;
+            border-color: #32383e !important;
+            color: #fff !important;
+            &::placeholder {
+                color: #878a99 !important;
+            }
+        }
+        .search-icon {
+            color: #878a99 !important;
+        }
+    }
+}

@@ -1,0 +1,86 @@
+<div class="marketplace-container mt-4">
+  <div class="row align-items-center mb-4">
+    <div class="col-sm">
+      <h3 class="fw-bold mb-0">Acheter maintenant</h3>
+      <p class="text-muted mb-0">Payez cet article directement et en toute sécurité.</p>
+    </div>
+  </div>
+
+  @if (isLoading) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-success" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3 text-muted">Préparation de votre commande...</p>
+    </div>
+  } @else if (hasError) {
+    <div class="card border-0 shadow-sm text-center py-5">
+      <h4>Une erreur est survenue</h4>
+      <p class="text-muted">{{ errorMessage }}</p>
+      <a routerLink="/ads" class="btn btn-success">Retour aux annonces</a>
+    </div>
+  } @else if (commandeDetails) {
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-header bg-success text-white">
+            <h5 class="card-title mb-0 text-white"><i class="ri-secure-payment-line me-2"></i>Paiement par Carte</h5>
+          </div>
+          <div class="card-body p-4">
+            <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+              <div class="mb-4">
+                <label class="form-label fw-bold">Numéro de carte</label>
+                <input type="text" class="form-control form-control-lg" formControlName="cardNumber"
+                       placeholder="0000 0000 0000 0000" (input)="formatCardNumber($event)" maxlength="16">
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <label class="form-label fw-bold">Expiration (MM/AA)</label>
+                  <input type="text" class="form-control form-control-lg" formControlName="expiry"
+                         placeholder="MM/AA" (input)="formatExpiry($event)" maxlength="5">
+                </div>
+                <div class="col-md-6 mb-4">
+                  <label class="form-label fw-bold">CVV</label>
+                  <input type="password" class="form-control form-control-lg" formControlName="cvv"
+                         placeholder="•••" (input)="formatCvv($event)" maxlength="3">
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-success btn-lg w-100 py-3 fw-bold" [disabled]="isProcessing">
+                @if (isProcessing) {
+                  <span class="spinner-border spinner-border-sm me-2"></span> Traitement...
+                } @else {
+                  Confirmer le paiement ({{ commandeDetails.montant | number:'1.0-0' }} TND)
+                }
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card shadow-sm border-0">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Récapitulatif</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex justify-content-between mb-3">
+              <span>Produit :</span>
+              <span class="fw-bold">{{ commandeDetails.titreAnnonce }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-3">
+                <span>Vendeur :</span>
+                <span class="fw-medium">{{ commandeDetails.annonceurNom }}</span>
+              </div>
+            <hr>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="fs-16 fw-bold">Total :</span>
+              <span class="fs-20 fw-bold text-success">{{ commandeDetails.montant | number:'1.0-0' }} TND</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

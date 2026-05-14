@@ -62,4 +62,8 @@ export class ClientActionsService {
     return this.http.get(`${environment.apiUrl}/demandes-annonceur/me/document`, { responseType: 'blob' });
   }
 
+  initiatePayment(demandeAnnonceurId: number): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${environment.apiUrl}/annonceur-payments/initiate/${demandeAnnonceurId}`, {});
+  }
+
 }

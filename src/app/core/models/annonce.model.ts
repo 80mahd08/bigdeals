@@ -22,6 +22,7 @@ export interface Annonce {
   mainImageUrl?: string;
   images?: ImageAnnonce[];
   valeursAttributs?: ValeurAttributAnnonce[];
+  supportePaiement?: boolean;
 }
 
 export interface ImageAnnonce {

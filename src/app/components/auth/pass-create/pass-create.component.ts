@@ -139,7 +139,8 @@ export class PassCreateComponent implements OnInit {
        },
        error: (err) => {
          this.loading = false;
-         this.error = err.error?.message || 'Erreur lors de la réinitialisation.';
+         console.error('Password reset error:', err);
+         this.error = err.error?.message || err.error || err.message || 'Une erreur est survenue lors de la réinitialisation.';
        }
      });
    }

@@ -1,114 +1,110 @@
 import { Injectable } from '@angular/core';
-import { AuthenticationService } from './auth.service';
-import { Panier, LignePanier, Annonce } from '../models';
 import { BehaviorSubject } from 'rxjs';
+import { Panier, LignePanier, Annonce } from '../models';
+import { AuthenticationService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
   private cartSubject = new BehaviorSubject<Panier | null>(null);
-  public cart$ = this.cartSubject.asObservable();
-
-  get cartValue(): Panier | null {
-    return this.cartSubject.value;
-  }
+  cart$ = this.cartSubject.asObservable();
 
   constructor(private authService: AuthenticationService) {
     this.authService.currentUser$.subscribe(user => {
-      if (user) {
-        this.loadCart();
-      } else {
-        this.cartSubject.next(null);
-      }
+      this.cartSubject.next(this.loadCartFromStorage(user?.idUtilisateur || 0));
     });
   }
 
-  private getStorageKey(): string {
+  private loadCartFromStorage(userId: number): Panier | null {
+    const key = userId > 0 ? `cart_${userId}` : 'cart_guest';
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      try {
+        const cart = JSON.parse(saved);
+        return cart;
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  private saveCart(cart: Panier | null) {
     const user = this.authService.currentUserValue;
-    if (!user) {
-      throw new Error('Action réservée aux utilisateurs connectés');
-    }
-    return `cart_${user.idUtilisateur}`;
-  }
-
-  private loadCart(): void {
-    const key = this.getStorageKey();
-    const stored = localStorage.getItem(key);
-    if (stored) {
-      this.cartSubject.next(JSON.parse(stored));
+    const key = user ? `cart_${user.idUtilisateur}` : 'cart_guest';
+    
+    if (cart) {
+      localStorage.setItem(key, JSON.stringify(cart));
     } else {
-      const user = this.authService.currentUserValue;
-      const initialCart: Panier = {
-        idPanier: Math.floor(Math.random() * 1000),
-        idUtilisateur: user?.idUtilisateur || 0,
-        lignes: [],
-        total: 0
-      };
-      this.saveCart(initialCart);
+      localStorage.removeItem(key);
     }
-  }
-
-  private saveCart(cart: Panier): void {
-    cart.total = this.calculateTotal(cart);
-    localStorage.setItem(this.getStorageKey(), JSON.stringify(cart));
     this.cartSubject.next(cart);
   }
 
-  private calculateTotal(cart: Panier): number {
-    return (cart.lignes || []).reduce((acc, ligne) => acc + (ligne.prixUnitaire || 0) * ligne.quantite, 0);
-  }
-
-  addToCart(annonce: Annonce, quantite: number = 1): void {
-    const cart = this.cartSubject.value;
-    if (!cart) return;
-
-    const existingLigne = cart.lignes?.find(l => l.idAnnonce === annonce.idAnnonce);
-    if (existingLigne) {
-      existingLigne.quantite += quantite;
-    } else {
-      const newLigne: LignePanier = {
-        idLignePanier: Math.floor(Math.random() * 10000),
-        idPanier: cart.idPanier,
-        idAnnonce: annonce.idAnnonce,
-        annonceTitre: annonce.titre,
-        annonceImage: annonce.mainImageUrl,
-        quantite: quantite,
-        prixUnitaire: Number(annonce.prix)
-      };
-      cart.lignes = [...(cart.lignes || []), newLigne];
+  addToCart(annonce: Annonce) {
+    let current = this.cartSubject.value;
+    if (!current) {
+      current = { id: 0, idUtilisateur: 0, lignes: [], total: 0 };
     }
-    this.saveCart(cart);
+
+    const existing = current.lignes?.find(l => l.idAnnonce === annonce.idAnnonce);
+    if (existing) {
+      existing.quantite++;
+    } else {
+      current.lignes = current.lignes || [];
+      current.lignes.push({
+        id: 0,
+        idPanier: current.id,
+        idAnnonce: annonce.idAnnonce,
+        quantite: 1,
+        prixUnitaire: annonce.prix || 0,
+        annonceTitre: annonce.titre,
+        annonceImage: (annonce.images && annonce.images.length > 0) ? annonce.images[0].url : (annonce.mainImageUrl || '')
+      });
+    }
+
+    this.updateTotal(current);
+    this.saveCart(current);
   }
 
-  updateQuantity(idAnnonce: number, quantite: number): void {
-    const cart = this.cartSubject.value;
-    if (!cart || !cart.lignes) return;
+  updateQuantity(annonceId: number, qty: number) {
+    const current = this.cartSubject.value;
+    if (!current) return;
 
-    const ligne = cart.lignes.find(l => l.idAnnonce === idAnnonce);
+    const ligne = current.lignes?.find(l => l.idAnnonce === annonceId);
     if (ligne) {
-      ligne.quantite = quantite;
+      ligne.quantite = qty;
       if (ligne.quantite <= 0) {
-        this.removeFromCart(idAnnonce);
+        this.removeFromCart(annonceId);
       } else {
-        this.saveCart(cart);
+        this.updateTotal(current);
+        this.saveCart(current);
       }
     }
   }
 
-  removeFromCart(idAnnonce: number): void {
-    const cart = this.cartSubject.value;
-    if (!cart || !cart.lignes) return;
+  removeFromCart(annonceId: number) {
+    const current = this.cartSubject.value;
+    if (!current) return;
 
-    cart.lignes = cart.lignes.filter(l => l.idAnnonce !== idAnnonce);
-    this.saveCart(cart);
+    current.lignes = (current.lignes || []).filter(l => l.idAnnonce !== annonceId);
+    this.updateTotal(current);
+    this.saveCart(current);
   }
 
-  clearCart(): void {
-    const cart = this.cartSubject.value;
-    if (!cart) return;
+  clearCart() {
+    this.saveCart(null);
+  }
 
-    cart.lignes = [];
-    this.saveCart(cart);
+  private updateTotal(cart: Panier) {
+    cart.total = (cart.lignes || []).reduce((acc, l) => acc + (l.prixUnitaire * l.quantite), 0);
+  }
+
+  getAnnonceForLigne(annonceId: number): any {
+    // In a real app, we might fetch from a cache or the API.
+    // For the topbar, we just need the title and first image.
+    // We could store the whole annonce in the cart, but for now we rely on what's there.
+    return null; // The topbar logic handles the fallback
   }
 }

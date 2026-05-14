@@ -29,7 +29,12 @@ export interface ContactAnnonceur {
 export interface DemandeAnnonceur {
   idDemandeAnnonceur: number;
   idUtilisateur: number;
-  statut: 'EN_ATTENTE' | 'APPROUVEE' | 'REJETEE' | string;
+  nomUtilisateur?: string;
+  prenomUtilisateur?: string;
+  nomCompletUtilisateur?: string;
+  emailUtilisateur?: string;
+  photoProfilUrl?: string;
+  statut: number | string;
   documentUrl: string;
   documentNomOriginal: string;
   documentType: string;

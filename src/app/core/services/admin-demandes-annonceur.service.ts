@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { DemandeAnnonceur } from '../models';
-import { ApiResponse } from '../types/api.types';
+import { ApiResponse, PagedResponse } from '../types/api.types';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +13,20 @@ export class AdminDemandesAnnonceurService {
 
   constructor(private http: HttpClient) { }
 
-  getAllRequests(): Observable<ApiResponse<DemandeAnnonceur[]>> {
-    return this.http.get<ApiResponse<DemandeAnnonceur[]>>(this.baseUrl);
+  getAllRequests(pageNumber: number = 1, pageSize: number = 10, statut?: number, search?: string): Observable<ApiResponse<PagedResponse<DemandeAnnonceur>>> {
+    let params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+    
+    if (statut !== undefined && statut !== null) {
+      params = params.set('statut', statut.toString());
+    }
+    
+    if (search) {
+      params = params.set('search', search);
+    }
+
+    return this.http.get<ApiResponse<PagedResponse<DemandeAnnonceur>>>(this.baseUrl, { params });
   }
 
   getById(id: number): Observable<ApiResponse<DemandeAnnonceur>> {

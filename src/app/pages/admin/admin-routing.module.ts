@@ -1,20 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { OrdersComponent as TransactionsComponent } from './transactions/orders.component';
 import { CustomersComponent as UsersComponent } from './users/customers.component';
 import { SellersComponent as AnnouncersComponent } from './announcers/sellers.component';
 import { ProductsComponent as AdsComponent } from './ads/products.component';
-import { CategoriesComponent } from './categories/categories.component';
+import { PaymentsComponent } from './payments/payments.component';
+import { AdminOrdersComponent } from './orders/admin-orders.component';
+import { ReportsComponent } from './reports/reports.component';
 
 const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent
-  },
-  {
-    path: 'transactions',
-    component: TransactionsComponent
   },
   {
     path: 'users',
@@ -29,8 +26,16 @@ const routes: Routes = [
     component: AdsComponent
   },
   {
-    path: 'categories',
-    component: CategoriesComponent
+    path: 'annonceur-payments',
+    component: PaymentsComponent
+  },
+  {
+    path: 'reports',
+    component: ReportsComponent
+  },
+  {
+    path: 'orders',
+    component: AdminOrdersComponent
   },
   {
     path: 'settings',
